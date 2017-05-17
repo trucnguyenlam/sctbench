@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -629,7 +630,7 @@ It is safe to create internal threads in the tool's main procedure and spawn new
 <p>
 In order to ensure graceful termination of internal threads on the application's exit, the tool can use one of the following recommended methods:<ul>
 <li>All tool threads periodically check the state of the application process by calling the <a class="el" href="group__PIN__PROCESS__API.html#ga63df44a0d4ff7dcfe501cbc436afd39">PIN_IsProcessExiting</a> function. If this function indicates that the application process is about to terminate, the threads either return or call the <a class="el" href="group__PIN__THREAD__API.html#gce25675b629bd147170b228dbe05e2c2">PIN_ExitThread()</a> function as soon as possible. The grace period for Pin to wait for the termination of tool threads can be specified with the -tool_exit_timeout command line switch.<br>
-</li><li>The tool uses the <a class="el" href="group__PIN__CONTROL.html#g6b3bfbcdcbf17e0b48c9fb1e38acfd04">PIN_AddFiniUnlockedFunction()</a> function to register a <a class="el" href="group__PIN__CONTROL.html#gcc77dcacc144b3894f5f0fc13360cdec">FINI_CALLBACK</a> callback. When the registered function is called in an "unlocked", application thread, the tool requests each internal thread to exit and waits until the <a class="el" href="group__PIN__THREAD__API.html#gbbbfe111d0087c0e21b8b7bffbc341c5">PIN_WaitForThreadTermination()</a> function returns.</li></ul>
+</li><li>The tool uses the <a class="el" href="group__PIN__CONTROL.html#g69016c0c2ddfd1e8bec50e6ab4ab46b1">PIN_AddFiniUnlockedFunction()</a> function to register a <a class="el" href="group__PIN__CONTROL.html#gcc77dcacc144b3894f5f0fc13360cdec">FINI_CALLBACK</a> callback. When the registered function is called in an "unlocked" application thread, the tool requests each internal thread to exit and waits until the <a class="el" href="group__PIN__THREAD__API.html#gbbbfe111d0087c0e21b8b7bffbc341c5">PIN_WaitForThreadTermination()</a> function returns.</li></ul>
 <p>
 Many of Pin's APIs, that are primarily intended for application threads, are also available in internal threads. Look at the API's description ( <b>Availability</b> paragraph) or the description of the corresponding group of APIs to check whether a specific API is available in internal threads.<br>
 <p>
@@ -757,7 +758,7 @@ Get unique identifier of the current thread in Pin. <dl compact><dt><b>Returns:<
 
 <p>
 Delay the current thread until the specified thread is terminated or the time-out interval elapses.<p>
-To avoid deadlocks, the caller should not hold any lock that the target thread may try to acquire. For example, this function can be safely used in the <a class="el" href="group__PIN__CONTROL.html#gcc77dcacc144b3894f5f0fc13360cdec">FINI_CALLBACK</a> callback if it is registered by the <a class="el" href="group__PIN__CONTROL.html#g6b3bfbcdcbf17e0b48c9fb1e38acfd04">PIN_AddFiniUnlockedFunction()</a>. However, it is not recommended to use this function in other Pin callbacks if the target thread is an application thread or an internal thread that uses Pin APIs. This is because most of Pin APIs and callbacks are serialized by the same internal lock.<br>
+To avoid deadlocks, the caller should not hold any lock that the target thread may try to acquire. For example, this function can be safely used in the <a class="el" href="group__PIN__CONTROL.html#gcc77dcacc144b3894f5f0fc13360cdec">FINI_CALLBACK</a> callback if it is registered by the <a class="el" href="group__PIN__CONTROL.html#g69016c0c2ddfd1e8bec50e6ab4ab46b1">PIN_AddFiniUnlockedFunction()</a>. However, it is not recommended to use this function in other Pin callbacks if the target thread is an application thread or an internal thread that uses Pin APIs. This is because most of Pin APIs and callbacks are serialized by the same internal lock.<br>
 <p>
 This function can not be used to wait for the termination of the calling thread.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
@@ -923,7 +924,7 @@ Invalid value of the TLS_KEY type.     </td>
 Maximum number of TLS keys that can be allocated by tool     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

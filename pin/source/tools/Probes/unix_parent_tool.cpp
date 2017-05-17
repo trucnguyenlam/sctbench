@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -29,7 +29,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
 #include "pin.H"
-#include <iostream>
+#include <fstream>
 #include "arglist.h"
 
 /* ===================================================================== */
@@ -42,8 +42,23 @@ KNOB<string> KnobPin(KNOB_MODE_WRITEONCE, "pintool", "pin", "", "pin full path")
 //Parent configuration - Application name
 KNOB<string> KnobApplication(KNOB_MODE_WRITEONCE, "pintool", "app", "", "application name");
 
-KNOB<BOOL> KnobToolProbeMode(KNOB_MODE_WRITEONCE, "pintool", "probe", "0", "invoke tool in probe mode");
+KNOB<BOOL> KnobToolProbeMode(KNOB_MODE_WRITEONCE, "pintool", "probe", "0",
+        "invoke tool in probe mode");
 
+KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "unix_parent_tool.out",
+        "specify output file name");
+
+ofstream OutFile;
+
+/* ===================================================================== */
+/* Print Help Message                                                    */
+/* ===================================================================== */
+
+INT32 Usage()
+{
+    OutFile << endl << KNOB_BASE::StringKnobSummary() << endl;
+    return -1;
+}
 
 /*
  * FollowChild(CHILD_PROCESS childProcess, VOID * userData) - child process configuration
@@ -69,24 +84,25 @@ BOOL FollowChild(CHILD_PROCESS childProcess, VOID * userData)
             newPinCmd.Add(appCmd.String());
 
             CHILD_PROCESS_SetPinCommandLine(childProcess, newPinCmd.Argc(), newPinCmd.Argv());
-            cout << "Process to execute: " << newPinCmd.String()  << endl;
+            OutFile << "Process to execute: " << newPinCmd.String()  << endl;
         }
         else
         {
-            cout << "Pin command line remains unchanged" << endl;
-            cout << "Application to execute: " << appCmd.String() << endl;
+            OutFile << "Pin command line remains unchanged" << endl;
+            OutFile << "Application to execute: " << appCmd.String() << endl;
         }
         return TRUE;
     }
-    cout << "knob val " << KnobApplication.Value() << "app " << childApp << endl;
-    cout << "Do not run Pin under the child process" << endl;
+    OutFile << "knob val " << KnobApplication.Value() << "app " << childApp << endl;
+    OutFile << "Do not run Pin under the child process" << endl;
     return FALSE;
 }        
 
 /* ===================================================================== */
 VOID Fini(INT32 code, VOID *v)
 {
-    cout << "In unix_parent_tool PinTool" << endl;
+    OutFile << "In unix_parent_tool PinTool" << endl;
+    OutFile.close();
 }
 
 typedef VOID (*EXITFUNCPTR)(INT code);
@@ -96,7 +112,7 @@ int (*fptrexecve)(const char * , char *const* , char *const* );
 
 int myexecve(const char * __path, char *const* __argv, char *const* __envp)
 {
-   cout << "myexecve called " << endl;
+   OutFile << "myexecve called " << endl;
    int res = fptrexecve(__path, __argv, __envp);
    
    return res; 
@@ -132,7 +148,7 @@ VOID ImageLoad(IMG img, VOID *v)
         RTN rtnexecve = RTN_FindByName(img, "execve");
         if (RTN_Valid(rtnexecve) && RTN_IsSafeForProbedReplacement(rtnexecve))
         {
-            cout << "Inserting probe for execve at " << hex << RTN_Address(rtnexecve) << endl;
+            OutFile << "Inserting probe for execve at " << hex << RTN_Address(rtnexecve) << endl;
             AFUNPTR fptr = (RTN_ReplaceProbed(rtnexecve, AFUNPTR(myexecve)));
             fptrexecve = (int (*)(__const char * , char *__const* , char *__const* ))fptr;
         }
@@ -142,7 +158,12 @@ VOID ImageLoad(IMG img, VOID *v)
 
 int main(INT32 argc, CHAR **argv)
 {
-    PIN_Init(argc, argv);
+    if (PIN_Init(argc, argv)) return Usage();
+
+    // Can't just open for writing because child_process' Pintool may overwrite
+    // the parent_process' Pintool file (when the -o parameter doesn't change). 
+    // Opening in append mode instead.
+    OutFile.open(KnobOutputFile.Value().c_str(), ofstream::app);
 
     PIN_AddFollowChildProcessFunction(FollowChild, 0);
 

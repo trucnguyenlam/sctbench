@@ -21,7 +21,7 @@
 
 #include <map>
 #include <vector>
-#include <tr1/unordered_map>
+#include <unordered_map>
 
 #include "core/basictypes.h"
 #include "core/sync.h"
@@ -51,8 +51,8 @@ class Stat {
 
  protected:
   typedef std::vector<Int> IntVec;
-  typedef std::tr1::unordered_map<std::string, Int> IntTable;
-  typedef std::tr1::unordered_map<std::string, IntVec> IntVecTable;
+  typedef std::unordered_map<std::string, Int> IntTable;
+  typedef std::unordered_map<std::string, IntVec> IntVecTable;
 
   Mutex *internal_lock_;
   IntTable int_table_;

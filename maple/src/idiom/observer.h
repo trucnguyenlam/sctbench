@@ -209,7 +209,7 @@ class Observer : public Analyzer {
                    Inst *inst, size_t size, address_t addr);
 
  private:
-  typedef std::tr1::unordered_map<address_t, ObserverMeta *> MetaMap;
+  typedef std::unordered_map<address_t, ObserverMeta *> MetaMap;
 
   ObserverMemMeta *GetMemMeta(address_t iaddr);
   ObserverMutexMeta *GetMutexMeta(address_t iaddr);

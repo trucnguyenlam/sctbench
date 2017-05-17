@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -58,21 +58,21 @@ FILE * out;
 // enough to cover the entire swap area
 /* ===================================================================== */
 
-#ifdef TARGET_LINUX
+#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
 #define GETRLIMIT getrlimit64
 #define SETRLIMIT setrlimit64
 typedef struct rlimit64 rlimit_t;
 #endif
 
-#if defined(TARGET_BSD) || defined(TARGET_MAC)
+#if defined(TARGET_MAC) || defined(TARGET_ANDROID)
 #define GETRLIMIT getrlimit
 #define SETRLIMIT setrlimit
 typedef struct rlimit rlimit_t;
 #endif
 
-#if defined(TARGET_LINUX) || defined(TARGET_BSD) || defined(TARGET_MAC)
+#if defined(TARGET_LINUX) || defined(TARGET_MAC)
 
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
 #include <sys/sysinfo.h>
 
 UINT64 GetTotalSwap()
@@ -160,7 +160,7 @@ int main(int argc, char * argv[])
     PIN_Init(argc, argv);
     PIN_InitSymbols();
 
-#if defined(TARGET_LINUX) || defined(TARGET_BSD)
+#if defined(TARGET_LINUX)
     LimitAvailableSpace();
 #endif
 

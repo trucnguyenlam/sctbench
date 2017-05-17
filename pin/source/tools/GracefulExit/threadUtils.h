@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -51,8 +51,10 @@ typedef pthread_t TidType;
 
 #include <string>
 
+
 using std::string;
 
+const unsigned int TIMEOUT=600; //10 minutes
 
 /**************************************************
  * Results                                        *
@@ -111,6 +113,7 @@ void DecThreads();
 int NumOfThreads();
 void Print(const string& str);
 void ErrorExit(Results res);
+void SetTimeout();
 void DoSleep(unsigned int seconds);
 void DoYield();
 void EnterSafeCancellationPoint();

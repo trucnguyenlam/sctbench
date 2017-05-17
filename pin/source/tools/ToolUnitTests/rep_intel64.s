@@ -11,58 +11,58 @@ main:
 	mov $1, %rdx
 	cld
 	movq $2, %rcx
-	mov $instring, %rsi
-	mov $outstring, %rdi
+	lea instring(%rip), %rsi
+	lea outstring(%rip), %rdi
 	rep movsb
 	
 	cld
 	mov $2, %rdx
 	movq $2, %rcx
-	mov $instring, %rsi
-	mov $outstring, %rdi
+	lea instring(%rip), %rsi
+	lea outstring(%rip), %rdi
 	rep movsw
 	
 	cld
 	mov $3, %rdx
 	movq $2, %rcx
-	mov $instring, %rsi
-	mov $outstring, %rdi
+	lea instring(%rip), %rsi
+	lea outstring(%rip), %rdi
 	rep movsl
 	
 	mov $4, %rdx
 	cld
 	movq $2, %rcx
-	mov $instring, %rsi
-	mov $outstring, %rdi
+	lea instring(%rip), %rsi
+	lea outstring(%rip), %rdi
 	rep movsq
 
 	# copy instring to outstring, counting down
 	mov $5, %rdx
 	std
 	movq $2, %rcx
-	mov $instring+16-1, %rsi
-	mov $outstring+16-1, %rdi
+	lea instring+16-1(%rip), %rsi
+	lea outstring+16-1(%rip), %rdi
 	rep movsb
 	
 	mov $6, %rdx
 	std
 	movq $2, %rcx
-	mov $instring+16-2, %rsi
-	mov $outstring+16-2, %rdi
+	lea instring+16-2(%rip), %rsi
+	lea outstring+16-2(%rip), %rdi
 	rep movsw
 	
 	mov $7, %rdx
 	std
 	movq $2, %rcx
-	mov $instring+16-4, %rsi
-	mov $outstring+16-4, %rdi
+	lea instring+16-4(%rip), %rsi
+	lea outstring+16-4(%rip), %rdi
 	rep movsl
 	
 	mov $8, %rdx
 	std
 	movq $2, %rcx
-	mov $instring+16-8, %rsi
-	mov $outstring+16-8, %rdi
+	lea instring+16-8(%rip), %rsi
+	lea outstring+16-8(%rip), %rdi
 	rep movsq
 	
 	# store 'ab' 3 times, moving forward
@@ -70,7 +70,7 @@ main:
 	cld
 	movq $0x6261, %rax
 	movq $3, %rcx
-	mov  $outstring, %rdi
+	lea  outstring(%rip), %rdi
 	rep stosw
 	
 	# store 'cd' 3 times, moving backwards
@@ -78,14 +78,14 @@ main:
 	std
 	movq $0x6463, %rax
 	movq $3, %rcx
-	mov  $outstring + 16 - 2, %rdi
+	lea  outstring + 16 - 2(%rip), %rdi
 	rep stosw
 	
 	# load 2 times, moving backwards
 	mov $11, %rdx
 	std
 	movq $2, %rcx
-	mov  $instring + 16 - 4, %rsi
+	lea  instring + 16 - 4(%rip), %rsi
 	rep lodsl
 	
 	# Find 'ab' in instring
@@ -93,7 +93,7 @@ main:
 	cld
 	movq $0x6261, %rax
 	movq $16, %rcx
-	mov  $instring, %rdi
+	lea  instring(%rip), %rdi
 	repne scasw
 
 	# Find first bytes not '01' in instring
@@ -101,31 +101,31 @@ main:
 	cld
 	movq $0x3130, %rax
 	movq $16, %rcx
-	mov  $instring, %rdi
+	lea  instring(%rip), %rdi
 	repe scasw
 
 	# Find first mismatch in instring1 and instring2
 	mov $14, %rdx
 	cld
 	movq $16, %rcx
-	mov  $instring, %rsi
-	mov  $instring2, %rdi
+	lea  instring(%rip), %rsi
+	lea  instring2(%rip), %rdi
 	repe cmpsb
 
 	# Find first match in instring1 and instring2
 	mov $15, %rdx
 	cld
 	movq $16, %rcx
-	mov  $instring, %rsi
-	mov  $instring2, %rdi
+	lea  instring(%rip), %rsi
+	lea  instring2(%rip), %rdi
 	repne cmpsb
 
 	# A zero length op to check predication
 	mov $16, %rdx
 	cld
 	movq $0, %rcx
-	mov  $instring, %rsi
-	mov  $instring2, %rdi
+	lea  instring(%rip), %rsi
+	lea  instring2(%rip), %rdi
 	repne cmpsb
 	mov $0, %rax
 	

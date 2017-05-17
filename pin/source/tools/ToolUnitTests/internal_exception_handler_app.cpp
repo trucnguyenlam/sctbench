@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -225,16 +225,17 @@ int main(int argc, char *argv[])
     if (!exceptionCaught) {Abort("Unhandled exception");}
     if (!CheckExceptionCode(exceptCode, EXCEPTION_INT_DIVIDE_BY_ZERO)) 
     {
-        Abort("Incorrect exception information");
+        Abort("Incorrect exception information (EXCEPTION_INT_DIVIDE_BY_ZERO)");
     }
 
     // Raise flt divide by zero exception in the tool
     StartFunctionTest("Raise FP divide by zero in the tool");
     exceptionCaught = ExecuteSafeFloating(RaiseFltDivideByZeroException, &exceptCode);
     if (!exceptionCaught) {Abort("Unhandled exception");}
-    if (!CheckExceptionCode(exceptCode, EXCEPTION_FLT_DIVIDE_BY_ZERO)) 
+    if (EXCEPTION_FLT_DIVIDE_BY_ZERO != exceptCode && STATUS_FLOAT_MULTIPLE_TRAPS != exceptCode) 
     {
-        Abort("Incorrect exception information");
+         CheckExceptionCode(exceptCode, EXCEPTION_FLT_DIVIDE_BY_ZERO); // For reporting only
+         Abort("Incorrect exception information (EXCEPTION_FLT_DIVIDE_BY_ZERO)");
     }
 
     ExitUnitTest();

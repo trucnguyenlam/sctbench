@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -43,7 +43,7 @@ END_LEGAL */
 
 
 #include "pin.H"
-#include "instlib.H"
+#include "control_manager.H"
 //#include <unistd.h>
 #include "portability.H"
 #include <vector>
@@ -53,7 +53,7 @@ END_LEGAL */
 #include <iomanip>
 #include <fstream>
 
-using namespace INSTLIB;
+using namespace CONTROLLER;
 
 /* ===================================================================== */
 /* Commandline Switches */
@@ -97,7 +97,7 @@ INT32 Usage()
 /* INDEX HELPERS */
 /* ===================================================================== */
 
-const UINT32 MAX_INDEX = 4096;       // enough even for the IA-64 architecture
+const UINT32 MAX_INDEX = 4096;
 const UINT32 INDEX_SPECIAL =  3000;
 const UINT32 MAX_MEM_SIZE = 520;
 
@@ -128,6 +128,8 @@ LOCALFUN  UINT32 IndexStringLength(BBL bbl, BOOL memory_acess_profile)
 
     for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
     {
+        if( !INS_IsStandardMemop(ins) ) continue;
+
         count++;
         if( memory_acess_profile )
         {
@@ -254,7 +256,7 @@ class  RTN_TABLE_ENTRY
      RTN_TABLE_ENTRY(ADDRINT address, const char *name):_address(address), _name(name) { }
 };
 
-map<int, RTN_TABLE_ENTRY *> rtn_table;
+map<UINT32, RTN_TABLE_ENTRY *> rtn_table;
 
 class BBLSTATS
 {
@@ -262,12 +264,12 @@ class BBLSTATS
     COUNTER _counter;
     const UINT16 * const _stats;
     const ADDRINT _addr;
-    const int _rtn_num;    
+    const UINT32 _rtn_num;    
     const UINT32 _size;
     const UINT32 _numins;
     
   public:
-    BBLSTATS(UINT16 * stats, ADDRINT addr, int rtn_num, UINT32 size, UINT32 numins ) :
+    BBLSTATS(UINT16 * stats, ADDRINT addr, UINT32 rtn_num, UINT32 size, UINT32 numins ) :
         _counter(0), _stats(stats), _addr(addr), _rtn_num(rtn_num), _size(size),_numins(numins)  {};
 
 };
@@ -286,15 +288,15 @@ LOCALVAR vector<const BBLSTATS*> statsList;
 LOCALVAR UINT32 enabled = 0;
 
 
-LOCALFUN VOID Handler(CONTROL_EVENT ev, VOID *, CONTEXT *, VOID *, THREADID)
+LOCALFUN VOID Handler(EVENT_TYPE ev, VOID *, CONTEXT *, VOID *, THREADID, bool bast)
 {
     switch(ev)
     {
-      case CONTROL_START:
+      case EVENT_START:
         enabled = 1;
         break;
 
-      case CONTROL_STOP:
+      case EVENT_STOP:
         enabled = 0;
         break;
 
@@ -304,7 +306,7 @@ LOCALFUN VOID Handler(CONTROL_EVENT ev, VOID *, CONTEXT *, VOID *, THREADID)
 }
 
 
-LOCALVAR CONTROL control;
+LOCALVAR CONTROL_MANAGER control;
 
 
 /* ===================================================================== */
@@ -312,22 +314,6 @@ VOID PIN_FAST_ANALYSIS_CALL docount(COUNTER * counter)
 {
     (*counter) += enabled;
 }
-
-/* ===================================================================== */
-#define FINI_BROKEN
-
-#if defined(FINI_BROKEN)
-VOID Syscall(UINT32 code)
-{
-    extern VOID Fini(int, VOID * v);
-    
-    //std::cerr << "found syscall " << hex << code << " \n" << flush;
-    if( code == 24 )
-        Fini(0,0);
-    
-}
-#endif
-
 
 /* ===================================================================== */
 
@@ -340,7 +326,7 @@ VOID Trace(TRACE trace, VOID *v)
     RTN rtn = TRACE_Rtn(trace);
     ADDRINT rtn_address;
     const char *rtn_name;
-    int rtn_num;
+    UINT32 rtn_num;
     if (!RTN_Valid(rtn))
     {
         //cerr << "Cannot find valid RTN for trace at address" << TRACE_Address(trace);
@@ -354,7 +340,7 @@ VOID Trace(TRACE trace, VOID *v)
         rtn_address = RTN_Address(rtn);
         rtn_name = RTN_Name(rtn).c_str();
     }
-    map<int, RTN_TABLE_ENTRY *>::const_iterator it = rtn_table.find(rtn_num);
+    map<UINT32, RTN_TABLE_ENTRY *>::const_iterator it = rtn_table.find(rtn_num);
     if (it == rtn_table.end()) 
     {
        char *str = new char [ strlen(rtn_name) + 1];
@@ -379,6 +365,9 @@ VOID Trace(TRACE trace, VOID *v)
 
         for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
         {
+            if ((INS_IsMemoryRead(ins) || INS_IsMemoryWrite(ins)) && !INS_IsStandardMemop(ins))
+                continue;
+
             numins += 1;
             size += INS_Size(ins);
             
@@ -394,18 +383,8 @@ VOID Trace(TRACE trace, VOID *v)
             }
             
             curr = INS_GenerateIndexString(ins,curr,1);
-#if defined(FINI_BROKEN)
-            if( INS_IsSyscall(ins) )
-            {
-                INS_InsertPredicatedCall(ins,
-                                         IPOINT_BEFORE,
-                                         AFUNPTR(Syscall),  IARG_SYSCALL_NUMBER,
-                                         IARG_END);    
-            }
-#endif
         }
 
-        
         // string terminator
         *curr++ = 0;
         
@@ -488,7 +467,7 @@ VOID Fini(int, VOID * v)
     statsList.push_back(0); // add terminator marker
 
     STATS DynamicRtn;
-    int rtn_num = 0;
+    UINT32 rtn_num = 0;
 
     for (vector<const BBLSTATS*>::iterator bi = statsList.begin(); bi != statsList.end(); bi++)
     {
@@ -608,8 +587,8 @@ int main(int argc, CHAR *argv[])
         return Usage();
     }
     
-    control.CheckKnobs(Handler, 0);
-    
+    control.RegisterHandler(Handler, 0, FALSE);
+    control.Activate();
     TRACE_AddInstrumentFunction(Trace, 0);
 
     PIN_AddFiniFunction(Fini, 0);

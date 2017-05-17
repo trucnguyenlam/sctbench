@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -80,25 +80,6 @@ VOID * Malloc_IA32( FUNCPTR_MALLOC orgFuncptr, UINT32 arg0, ADDRINT returnIp,
     return v;
 }
 
-/* ===================================================================== */
-
-VOID * Malloc_IPF( FUNCPTR_MALLOC orgFuncptr, UINT32 arg0, ADDRINT returnIp,
-                   ADDRINT g7, ADDRINT appTP )
-{
-    cout << "Malloc_IPF " << "(" << hex << (ADDRINT) orgFuncptr << ", " 
-         << hex << arg0 << ", " 
-         << hex << returnIp << ","
-         << hex << g7 << ","
-         << hex << appTP << ")"
-         << endl << flush;
-    
-#if defined (TARGET_IPF)
-    IPF_SetTP( appTP );
-#endif
-    
-    VOID * v = orgFuncptr(arg0);
-    return v;
-}
 
 /* ===================================================================== */
 /* ===================================================================== */
@@ -113,7 +94,7 @@ VOID ImageLoad(IMG img, VOID *v)
     PROTO proto_malloc = PROTO_Allocate( PIN_PARG(void *), CALLINGSTD_CDECL,
                                   "malloc", PIN_PARG(int), PIN_PARG_END() );
 
-#elif defined (TARGET_IPF) || defined (TARGET_IA32E)
+#elif defined (TARGET_IA32E)
     PROTO proto_malloc = PROTO_Allocate( PIN_PARG(void *), CALLINGSTD_DEFAULT,
                                   "malloc", PIN_PARG(int), PIN_PARG_END() );
 #endif
@@ -140,7 +121,7 @@ VOID ImageLoad(IMG img, VOID *v)
             IARG_REG_VALUE, REG_EBP,
             IARG_REG_VALUE, REG_EBX,
             IARG_END);
-#elif defined ( TARGET_IA32E )
+#else
         RTN_ReplaceSignatureProbed(
             rtn, AFUNPTR(Malloc_IA32),
             IARG_PROTOTYPE, proto_malloc,
@@ -150,16 +131,6 @@ VOID ImageLoad(IMG img, VOID *v)
             IARG_REG_VALUE, REG_RSP,
             IARG_REG_VALUE, REG_RBP,
             IARG_REG_VALUE, REG_R15,
-            IARG_END);
-#else
-        RTN_ReplaceSignatureProbed(
-            rtn, AFUNPTR(Malloc_IPF),
-            IARG_PROTOTYPE, proto_malloc,
-            IARG_ORIG_FUNCPTR,
-            IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
-            IARG_RETURN_IP,
-            IARG_REG_VALUE, REG_G07,
-            IARG_REG_VALUE, REG_TP,
             IARG_END);
 #endif
     }

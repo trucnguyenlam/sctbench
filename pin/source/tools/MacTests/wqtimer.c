@@ -3,7 +3,7 @@
 /*
  * Copyright (c) 2009 Apple Inc. All Rights Reserved. 
  *
- * This sample source is taken from the Mac OS X libdispatch tutorial,
+ * This sample source is taken from the OS X* libdispatch tutorial,
  * available at http://libdispatch.macosforge.org/trac/wiki/tutorial, 
  * and is subject to the Creative Commons (Attribution 2.5 Generic) 
  * license (http://creativecommons.org/licenses/by/2.5/) referenced therein.

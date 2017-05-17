@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -44,7 +45,11 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYM__BASIC__API.html#g16af244db33ce22b1a1ae4d435bf1bd5">LEVEL_PINCLIENT::SYM_Dynamic</a> (SYM x)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYM__BASIC__API.html#gafd1eb40ddffbff55d1fdd5ab1b5d8e0">LEVEL_PINCLIENT::SYM_IFunc</a> (SYM x)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYM__BASIC__API.html#g60d44c7c2104b7f6413334aa85fc370a">LEVEL_PINCLIENT::SYM_GeneratedByPin</a> (SYM x)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYM__BASIC__API.html#g1bc3b15e0e088980f89de34a3a3068e7">LEVEL_PINCLIENT::SYM_IFuncImplementation</a> (SYM x)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYM__BASIC__API.html#gcb6c2c75ed8c06148832315f54025177">LEVEL_PINCLIENT::SYM_IFuncResolver</a> (SYM x)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">ADDRINT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__SYM__BASIC__API.html#g00de931c3077bdbfa72bb16c49fc007d">LEVEL_PINCLIENT::SYM_Value</a> (SYM x)</td></tr>
 
@@ -62,7 +67,7 @@ Can be accessed at instrumentation time and analysis time.<br>
  APIs from this group are available in any thread, including any internal thread spawned by the tool.<p>
 Iteration idioms:<p>
 <div class="fragment"><pre class="fragment">  <span class="comment">// Forward pass over all symbols in an image</span>
-  <span class="keywordflow">for</span>( SYM sym= <a class="code" href="group__IMG__BASIC__API.html#g80dd86f9de65aa86b2db7d33aae819ff">IMG_RegsymHead</a>(img); <a class="code" href="group__SYM__BASIC__API.html#ge83aad6ccb150a96e6bde242326a8ad4">SYM_Valid</a>(sym); sym = <a class="code" href="group__SYM__BASIC__API.html#ge180d8ef29e941662eae416f92adbd72">SYM_Next</a>(sym) )
+  <span class="keywordflow">for</span>( SYM sym= <a class="code" href="group__IMG__BASIC__API.html#g348cdf7a038afa17459b49efac8ce4f1">IMG_RegsymHead</a>(img); <a class="code" href="group__SYM__BASIC__API.html#ge83aad6ccb150a96e6bde242326a8ad4">SYM_Valid</a>(sym); sym = <a class="code" href="group__SYM__BASIC__API.html#ge180d8ef29e941662eae416f92adbd72">SYM_Next</a>(sym) )
 </pre></div><p>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
  <b>O/S</b>: Linux &amp; Windows<br>
@@ -241,13 +246,13 @@ You should be careful if using this function, since some of the undecorated name
     </td>
   </tr>
 </table>
-<a class="anchor" name="gafd1eb40ddffbff55d1fdd5ab1b5d8e0"></a><!-- doxytag: member="LEVEL_PINCLIENT::SYM_IFunc" ref="gafd1eb40ddffbff55d1fdd5ab1b5d8e0" args="(SYM x)" --><p>
+<a class="anchor" name="g60d44c7c2104b7f6413334aa85fc370a"></a><!-- doxytag: member="LEVEL_PINCLIENT::SYM_GeneratedByPin" ref="g60d44c7c2104b7f6413334aa85fc370a" args="(SYM x)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">BOOL LEVEL_PINCLIENT::SYM_IFunc           </td>
+          <td class="md" nowrap valign="top">BOOL LEVEL_PINCLIENT::SYM_GeneratedByPin           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top">SYM&nbsp;</td>
           <td class="mdname1" valign="top" nowrap> <em>x</em>          </td>
@@ -266,7 +271,65 @@ You should be careful if using this function, since some of the undecorated name
     <td>
 
 <p>
-<dl compact><dt><b>Returns:</b></dt><dd>True if x is an IFUNC symbol </dd></dl>
+<dl compact><dt><b>Returns:</b></dt><dd>True if x is a symbol which did not appear in the image's original symbol table and was added by Pin (for example when resolving an ifunc). False if the symbol existed in the image's symbol table </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="g1bc3b15e0e088980f89de34a3a3068e7"></a><!-- doxytag: member="LEVEL_PINCLIENT::SYM_IFuncImplementation" ref="g1bc3b15e0e088980f89de34a3a3068e7" args="(SYM x)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">BOOL LEVEL_PINCLIENT::SYM_IFuncImplementation           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">SYM&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>x</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Returns:</b></dt><dd>True if x is an IFUNC implementation symbol </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="gcb6c2c75ed8c06148832315f54025177"></a><!-- doxytag: member="LEVEL_PINCLIENT::SYM_IFuncResolver" ref="gcb6c2c75ed8c06148832315f54025177" args="(SYM x)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">BOOL LEVEL_PINCLIENT::SYM_IFuncResolver           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">SYM&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>x</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Returns:</b></dt><dd>True if x is an IFUNC resolver symbol </dd></dl>
     </td>
   </tr>
 </table>
@@ -472,7 +535,7 @@ You should be careful if using this function, since some of the undecorated name
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

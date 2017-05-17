@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -69,10 +69,10 @@ INT32 Usage()
 PIN_LOCK lock;
 VOID DetachPinFromMTApplication(unsigned int numOfThreads)
 {
-    GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     TraceFile << "Pin tool: sending detach request" << endl;
-    ReleaseLock(&lock);
-	PIN_Detach();
+    PIN_ReleaseLock(&lock);
+    PIN_Detach();
 }
 
 int HoldAppThread()
@@ -83,24 +83,24 @@ int HoldAppThread()
 UINT32  threadCounter=0;
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     TraceFile << "Thread counter is updated to " << dec <<  (threadCounter+1) << endl;
     ++threadCounter;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 
 }
 BOOL AllThreadsNotifed(unsigned int numOfThreads)
 {
-    GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     // Check that we don't have any extra thread
     assert(threadCounter <= numOfThreads);
     if (threadCounter == numOfThreads)
     {
         TraceFile.close();
-        ReleaseLock(&lock);
+        PIN_ReleaseLock(&lock);
         return TRUE;
     }
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
     return FALSE;
 }
 
@@ -141,7 +141,7 @@ int main(int argc, CHAR *argv[])
     TraceFile << hex;
     TraceFile.setf(ios::showbase);
 
-    InitLock(&lock);
+    PIN_InitLock(&lock);
 
     IMG_AddInstrumentFunction(ImageLoad, 0);
     PIN_AddThreadStartFunction(ThreadStart, 0);

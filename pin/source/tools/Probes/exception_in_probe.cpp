@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -67,6 +67,7 @@ VOID WINAPI RtlLeaveCriticalSection_ver0(__inout WND::LPCRITICAL_SECTION lpCriti
         __except(EXCEPTION_EXECUTE_HANDLER)
         {
             printf("Exception in RtlLeaveCriticalSection replacement routine\n");
+            fflush(stdout);
         }
 
         __try
@@ -78,6 +79,7 @@ VOID WINAPI RtlLeaveCriticalSection_ver0(__inout WND::LPCRITICAL_SECTION lpCriti
             if(_resetstkoflw())
             {
                 printf("Stack-Overflow in RtlLeaveCriticalSection replacement routine\n");
+                fflush(stdout);
             }
         }
     }

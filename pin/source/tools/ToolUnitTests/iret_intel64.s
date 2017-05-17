@@ -31,6 +31,7 @@ iretq_func:
 .type iretqTest, @function
 .global iretqTest
 iretqTest:
+        push    %rbx
         # Move the stack pointer down, so that we can check that the stack pointer
         # is correctly restored by the iretq
         mov     %rsp,%rbx
@@ -42,5 +43,6 @@ iretqTest:
         mov     %cs,%rax
         push    %rax
         call    iretq_func
+        pop     %rbx
         ret
         

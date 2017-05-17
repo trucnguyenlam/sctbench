@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -25,6 +26,8 @@
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__STOPPED__THREAD__API.html#gbf775f8c2d71daf3ca7449fa7c75f779">LEVEL_PINCLIENT::PIN_StopApplicationThreads</a> (<a class="el" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__STOPPED__THREAD__API.html#g365a2410182eb8e292c19a6435f20235">LEVEL_PINCLIENT::PIN_IsThreadStoppedInDebugger</a> (<a class="el" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__STOPPED__THREAD__API.html#g2c0269160a38df5ef97930c6082ec9b2">LEVEL_PINCLIENT::PIN_ResumeApplicationThreads</a> (<a class="el" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid)</td></tr>
 
@@ -103,7 +106,7 @@ This function returns the CONTEXT (register state) of a stopped application thre
 
 <p>
 This function can be called in two scenarios. First, it may be called after stopping threads with <a class="el" href="group__STOPPED__THREAD__API.html#gbf775f8c2d71daf3ca7449fa7c75f779">PIN_StopApplicationThreads()</a>, in which case it tells the number of application threads that were stopped with that API.<p>
-Alternatively, this function may be called from a call-back that is registered via <a class="el" href="group__APPDEBUG__API.html#gea5826d7103d2f8cfd14320d388dbad9">PIN_AddDebugInterpreter()</a>. In this case, it tells the number of application threads that are stopped in the debugger.<p>
+Alternatively, this function may be called from a call-back that is registered via <a class="el" href="group__APPDEBUG__API.html#g5c3c5c6220acfad8860218b41410b07a">PIN_AddDebugInterpreter()</a>. In this case, it tells the number of application threads that are stopped in the debugger.<p>
 <dl compact><dt><b>Returns:</b></dt><dd>The number of stopped application threads. Returns zero if threads are not currently stopped.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows<br>
@@ -183,6 +186,45 @@ This function is similar to <a class="el" href="group__STOPPED__THREAD__API.html
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>The CONTEXT for thread <em>tid</em> or NULL if that thread is not stopped.</dd></dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
+ <b>O/S</b>: Linux, Windows<br>
+ <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="g365a2410182eb8e292c19a6435f20235"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_IsThreadStoppedInDebugger" ref="g365a2410182eb8e292c19a6435f20235" args="(THREADID tid)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">BOOL LEVEL_PINCLIENT::PIN_IsThreadStoppedInDebugger           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>tid</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+This function returns true if the thread with denoted by 'tid' given by its arguments was stopped in the debugger. Note: If there is no thread with ID 'tid', this function returns false.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>tid</em>&nbsp;</td><td>The Pin thread ID to check</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>TRUE if the specified thread was stopped in the debugger. FALSE indicates that the thread is either running, or doesn't exist</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows<br>
  <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
@@ -272,7 +314,7 @@ Since this function blocks until other application threads finish their current 
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

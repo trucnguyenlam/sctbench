@@ -68,7 +68,7 @@ class SharedInstAnalyzer : public Analyzer {
   class Meta {
    public:
     typedef std::set<Inst *> InstSet;
-    typedef std::tr1::unordered_map<address_t, Meta> Table;
+    typedef std::unordered_map<address_t, Meta> Table;
 
     Meta()
         : shared(false),

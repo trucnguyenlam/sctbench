@@ -1,6 +1,13 @@
+.text
+.align 4
 
-.text; .align 4; .globl SupportsTsx; 
+#ifdef TARGET_MAC
+.global _SupportsTsx
+_SupportsTsx:
+#else
+.global SupportsTsx
 SupportsTsx:
+#endif
     push %rbp
     mov  %rsp, %rbp
     .balign 1 ; .byte 0xc7
@@ -9,10 +16,10 @@ SupportsTsx:
     .balign 1 ; .byte 0x00
     .balign 1 ; .byte 0x00
     .balign 1 ; .byte 0x00
-    jmp successLabel
+    jmp *successLabel(%rip)
 abortLabel:
     mov $0, %rax
-    jmp returnLabel
+    jmp *returnLabel(%rip)
 successLabel:
     mov $1, %rax
     .balign 1 ; .byte 0x0f

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -62,10 +62,7 @@ void PrintSignalContext(int sig, const siginfo_t *info, void *vctxt)
     unsigned long rip;
     long int trapno;
 
-#if defined(TARGET_BSD)
-    rip = (unsigned long)ctxt->uc_mcontext.mc_rip;
-    trapno = (long int)ctxt->uc_mcontext.mc_trapno;
-#elif defined(TARGET_LINUX) && defined(TARGET_IA32E)
+#if defined(TARGET_LINUX) && defined(TARGET_IA32E)
     rip = (unsigned long)ctxt->uc_mcontext.gregs[REG_RIP];
     trapno = (long int)ctxt->uc_mcontext.gregs[REG_TRAPNO];
 #elif defined(TARGET_LINUX) && defined(TARGET_IA32)
@@ -103,10 +100,6 @@ static void Handle(int sig, siginfo_t *info, void *v)
         ctxt->uc_mcontext.gregs[REG_EIP];
 #elif defined(TARGET_LINUX) && defined(TARGET_IA32E)
         ctxt->uc_mcontext.gregs[REG_RIP];
-#elif defined(TARGET_BSD) && defined(TARGET_IA32)
-        ctxt->uc_mcontext.mc_eip;
-#elif defined(TARGET_BSD) && defined(TARGET_IA32E)
-        ctxt->uc_mcontext.mc_rip;
 #elif defined(TARGET_MAC) && defined(TARGET_IA32)
         ctxt->uc_mcontext->__ss.__eip;
 #elif defined(TARGET_MAC) && defined(TARGET_IA32E)
@@ -136,10 +129,6 @@ static void Handle(int sig, siginfo_t *info, void *v)
         ctxt->uc_mcontext.gregs[REG_EIP] =
 #elif defined(TARGET_LINUX) && defined(TARGET_IA32E)
         ctxt->uc_mcontext.gregs[REG_RIP] =
-#elif defined(TARGET_BSD) && defined(TARGET_IA32)
-        ctxt->uc_mcontext.mc_eip =
-#elif defined(TARGET_BSD) && defined(TARGET_IA32E)
-        ctxt->uc_mcontext.mc_rip =
 #elif defined(TARGET_MAC) && defined(TARGET_IA32)
         ctxt->uc_mcontext->__ss.__eip =
 #elif defined(TARGET_MAC) && defined(TARGET_IA32E)

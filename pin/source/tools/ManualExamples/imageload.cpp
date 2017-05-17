@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -32,10 +32,17 @@ END_LEGAL */
 // This tool prints a trace of image load and unload events
 //
 
-#include <stdio.h>
 #include "pin.H"
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
 
-FILE * trace;
+using namespace std;
+
+KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool",
+    "o", "imageload.out", "specify file name");
+
+ofstream TraceFile;
 
 // Pin calls this function every time a new img is loaded
 // It can instrument the image, but this example does not
@@ -43,21 +50,21 @@ FILE * trace;
 
 VOID ImageLoad(IMG img, VOID *v)
 {
-    fprintf(trace, "Loading %s, Image id = %d\n", IMG_Name(img).c_str(), IMG_Id(img));
+    TraceFile << "Loading " << IMG_Name(img) << ", Image id = " << IMG_Id(img) << endl;
 }
 
 // Pin calls this function every time a new img is unloaded
 // You can't instrument an image that is about to be unloaded
 VOID ImageUnload(IMG img, VOID *v)
 {
-    fprintf(trace, "Unloading %s\n", IMG_Name(img).c_str());
+    TraceFile << "Unloading " << IMG_Name(img) << endl;
 }
 
 // This function is called when the application exits
 // It closes the output file.
 VOID Fini(INT32 code, VOID *v)
 {
-    fclose(trace);
+    if (TraceFile.is_open()) { TraceFile.close(); }
 }
 
 /* ===================================================================== */
@@ -77,13 +84,13 @@ INT32 Usage()
 
 int main(int argc, char * argv[])
 {
-    trace = fopen("imageload.out", "w");
-
     // Initialize symbol processing
     PIN_InitSymbols();
     
     // Initialize pin
     if (PIN_Init(argc, argv)) return Usage();
+    
+    TraceFile.open(KnobOutputFile.Value().c_str());
     
     // Register ImageLoad to be called when an image is loaded
     IMG_AddInstrumentFunction(ImageLoad, 0);

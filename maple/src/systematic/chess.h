@@ -42,23 +42,23 @@ class ChessScheduler : public Scheduler {
   void ProgramStart();
   void ProgramExit();
   void Explore(State *init_state);
-  
+
   bool IsInvisibleOp(Operation op);
   State *getPreviousState();
-  
+
  protected:
   // define the hash value type (used for partial order reduction)
   typedef size_t hash_val_t;
 
   // define hash map for actions
-  typedef std::tr1::unordered_map<hash_val_t, Action::List> ActionHashMap;
+  typedef std::unordered_map<hash_val_t, Action::List> ActionHashMap;
 
   // define the table for past executions. this is only useful
   // when performing partial order reduction. the reason we have
   // that is because we need to know whether two states match by
   // checking with past executions. the loading of past executions
   // can be lazy (demand driven)
-  typedef std::tr1::unordered_map<int, Execution *> ExecutionTable;
+  typedef std::unordered_map<int, Execution *> ExecutionTable;
 
   // define a visited state (used for partial order reduction)
   class VisitedState {
@@ -104,7 +104,7 @@ class ChessScheduler : public Scheduler {
   void PbFini();
   void PbUpdate(Action *next_action);
   bool PbEnabled(Action *next_action);
-  
+
   int GetActionCost(Action *next_action);
   int DbGetDelayCost(Action *next_action);
 

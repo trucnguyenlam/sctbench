@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -122,7 +122,7 @@ void * replacement_RtlAllocateHeap (
     // Call the original function
     void * result;
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_STDCALL, pfnRtlAllocateHeap,
+                                 CALLINGSTD_STDCALL, pfnRtlAllocateHeap, NULL,
                                  PIN_PARG(void *), &result,
                                  PIN_PARG(WINDOWS::PVOID), HeapHandle,
                                  PIN_PARG(WINDOWS::ULONG), Flags,

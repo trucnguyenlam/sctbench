@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -26,22 +27,22 @@
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__PROCESS__API.html#ga63df44a0d4ff7dcfe501cbc436afd39">LEVEL_PINCLIENT::PIN_IsProcessExiting</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__PROCESS__API.html#g0b0c05557772a2bc5519a97697033067">LEVEL_PINCLIENT::PIN_ExitProcess</a> (INT32 exitCode)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">NORETURN VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__PROCESS__API.html#ga2093202206f08d8faa12baa4392962e">LEVEL_PINCLIENT::PIN_ExitProcess</a> (INT32 exitCode)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">INT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__PROCESS__API.html#ga49549dfe3363154368aa80038463078">LEVEL_PINCLIENT::PIN_GetPid</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__PROCESS__API.html#g56b890fdb82c94e04c81708ab9991403">LEVEL_PINCLIENT::PIN_ExitApplication</a> (INT32 status)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">NORETURN VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__PROCESS__API.html#gffd57de20b0bc20da0a0d4c6fdc261bf">LEVEL_PINCLIENT::PIN_ExitApplication</a> (INT32 status)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 These APIs provide information about the instrumented process. They are available in any thread, including any internal thread spawned by the tool. <hr><h2>Function Documentation</h2>
-<a class="anchor" name="g56b890fdb82c94e04c81708ab9991403"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_ExitApplication" ref="g56b890fdb82c94e04c81708ab9991403" args="(INT32 status)" --><p>
+<a class="anchor" name="gffd57de20b0bc20da0a0d4c6fdc261bf"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_ExitApplication" ref="gffd57de20b0bc20da0a0d4c6fdc261bf" args="(INT32 status)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_ExitApplication           </td>
+          <td class="md" nowrap valign="top">NORETURN VOID LEVEL_PINCLIENT::PIN_ExitApplication           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top">INT32&nbsp;</td>
           <td class="mdname1" valign="top" nowrap> <em>status</em>          </td>
@@ -60,7 +61,7 @@ These APIs provide information about the instrumented process. They are availabl
     <td>
 
 <p>
-Terminate the current process after calling the relevant thread and process exit callbacks. This call behaves "as if" the application process itself had executed a process termination system call. It therefore <em>does</em> perform all the finalization actions Pin normally takes on application process exit, including calling registered thread and process fini-functions, unlike <a class="el" href="group__PIN__PROCESS__API.html#g0b0c05557772a2bc5519a97697033067">PIN_ExitProcess</a>, which exits immediately.<p>
+Terminate the current process after calling the relevant thread and process exit callbacks. This call behaves "as if" the application process itself had executed a process termination system call. It therefore <em>does</em> perform all the finalization actions Pin normally takes on application process exit, including calling registered thread and process fini-functions, unlike <a class="el" href="group__PIN__PROCESS__API.html#ga2093202206f08d8faa12baa4392962e">PIN_ExitProcess</a>, which exits immediately.<p>
 This API may be called from an instrumentation callback function or an analysis routine. However, it should not be called from any <a class="el" href="group__PIN__CONTROL.html#gcc77dcacc144b3894f5f0fc13360cdec">FINI_CALLBACK</a> or <a class="el" href="group__PIN__CONTROL.html#gaf37c586368c5230ff7fba6c2bfebd01">THREAD_FINI_CALLBACK</a> routines. It may be called by an application thread or a tool internal thread (that was created via <a class="el" href="group__PIN__THREAD__API.html#g60cc19335450af20d87bac6378e9ccab">PIN_SpawnInternalThread</a>).<p>
 Be aware, that when called from an internal thread, the calling thread will not exit until after the tool's fini callback returns. Therefore, to avoid deadlock, your fini callback should not wait for that internal thread to exit.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
@@ -77,13 +78,13 @@ Be aware, that when called from an internal thread, the calling thread will not 
     </td>
   </tr>
 </table>
-<a class="anchor" name="g0b0c05557772a2bc5519a97697033067"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_ExitProcess" ref="g0b0c05557772a2bc5519a97697033067" args="(INT32 exitCode)" --><p>
+<a class="anchor" name="ga2093202206f08d8faa12baa4392962e"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_ExitProcess" ref="ga2093202206f08d8faa12baa4392962e" args="(INT32 exitCode)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_ExitProcess           </td>
+          <td class="md" nowrap valign="top">NORETURN VOID LEVEL_PINCLIENT::PIN_ExitProcess           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top">INT32&nbsp;</td>
           <td class="mdname1" valign="top" nowrap> <em>exitCode</em>          </td>
@@ -102,7 +103,7 @@ Be aware, that when called from an internal thread, the calling thread will not 
     <td>
 
 <p>
-Terminate the current process immediately, without calling any thread or process fini callbacks that may be registered. (See <a class="el" href="group__PIN__PROCESS__API.html#g56b890fdb82c94e04c81708ab9991403">PIN_ExitApplication</a>, if you want fini callbacks to be called).<p>
+Terminate the current process immediately, without calling any thread or process fini callbacks that may be registered. (See <a class="el" href="group__PIN__PROCESS__API.html#gffd57de20b0bc20da0a0d4c6fdc261bf">PIN_ExitApplication</a>, if you want fini callbacks to be called).<p>
 This function should be used only for abnormal termination of the instrumented process. Normally, the process is terminated when Pin executes a process termination system call on behalf of the application.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
@@ -183,7 +184,7 @@ This function is useful when a tool creates its own threads via the <a class="el
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

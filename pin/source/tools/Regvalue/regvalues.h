@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -31,6 +31,12 @@ END_LEGAL */
 #ifndef REGVALUES_H
 #define REGVALUES_H
 
+#ifdef TARGET_WINDOWS
+#define ASMNAME(name)
+#else
+#define ASMNAME(name) asm(name)
+#endif
+
 const unsigned MAXSIZE = 64;
 const unsigned GPRSIZEMAX = 8;
 const unsigned GPRSIZE = sizeof(void*);
@@ -56,37 +62,41 @@ const unsigned FPSAVEAREASIZE = 896;
 
 extern "C"
 {
-extern unsigned char fpSaveArea[FPSAVEAREASIZE];
+extern unsigned char fpSaveArea[FPSAVEAREASIZE] ASMNAME("fpSaveArea");
 
 // These values will be loaded to registers by the application in the ChangeRegs() function.
-extern const unsigned char gprval[GPRSIZEMAX];
-extern const unsigned char * gpr32val;
-extern const unsigned char * gpr16val;
-extern const unsigned char * gprlval;
-extern const unsigned char * gprhval;
-extern const unsigned char stval[STSIZE];
-extern const unsigned char xmmval[XMMSIZE];
-extern const unsigned char ymmval[YMMSIZE];
-extern const unsigned char zmmval[ZMMSIZE*2];
-extern const unsigned char kval[KSIZE];
+extern const unsigned char gprval[GPRSIZEMAX] ASMNAME("gprval");
+extern const unsigned char * gpr32val ASMNAME("gpr32val");
+extern const unsigned char * gpr16val ASMNAME("gpr16val");
+extern const unsigned char * gprlval ASMNAME("gprlval");
+extern const unsigned char * gprhval ASMNAME("gprhval");
+extern const unsigned char stval[STSIZE] ASMNAME("stval");
+extern const unsigned char xmmval[XMMSIZE] ASMNAME("xmmval");
+extern const unsigned char ymmval[YMMSIZE] ASMNAME("ymmval");
+extern const unsigned char zmmval[ZMMSIZE] ASMNAME("zmmval");
+extern const unsigned char kval[KSIZE] ASMNAME("kval");
 
 // These values will be loaded to registers by the tool in the ReplaceChangeRegs() function.
 // All values should be 64-bit aligned.
-extern const unsigned char tgprval[GPRSIZEMAX];
-extern const unsigned char tstval[STSIZEALLIGNED];
-extern const unsigned char txmmval[XMMSIZE];
-extern const unsigned char tymmval[YMMSIZE];
-extern const unsigned char tzmmval[ZMMSIZE*2];
-extern const unsigned char tkval[KSIZEALLIGNED];
+extern const unsigned char tgprval[GPRSIZEMAX] ASMNAME("tgprval");
+extern const unsigned char * tgpr32val ASMNAME("tgpr32val");
+extern const unsigned char * tgpr16val ASMNAME("tgpr16val");
+extern const unsigned char * tgprlval ASMNAME("tgprlval");
+extern const unsigned char * tgprhval ASMNAME("tgprhval");
+extern const unsigned char tstval[STSIZEALLIGNED] ASMNAME("tstval");
+extern const unsigned char txmmval[XMMSIZE] ASMNAME("txmmval");
+extern const unsigned char tymmval[YMMSIZE] ASMNAME("tymmval");
+extern const unsigned char tzmmval[ZMMSIZE] ASMNAME("tzmmval");
+extern const unsigned char tkval[KSIZEALLIGNED] ASMNAME("tkval");
 
 
 // These values will be assigned (stored from registers) by the application in the SaveRegsToMem() function.
-extern unsigned char agprval[GPRSIZE];
-extern unsigned char astval[STSIZE];
-extern unsigned char axmmval[XMMSIZE];
-extern unsigned char aymmval[YMMSIZE];
-extern unsigned char azmmval[ZMMSIZE*2];
-extern unsigned char akval[KSIZE];
-}
+extern unsigned char agprval[GPRSIZE] ASMNAME("agprval");
+extern unsigned char astval[STSIZE] ASMNAME("astval");
+extern unsigned char axmmval[XMMSIZE] ASMNAME("axmmval");
+extern unsigned char aymmval[YMMSIZE] ASMNAME("aymmval");
+extern unsigned char azmmval[ZMMSIZE] ASMNAME("azmmval");
+extern unsigned char akval[KSIZE] ASMNAME("akval");
+} // extern "C"
 
 #endif // REGVALUES_H

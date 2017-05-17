@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -57,7 +57,7 @@ static struct
     {"A::method2(std::string)","A::method2"},
     {"method1<A>::method1()","method1<A>::method1"},
     {"A::method3(std::string) const","A::method3"},
-    {"foo()","foo"},
+    {"Foo()","Foo"},
     {"int my_operator<int>(int const&)", "my_operator<int>"}
 };
 
@@ -69,7 +69,7 @@ VOID ImageLoad(IMG img, VOID *v)
         {
             string rtnName = RTN_Name(rtn);
             if (rtnName.find("method") != string::npos ||
-                rtnName.find("foo")    != string::npos ||
+                rtnName.find("Foo")    != string::npos ||
                 rtnName.find("my_operator") != string::npos)
             {
                 // The tested application has class "A" with interface "method"

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -176,7 +176,7 @@ typedef FPSTATE_STRUCT FPSTATE;
 
 
 
-#elif defined(TARGET_IA32E)
+#elif (defined(TARGET_IA32E) || defined(TARGET_MIC))
 typedef UINT64 ADDRINT;
 
 struct /*<POD>*/ FXSAVE_STRUCT

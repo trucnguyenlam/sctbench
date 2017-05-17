@@ -10,7 +10,7 @@ fi
 
 echo "sending signal $2 to process $1 "
 
-ps h --pid $pid
+ps $pid | grep $pid
 status=$?
 if [ $status -eq 0 ]; then
 	echo "Sending signal $signo"

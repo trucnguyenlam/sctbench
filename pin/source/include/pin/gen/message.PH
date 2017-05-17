@@ -1,4 +1,4 @@
-//Groups: @ingroup\s+(API_REF|KNOBS|IMG_BASIC_API|INS_BASIC_API|INS_INST_API|INS_BASIC_API_GEN_IA32|INS_BASIC_API_IA32|INS_MOD_API_GEN_IA32|SEC_BASIC_API|RTN_BASIC_API|REG_BASIC_API|REG_CPU_GENERIC|REG_CPU_IA32|TRACE_BASIC_API|BBL_BASIC_API|SYM_BASIC_API|MISC_PRINT|MISC_PARSE|KNOB_API|KNOB_BASIC|KNOB_PRINT|LOCK|PIN_CONTROL|TRACE_VERSION_API|BUFFER_API|PROTO_API|PIN_PROCESS_API|PIN_THREAD_API|PIN_SYSCALL_API|WINDOWS_SYSCALL_API_UNDOC|DEBUG_API|ERROR_FILE_BASIC|TYPE_BASE|INSTLIB|ALARM|CODECACHE_API|CHILD_PROCESS_API|UTILS|MISC|CONTEXT_API|PHYSICAL_CONTEXT_API|REGVAL_API|EXCEPTION_API|APPDEBUG_API|STOPPED_THREAD_API|BUFFER_API|PROTO|INST_ARGS|DEPRECATED_PIN_API|INTERNAL_EXCEPTION_PRIVATE_UNDOCUMENTED|PIN_THREAD_PRIVATE|CHILD_PROCESS_INTERNAL|BBL_BASIC|ROGUE_BASIC_API|MESSAGE_TYPE|MESSAGE_BASIC|ERRFILE|MISC_BASIC|ITC_INST_API|CONTEXT_API_UNDOC|EXCEPTION_API_UNDOC|UNDOCUMENTED_PIN_API|OPIN|TRACE_VERSIONS
+//Groups: @ingroup\s+(API_REF|KNOBS|IMG_BASIC_API|INS_BASIC_API|INS_INST_API|INS_BASIC_API_GEN_IA32|INS_BASIC_API_IA32|INS_MOD_API_GEN_IA32|SEC_BASIC_API|RTN_BASIC_API|REG_BASIC_API|REG_CPU_GENERIC|REG_CPU_IA32|TRACE_BASIC_API|BBL_BASIC_API|SYM_BASIC_API|MISC_PRINT|MISC_PARSE|KNOB_API|KNOB_BASIC|KNOB_PRINT|LOCK|PIN_CONTROL|TRACE_VERSION_API|BUFFER_API|PROTO_API|PIN_PROCESS_API|PIN_THREAD_API|PIN_SYSCALL_API|WINDOWS_SYSCALL_API_UNDOC|DEBUG_API|ERROR_FILE_BASIC|TYPE_BASE|INSTLIB|ALARM|CODECACHE_API|CHILD_PROCESS_API|UTILS|MISC|CONTEXT_API|PHYSICAL_CONTEXT_API|PIN_CALLBACKS|EXCEPTION_API|APPDEBUG_API|STOPPED_THREAD_API|BUFFER_API|PROTO|INST_ARGS|DEPRECATED_PIN_API|INTERNAL_EXCEPTION_PRIVATE_UNDOCUMENTED|PIN_THREAD_PRIVATE|CHILD_PROCESS_INTERNAL|BBL_BASIC|ROGUE_BASIC_API|MESSAGE_TYPE|MESSAGE_BASIC|ERRFILE|MISC_BASIC|ITC_INST_API|CONTEXT_API_UNDOC|EXCEPTION_API_UNDOC|UNDOCUMENTED_PIN_API|OPIN|TRACE_VERSIONS
 /* PIN API */
 
 /* THIS FILE IS AUTOMAGICALLY GENERATED - DO NOT CHANGE DIRECTLY*/
@@ -32,7 +32,7 @@ class LOGFILE
 };
 
                                                                   /* DO NOT EDIT */
-enum LOGTYPE 
+enum LOGTYPE
 {
     LOGTYPE_CONSOLE,              //!< log only to the console
     LOGTYPE_LOGFILE,              //!< log only to the log file
@@ -46,22 +46,21 @@ typedef BOOL (*MESSAGE_CALLBACK)(const string &message, PIN_ERRTYPE type,
 
                                                                   /* DO NOT EDIT */
 class MESSAGE_TYPE
-{    
+{
   private:
     STATIC VOID (*_panic_callback) ();
     STATIC VOID (*_terminate_callback) ();
-    STATIC string *_log_fname;
-    STATIC string *_image_name;
+    STATIC string _log_fname;
+    STATIC string _image_name;
     STATIC MESSAGE_TYPE *_list;
     STATIC LOGFILE   *_logstream;
     STATIC BOOL _logstreamAppend;
     STATIC MESSAGE_CALLBACK _message_callback;
-    
+
   private:
     const string _name;
     const string _prefix;
     const string _comment;
-
     BOOL _terminate;
     BOOL _trace;
     BOOL _enabled;
@@ -72,7 +71,7 @@ class MESSAGE_TYPE
 
     MESSAGE_TYPE   *_next;
 
-    
+
   public:
     STATIC VOID RegisterPanicCallBack( VOID (*cb) () );
     STATIC VOID RegisterTerminateCallBack( VOID (*cb) () );
@@ -83,31 +82,47 @@ class MESSAGE_TYPE
     STATIC BOOL Disable(const string& name);
     STATIC BOOL Enable(const string& name);
     STATIC UINT32 Number();
-    STATIC string StringLongAll(); 
+    STATIC string StringLongAll();
     STATIC BOOL IsTerminating();
-    STATIC VOID PrintMessageAndExit(const char *message, const char *message2,
+    STATIC NORETURN VOID PrintMessageAndExit(const char *message, const char *message2,
                                     PIN_ERRTYPE errType = PIN_ERR_NONE, INT32 numArgs = 0, ...);
     STATIC VOID RegisterMessageCallBack(MESSAGE_CALLBACK fun);
     STATIC VOID UnregisterMessageCallBack();
     STATIC MESSAGE_CALLBACK MessageCallBack();
     STATIC BOOL ErrorFileSpecified();
-    
+
   private:
     STATIC VOID DumpTrace();
-    
+
   public:
-    MESSAGE_TYPE( string name, string prefix, BOOL terminate, BOOL trace, BOOL enabled, BOOL resource, 
+    MESSAGE_TYPE( string name, string prefix, BOOL terminate, BOOL trace, BOOL enabled, BOOL resource,
                   LOGTYPE log, string comment);
-    
+
     VOID Message(const string& message, BOOL printPrefix = TRUE,
                  PIN_ERRTYPE errType = PIN_ERR_NONE, INT32 numArgs=0, ...);
 
-    BOOL on() const {return _enabled;}
+    VOID NORETURN MessageNoReturn(const string& message, BOOL printPrefix = TRUE,
+                 PIN_ERRTYPE errType = PIN_ERR_NONE, INT32 numArgs=0, ...);
+
+    BOOL inline on() const {return _enabled;}
     VOID disable() {_enabled=false;}
     VOID enable() {_enabled=true;}
 
     int Compare(const MESSAGE_TYPE & k2) const;
 
+  private:
+    VOID MessageInternal(const string& message, BOOL printPrefix, PIN_ERRTYPE errType, va_list va, INT32 numArgs);
+};
+
+                                                                  /* DO NOT EDIT */
+class MESSAGE_TYPE_ALWAYS_ON : public MESSAGE_TYPE
+{
+  public:
+    inline MESSAGE_TYPE_ALWAYS_ON( string name, string prefix, BOOL terminate, BOOL trace, BOOL resource,
+                  LOGTYPE log, string comment)
+      : MESSAGE_TYPE(name, prefix, terminate, trace, true, resource, log, comment)
+    {}
+    BOOL inline on() const {return true;}
 };
 
                                                                   /* DO NOT EDIT */
@@ -129,7 +144,7 @@ extern MESSAGE_TYPE MessageTypeConsole;
 extern MESSAGE_TYPE MessageTypeConsoleNoPrefix;
 
                                                                   /* DO NOT EDIT */
-extern MESSAGE_TYPE MessageTypeAssert;
+extern MESSAGE_TYPE_ALWAYS_ON MessageTypeAssert;
 
                                                                   /* DO NOT EDIT */
 extern MESSAGE_TYPE MessageTypePhase;
@@ -167,14 +182,17 @@ extern VOID BreakMe();
                                                                   /* DO NOT EDIT */
 /* DO NOT EDIT */
 
-#define QMESSAGE(t,m)             do{ if(t.on()) t.Message(m); }while(0)
-#define QMESSAGE0(t,m,p,e)        do{ if(t.on()) t.Message(m,p,e,0); }while(0)
-#define QMESSAGE1(t,m,p,e,a1)     do{ if(t.on()) t.Message(m,p,e,1,a1); }while(0)
-#define QMESSAGE2(t,m,p,e,a1,a2)  do{ if(t.on()) t.Message(m,p,e,2,a1,a2); }while(0)
-#define QMESSAGEP(t,m,p)          do{ if(t.on()) t.Message(m,p); }while(0)
-#define QMESSAGE_LIMIT(t,m,max)   do{ static int qqq = 0; if( qqq++ >= max) break; if(t.on()) t.Message(m);}while(0)
+#define QMESSAGE(t,m)                     do{ if(t.on()) t.Message(m); }while(0)
+#define QMESSAGE0(t,m,p,e)                do{ if(t.on()) t.Message(m,p,e,0); }while(0)
+#define QMESSAGE0_NORETURN(t,m,p,e)       do{ if(t.on()) t.MessageNoReturn(m,p,e,0); }while(0)
+#define QMESSAGE1(t,m,p,e,a1)             do{ if(t.on()) t.Message(m,p,e,1,a1); }while(0)
+#define QMESSAGE1_NORETURN(t,m,p,e,a1)    do{ if(t.on()) t.MessageNoReturn(m,p,e,1,a1); }while(0)
+#define QMESSAGE2(t,m,p,e,a1,a2)          do{ if(t.on()) t.Message(m,p,e,2,a1,a2); }while(0)
+#define QMESSAGE2_NORETURN(t,m,p,e,a1,a2) do{ if(t.on()) t.MessageNoReturn(m,p,e,2,a1,a2); }while(0)
+#define QMESSAGEP(t,m,p)                  do{ if(t.on()) t.Message(m,p); }while(0)
+#define QMESSAGE_LIMIT(t,m,max)           do{ static int qqq = 0; if( qqq++ >= max) break; if(t.on()) t.Message(m);}while(0)
 
-#define ASSERTQ(message) QMESSAGE0(LEVEL_BASE::MessageTypeAssert, message, TRUE, PIN_ERR_ASSERT)
+#define ASSERTQ(message) QMESSAGE0_NORETURN(LEVEL_BASE::MessageTypeAssert, message, TRUE, PIN_ERR_ASSERT)
 
 #if defined(PIN_ASSERT_NO_FILE_NAME)
 # define PIN_ASSERT_FILE ""
@@ -196,11 +214,15 @@ extern VOID BreakMe();
 
 #define NYI()  ASSERT(0, "Not Yet Implemented\n")
 
+/* 
+ for errors related to debugger integration
+ */
+#define PIN_ERROR_DEBUGGER(message)           QMESSAGE0_NORETURN(MessageTypeError, message, TRUE, PIN_ERR_DEBUGGER)
 
-#define PIN_ERROR(message)                    QMESSAGE0(MessageTypeError, message, TRUE, PIN_ERR_INTERNAL)
-#define PIN_ERROR0(message, type)             QMESSAGE0(MessageTypeError, message, TRUE, type)
-#define PIN_ERROR1(message, type, arg1)       QMESSAGE1(MessageTypeError, message, TRUE, type, arg1)
-#define PIN_ERROR2(message, type, arg1, arg2) QMESSAGE2(MessageTypeError, message, TRUE, type, arg1, arg2)
+#define PIN_ERROR(message)                    QMESSAGE0_NORETURN(MessageTypeError, message, TRUE, PIN_ERR_INTERNAL)
+#define PIN_ERROR0(message, type)             QMESSAGE0_NORETURN(MessageTypeError, message, TRUE, type)
+#define PIN_ERROR1(message, type, arg1)       QMESSAGE1_NORETURN(MessageTypeError, message, TRUE, type, arg1)
+#define PIN_ERROR2(message, type, arg1, arg2) QMESSAGE2_NORETURN(MessageTypeError, message, TRUE, type, arg1, arg2)
 
 /* 
  for calling even before the MessageType* constructors may have executed

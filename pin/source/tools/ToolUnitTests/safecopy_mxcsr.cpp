@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -48,7 +48,9 @@ namespace WINDOWS
 #include <sys/mman.h>
 #endif
 
-const int mxscrTestValue = 0x9fc0;
+// The original test value was 0x9fc0. However, due to a bug in Linux kernels after 2.6.32, the DAZ bit is not restored
+// properly when returning from the kernel after a signal handler. So the test value was changed to 0x9f80.
+const int mxscrTestValue = 0x9f80;
 extern "C" void SetMxcsr(const int *mxcsrVal);
 extern "C" void GetMxcsr(int *mxcsrVal);
 

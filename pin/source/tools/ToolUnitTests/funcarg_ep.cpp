@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -233,7 +233,7 @@ static VOID FooReplacement(CONTEXT * ctxt, AFUNPTR orgFoo1, long x1, long x2, lo
     ADDRINT res;
     
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, orgFoo1, 
+                                 CALLINGSTD_DEFAULT, orgFoo1, NULL,
                                  PIN_PARG(long), &res,
                                  PIN_PARG(int), x1, PIN_PARG(short), x2, PIN_PARG(char), x3, 
                                  PIN_PARG(int), x4, PIN_PARG(int), x5, PIN_PARG(int), x6,

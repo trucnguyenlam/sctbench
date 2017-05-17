@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -56,19 +56,6 @@ GLOBALCONST ADDRINT DEFAULT_CONTEXT_IMPL = 0;
 GLOBALCONST ADDRINT SPILL_AREA_CONTEXT_IMPL = 1;
 
 /*! @ingroup CONTEXT_API_UNDOC
- *  A structure that keeps a register value.
- */
-GLOBALTYPE struct REGVAL
-{
-/*public:*/
-    REGVAL() : _size(0), _data(0) {}
-
-/*private:*/
-    unsigned _size;
-    void* _data;
-};
-
-/*! @ingroup CONTEXT_API_UNDOC
  *  A structure that keeps architectural state of the processor.
  */
 GLOBALTYPE struct CONTEXT
@@ -109,17 +96,9 @@ GLOBALTYPE enum PROCESSOR_STATE
     PROCESSOR_STATE_ZMM     ///< are the zmm registers supported
 };
 
-/*! @ingroup REGVAL_API
- *  An opaque structure which holds the value of a register.
- *  Use @ref PIN_ReadRegvalQWord for reading the register value in 64-bit chunks.
- *  Use @ref PIN_AssignRegval for manipulating the value held by the structure.
- *  Use @ref PIN_GetRegvalSize for getting the register's size in bits.
- */
-GLOBALTYPE typedef struct REGVAL REGVAL;
-
 /*! @ingroup CONTEXT_API
  *  Architectural state of the processor.\n
- *  The tool should not read or modify data members of this structure directly, 
+ *  The tool should not read or modify data members of this structure directly,
  *  but must treat the structure as logically opaque and use the @ref CONTEXT_API
  *  functions to manage it.
  */
@@ -217,10 +196,25 @@ GLOBALTYPE typedef enum
      */
     IARG_INST_PTR, 
 
-    IARG_REG_VALUE, ///< Type: ADDRINT for integer register. Value of a register (additional register arg required) @ref REG_BASIC_API
+    /*!
+     * Type: ADDRINT for integer register. Value of a register (additional register arg required) @ref REG_BASIC_API
+     * Basically, this cannot be used to retrieve the value of registers whose size is different than ADDRINT's
+     * (i.e.: x87/XMM/YMM/ZMM registers) or registeres which are not architectural (REG_PIN_*), but there are some
+     * exceptions for this rule.
+     */
+    IARG_REG_VALUE,
 
-    IARG_REG_REFERENCE, ///< Type: "PIN_REGISTER *". Pointer to union holding register contents. Registers are updated.   Not supported in Probe mode or with the Buffering APIs.
-    IARG_REG_CONST_REFERENCE, ///< Type: "PIN_REGISTER *". Pointer to union holding register contents. Registers are not updated.  Not supported with the Buffering APIs.
+    /*!
+     * Type: "@ref PIN_REGISTER *". Pointer to union holding register contents. Registers are updated.
+     * Not supported in Probe mode or with the Buffering APIs.
+     */
+    IARG_REG_REFERENCE,
+
+    /*!
+     * Type: "@ref PIN_REGISTER *". Pointer to union holding register contents. Registers are not updated.
+     * Not supported with the Buffering APIs.
+     */
+    IARG_REG_CONST_REFERENCE,
 
     IARG_MEMORYREAD_EA, ///< Type: ADDRINT. Effective address of a memory read, only valid if INS_IsMemoryRead is true and at IPOINT_BEFORE
     IARG_MEMORYREAD2_EA, ///< Type: ADDRINT. Effective address of a 2nd memory read (e.g. 2nd operand in cmps on ia32), only valid at IPOINT_BEFORE
@@ -235,6 +229,8 @@ GLOBALTYPE typedef enum
     IARG_MEMORYOP_PTR,  ///< Same as IARG_MEMORYOP_EA, but allows registering a @ref MEMORY_ADDR_TRANS_CALLBACK 
 
     IARG_MULTI_MEMORYACCESS_EA,///< Type: PIN_MULTI_MEM_ACCESS_INFO* the addresses read by the various vgather* instructions
+
+    IARG_EXPLICIT_MEMORY_EA, ///< Type: ADDRINT. Effective address of the explicit memory operand. Useful for instrumenting LEA instructions
 
     IARG_BRANCH_TAKEN, ///< Type: BOOL. Non zero if a branch is taken
     IARG_BRANCH_TARGET_ADDR, ///< Type: ADDRINT. Target address of this branch instruction, only valid if INS_IsBranchOrCall is true
@@ -291,8 +287,7 @@ GLOBALTYPE typedef enum
      * IPOINT_AFTER or IPOINT_TAKEN_BRANCH, PC points to the next instruction.  Upon return from
      * the analysis routine, Pin ignores any changes you've made to the CONTEXT.  If you want
      * to change register values, use IARG_REG_REFERENCE, IARG_RETURN_REGS, or PIN_ExecuteAt().
-     * IARG_CONTEXT is not supported on IA-64 architectures.  See @ref PROBE_IARGS for probe mode
-     * restrictions.  Not supported with the Buffering APIs.
+     * See @ref PROBE_IARGS for probe mode restrictions.  Not supported with the Buffering APIs.
      */
     IARG_CONTEXT,
     /*!
@@ -375,7 +370,7 @@ GLOBALTYPE typedef enum
     IARG_G_ARGLAST_CALLER = IARG_G_ARG5_CALLER,
 
     IARG_MEMORYOP_EA,  ///< Type: ADDRINT. Effective address of a memory op (memory op index is next arg); only valid at IPOINT_BEFORE
-    IARG_MEMORYOP_MASKED_ON,//< Type: BOOL. TRUE if the this memory op (memory op index is next arg) is masked on; only valid at IPOINT_BEFORE
+    IARG_MEMORYOP_MASKED_ON,///< Type: BOOL. TRUE if the this memory op (memory op index is next arg) is masked on; only valid at IPOINT_BEFORE
     IARG_TSC,          ///< Type: UINT64. Time Stamp Counter value at the point of entering the analysis call.
     IARG_FILE_NAME,    ///< Reserved for internal use only.
     IARG_LINE_NO,      ///< Reserved for internal use only.
@@ -389,7 +384,11 @@ GLOBALTYPE typedef enum
 // We need to be sure about the type of __LINE__, because we're passing it
 // via varargs, and different compilers seem to treat it differently. By forcing
 // it to UINT32 (which restricts the file to a mere 4Gi lines), we can be safe.
-#define IARG_END IARG_FILE_NAME, __FILE__, IARG_LINE_NO, LEVEL_BASE::UINT32(__LINE__), IARG_LAST
+#ifdef OMIT_SOURCE_LOCATION
+#   define IARG_END IARG_LAST
+#else
+#   define IARG_END IARG_FILE_NAME, __FILE__, IARG_LINE_NO, LEVEL_BASE::UINT32(__LINE__), IARG_LAST
+#endif
 
 
 /*! @ingroup OPTIMIZATION_API
@@ -410,15 +409,22 @@ GLOBALTYPE typedef enum
     PROBE_RELOCATE                  ///< Relocate entire function (simple function only)
 } PROBE_TYPE;
 
-        
+#ifdef TARGET_MIC
+LOCALCONST UINT32 MAX_BYTES_PER_PIN_REG = 64;
+#else
 LOCALCONST UINT32 MAX_BYTES_PER_PIN_REG = 32;
+#endif
 LOCALCONST UINT32 MAX_WORDS_PER_PIN_REG = (MAX_BYTES_PER_PIN_REG/2);
 LOCALCONST UINT32 MAX_DWORDS_PER_PIN_REG = (MAX_WORDS_PER_PIN_REG/2);
 LOCALCONST UINT32 MAX_QWORDS_PER_PIN_REG = (MAX_DWORDS_PER_PIN_REG/2);
 LOCALCONST UINT32 MAX_FLOATS_PER_PIN_REG = (MAX_BYTES_PER_PIN_REG/sizeof(float));
 LOCALCONST UINT32 MAX_DOUBLES_PER_PIN_REG = (MAX_BYTES_PER_PIN_REG/sizeof(double));
 
-
+/*! @ingroup CONTEXT_API
+ *  A container large enough to hold any architectural register.
+ *  Implemented as a union to allow viewing the value as different types (signed/unsigned integer or floating point)
+ *  and allow access in blocks of various sizes.
+ */
 union PIN_REGISTER
 {
     UINT8  byte[MAX_BYTES_PER_PIN_REG];
@@ -433,7 +439,6 @@ union PIN_REGISTER
 
     FLT32  flt[MAX_FLOATS_PER_PIN_REG];
     FLT64  dbl[MAX_DOUBLES_PER_PIN_REG];
-
 };
 
 
@@ -773,6 +778,14 @@ GLOBALTYPE enum DEBUG_MODE_OPTION
 };
 GLOBALTYPE typedef UINT64 DEBUG_MODE_OPTIONS; ///< A bit-wise 'or' of DEBUG_MODE_OPTION's.
 
+/*!
+ * Information for DEBUG_CONNECTION_TYPE_TCP_SERVER.
+ */
+struct _tcpServerStruct
+{
+    int _tcpPort;   ///< TCP port that Pin listens on waiting for a debugger connection.
+};
+
 /*! @ingroup APPDEBUG_API
  * Information that an external application level debugger needs in order to connect to Pin.
  */
@@ -785,14 +798,17 @@ GLOBALTYPE struct DEBUG_CONNECTION_INFO
     //
     union
     {
-        /*!
-         * Information for DEBUG_CONNECTION_TYPE_TCP_SERVER.
-         */
-        struct
-        {
-            int _tcpPort;   ///< TCP port that Pin listens on waiting for a debugger connection.
-        } _tcpServer;
+        struct _tcpServerStruct _tcpServer;
     };
+};
+
+/*!
+ * Information for DEBUG_CONNECTION_TYPE_TCP_CLIENT.
+ */
+struct _tcpClientStruct
+{
+    const char *_ip;    ///< IP address of machine running debugger (dot decimal format).  NULL for local machine.
+    int _tcpPort;       ///< TCP port that debugger is listening on, waiting for a connection from Pin.
 };
 
 /*! @ingroup APPDEBUG_API
@@ -810,11 +826,7 @@ GLOBALTYPE struct DEBUG_MODE
         /*!
          * Information for DEBUG_CONNECTION_TYPE_TCP_CLIENT.
          */
-        struct
-        {
-            const char *_ip;    ///< IP address of machine running debugger (dot decimal format).  NULL for local machine.
-            int _tcpPort;       ///< TCP port that debugger is listening on, waiting for a connection from Pin.
-        } _tcpClient;
+        struct _tcpClientStruct _tcpClient;
     };
 };
 
@@ -849,6 +861,8 @@ struct DEBUGGER_REG_DESCRIPTION
     unsigned _toolRegId;    ///< Only used if _pinReg is REG_NONE.  Gives an ID for this emulated register.
     unsigned _widthInBits;  ///< Width (bits) of the register, as seen by the debugger.  Currently,
                             ///<  this must be a multiple of 8 bits.
+    const char* _name;      ///< The name of the register
+    int _gccId;             ///< The GCC/Dwarf equivalent register id
 };
 
 /*! @ingroup INST_ARGS
@@ -880,5 +894,13 @@ GLOBALTYPE typedef struct
     ADDRINT ip;
     PIN_MEM_TRANS_FLAGS flags;
 } PIN_MEM_TRANS_INFO;
+
+/*! @ingroup PIN_CONTROL
+* Additional parameters to define how exactly to perform @ref PIN_CallApplicationFunction ()
+*/
+GLOBALTYPE typedef struct
+{
+    UINT32 native:1;   ///< When set, PIN executes the function without instrumenting it (default: FALSE)
+} CALL_APPLICATION_FUNCTION_PARAM;
 
 #endif

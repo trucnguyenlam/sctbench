@@ -5,7 +5,7 @@
 .type GetIntegerScratches,  @function
 GetIntegerScratches:
     push %r12
-    mov  $scratchVals, %r12
+    lea scratchVals(%rip), %r12
     mov %rax, (%r12)
     mov %rcx, 0x8(%r12)
     mov %rdx, 0x10(%r12)

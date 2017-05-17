@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -160,7 +160,7 @@ int main(int argc, char * argv[])
         break;
     case TEST_LOCK_INTEGRITY:
     case TEST_LOCK_STRESS:
-        InitLock(&Lock);
+        PIN_InitLock(&Lock);
         break;
     case TEST_MUTEX_INTEGRITY:
     case TEST_MUTEX_STRESS:
@@ -398,7 +398,6 @@ static void OnExit(INT32, VOID *)
     case TEST_MUTEX_INTEGRITY:
     case TEST_MUTEX_STRESS:
     case TEST_MUTEX_TRYSTRESS:
-        PIN_MutexFini(&Mutex);
         break;
     case TEST_WRITER_INTEGRITY:
     case TEST_WRITER_STRESS:
@@ -408,16 +407,12 @@ static void OnExit(INT32, VOID *)
     case TEST_RW_INTEGRITY:
     case TEST_RW_STRESS:
     case TEST_RW_TRYSTRESS:
-        PIN_RWMutexFini(&RWMutex);
         break;
     case TEST_SEMAPHORE:
         PIN_SemaphoreFini(&Sem1);
         PIN_SemaphoreFini(&Sem2);
-        PIN_MutexFini(&Mutex);
         break;
     case TEST_TRYLOCKS:
-        PIN_MutexFini(&Mutex);
-        PIN_RWMutexFini(&RWMutex);
         PIN_SemaphoreFini(&Sem1);
         break;
     default:
@@ -459,7 +454,7 @@ static void DoTestLockIntegrity(THREADID tid, THREAD_INFO *info, UINT32 *done)
     // This test checks to see if two threads can be in the PIN_LOCK mutex
     // simultaneously.
 
-    GetLock(&Lock, tid);
+    PIN_GetLock(&Lock, tid);
     THREADID owner = HasLock;
     HasLock = tid;
 
@@ -473,11 +468,11 @@ static void DoTestLockIntegrity(THREADID tid, THREAD_INFO *info, UINT32 *done)
     ATOMIC::OPS::Delay(DELAY_COUNT);
 
     HasLock = INVALID_THREADID;
-    THREADID ret = ReleaseLock(&Lock);
+    THREADID ret = PIN_ReleaseLock(&Lock);
 
     if (ret != tid)
     {
-        std::cout << "ReleaseLock returned unexpected value " << std::dec << ret <<
+        std::cout << "PIN_ReleaseLock returned unexpected value " << std::dec << ret <<
             " (expected " << tid << ")" << std::endl;
         PIN_ExitProcess(1);
     }
@@ -490,8 +485,8 @@ static void DoTestLockStress(THREADID tid, THREAD_INFO *info, UINT32 *done)
     // This test just tries to acquire and release PIN_LOCK as fast as possible
     // to see if we can provoke a deadlock due to missing a wakeup.
 
-    GetLock(&Lock, tid);
-    ReleaseLock(&Lock);
+    PIN_GetLock(&Lock, tid);
+    PIN_ReleaseLock(&Lock);
     CheckIfDone(info, done);
 }
 

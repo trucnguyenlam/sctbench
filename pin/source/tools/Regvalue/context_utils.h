@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -31,7 +31,7 @@ END_LEGAL */
 #ifndef CONTEXT_UTILS_H
 #define CONTEXT_UTILS_H
 
-#include "regvalue_utils.h"
+#include "regvalue_test_utils.h"
 
 void StoreContext(const CONTEXT * ctxt);
 void ModifyContext(CONTEXT * ctxt);

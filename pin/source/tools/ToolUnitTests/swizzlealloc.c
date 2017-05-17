@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -45,7 +45,7 @@ int Swizzled(void *ptr)
 void MyFree(void * p)
 {
 	if (Swizzled(p)) {
-		fprintf (stderr, "Error MyFree got swizzled %x\n", p);
+		fprintf (stderr, "Error MyFree got swizzled %p\n", p);
         fflush (stderr);
 	}
 }
@@ -106,9 +106,9 @@ int main()
 
     mmemcpy(buffer2, al, n, &toout, &fromout);
     
-    fprintf(stderr, "al[0] %d buffer2[0] %d  toout - to %x fromout - from %x\n", 
+    fprintf(stderr, "al[0] %d buffer2[0] %d  toout - to %lx fromout - from %lx\n",
            ((char*)al)[0], buffer2[0], 
-           (char*)toout - (char*)buffer2, (char*)fromout- (char*)al);
+           (unsigned long)toout - (unsigned long)buffer2, (unsigned long)fromout- (unsigned long)al);
     if (!Swizzled (al)) {
         fprintf (stderr,"Error1 al not swizzled\n");
     }
@@ -125,8 +125,8 @@ int main()
         fprintf (stderr,"Error4 toout not swizzled\n");
         fflush (stderr);
     }
-    fprintf(stderr, "al[0] %d  buffer3[0] %d  toout - to %x fromout - from %x\n",((char*)al)[0], 
-            buffer3[0], (char*)toout-(char *)al, (char*)fromout - (char*)buffer3);
+    fprintf(stderr, "al[0] %d  buffer3[0] %d  toout - to %lx fromout - from %lx\n",((char*)al)[0],
+            buffer3[0], (unsigned long)toout-(unsigned long)al, (unsigned long)fromout - (unsigned long)buffer3);
     fflush (stderr);
     
     memindex(al);

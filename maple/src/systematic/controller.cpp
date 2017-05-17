@@ -71,19 +71,19 @@ void Controller::HandlePreSetup() {
   knob_->RegisterStr("program_out", "the output database for the modeled program", "program.db");
   knob_->RegisterStr("race_in", "the input race database path", "race.db");
   knob_->RegisterStr("race_out", "the output race database path", "race.db");
-  
+
   random_scheduler_ = new RandomScheduler(this);
   random_scheduler_->Register();
   chess_scheduler_ = new ChessScheduler(this);
   chess_scheduler_->Register();
   pct_scheduler_ = new PCTRandomScheduler(this);
   pct_scheduler_->Register();
-  
+
   djit_analyzer_ = new race::Djit;
   djit_analyzer_->Register();
-  
+
   desc_.SetTrackCallStack();
-  
+
 }
 
 void Controller::HandlePostSetup() {
@@ -104,7 +104,7 @@ void Controller::HandlePostSetup() {
   //if (sched_race_) {
   race_db_->Load(knob_->ValueStr("race_in"), sinfo_);
   //}
-  
+
   // add data race detector
   if (djit_analyzer_->Enabled()) {
     djit_analyzer_->Setup(CreateMutex(), race_db_, this);
@@ -129,13 +129,13 @@ void Controller::HandlePostSetup() {
   if(check_mem_) {
     desc_.SetHookBeforeMem();
   }
-  
+
   // setup instrumentation
   desc_.SetHookPthreadFunc();
   desc_.SetHookMallocFunc();
   desc_.SetHookSignal();
   desc_.SetHookSyscall();
-  
+
   std::cout << "hook signal " << desc_.HookSignal() << std::endl;
   std::cout << "hook syscall " << desc_.HookSyscall() << std::endl;
   std::cout << "hook call return " << desc_.HookCallReturn() << std::endl;
@@ -439,7 +439,7 @@ void Controller::HandleSchedulerThread() {
   // if the program is not exiting, wa are in a deadlock
   if (!program_exiting_) {
     for(auto& tid_bool : enable_table_) {
-      std::cout << "Stack for thread " << thread_table_[tid_bool.first]->uid() 
+      std::cout << "Stack for thread " << thread_table_[tid_bool.first]->uid()
           << ":" << std::endl;
       std::cout << callstack_info_->GetCallStack(tid_bool.first)->ToString();
     }
@@ -490,10 +490,10 @@ void Controller::HandleBeforeMemOp(THREADID tid, Inst *inst, address_t addr,
           std::cout << std::endl << "ERROR: mem access not in bounds"
               << std::endl;
           thread_id_t self = Self();
-          std::cout << "Stack for thread " << thread_table_[self]->uid() 
+          std::cout << "Stack for thread " << thread_table_[self]->uid()
               << ":" << std::endl;
           std::cout << callstack_info_->GetCallStack(self)->ToString();
-          
+
           std::cout << "Bounds are: " << dregion->addr << "--"
               << dregion->addr + dregion->size << std::endl;
           std::cout << "Access was at: " << addr << std::endl;
@@ -516,7 +516,7 @@ void Controller::HandleBeforeMemOp(THREADID tid, Inst *inst, address_t addr,
         ss << "Access was at: " << addr << std::endl;
         ss << "Size: " << size<< std::endl;
         ss << inst->DebugInfoStr() << std::endl;
-        ss 
+        ss
             << "Image name: " << inst->image()->name()
             << ", offset: " << inst->offset() << std::endl;
         std::cout << ss.str() << std::endl;
@@ -548,7 +548,7 @@ void Controller::HandleBeforeRaceRead(THREADID tid, Inst *inst,
   thread_id_t self = Self();
   LockKernel();
   address_t start_addr = UNIT_DOWN_ALIGN(addr, unit_size_);
-  address_t end_addr = UNIT_UP_ALIGN(addr + size, unit_size_);
+  // address_t end_addr = UNIT_UP_ALIGN(addr + size, unit_size_);
   address_t iaddr = start_addr;
 //  for (address_t iaddr = start_addr; iaddr < end_addr; iaddr += unit_size_) {
     // schedule point
@@ -580,7 +580,7 @@ void Controller::HandleBeforeRaceWrite(THREADID tid, Inst *inst,
   thread_id_t self = Self();
   LockKernel();
   address_t start_addr = UNIT_DOWN_ALIGN(addr, unit_size_);
-  address_t end_addr = UNIT_UP_ALIGN(addr + size, unit_size_);
+  // address_t end_addr = UNIT_UP_ALIGN(addr + size, unit_size_);
   address_t iaddr = start_addr;
 //  for (address_t iaddr = start_addr; iaddr < end_addr; iaddr += unit_size_) {
     // schedule point
@@ -664,10 +664,10 @@ void Controller::MutexLock(thread_id_t self,
     }
     mutex_info->ready_map[self] = false;
   }
-  
+
   // schedule point
   Schedule(self, mutex_addr, OP_MUTEX_LOCK, inst);
-  
+
   MutexInfo *mutex_info = GetMutexInfo(mutex_addr, inst);
   assert(mutex_info->holder == INVALID_THD_ID);
 
@@ -952,7 +952,7 @@ bool Controller::AllThreadsInactive() {
 }
 
 void Controller::WaitForNextState() {
-  
+
   while(!AllThreadsInactive()) {
 //    std::cout << "Waiting for threads to reach next state" << std::endl;
 //    for(const auto& tid_bool : active_table_) {
@@ -962,7 +962,7 @@ void Controller::WaitForNextState() {
 //      std::cout << callstack_info_->GetCallStack(tid_bool.first)->ToString() << std::endl;
 //    }
     UnlockKernel();
-    //for (int i = 0; i < 2; i++) 
+    //for (int i = 0; i < 2; i++)
       Yield();
       //PIN_Sleep(1000);
     LockKernel();
@@ -977,7 +977,7 @@ void Controller::WaitForNextState() {
 State *Controller::Execute(State *state, Action *action) {
 //  std::cout << "----- GO: " << action->thd()->uid() << " "
 //      << Operation_Name(action->op()) << std::endl;
-//  std::cout << "Stack for thread " << action->thd()->uid() 
+//  std::cout << "Stack for thread " << action->thd()->uid()
 //            << ":" << std::endl;
 //  std::cout
 //      << callstack_info_->GetCallStack(thread_reverse_table_[action->thd()])->ToString();
@@ -986,7 +986,7 @@ State *Controller::Execute(State *state, Action *action) {
 //    Thread* oldThread = state->Prev()->taken()->thd();
 //    Thread* nextThread = action->thd();
 //    if(oldThread != nextThread) {
-//      std::cout << "Switching threads from " << 
+//      std::cout << "Switching threads from " <<
 //          oldThread->uid() << " to " <<
 //          nextThread->uid() << std::endl;
 //      std::cout << "Next action: "
@@ -994,8 +994,8 @@ State *Controller::Execute(State *state, Action *action) {
 //          << std::endl;
 //    }
 //  }
-  
-  
+
+
   // grant permission
   thread_id_t target = thread_reverse_table_[action->thd()];
   active_table_[target] = true;
@@ -1014,7 +1014,7 @@ Action *Controller::Schedule(thread_id_t self,
 //  std::cout << "Thread " << thread_table_[self]->uid() << " reached "
 //      << Operation_Name(op) << std::endl;
 //  if(inst) {
-//    std::cout << " at: " << 
+//    std::cout << " at: " <<
 //        callstack_info_->GetCallStack(self)->ToString() << std::endl;
 //  }
   // create the action
@@ -1054,7 +1054,7 @@ void Controller::ScheduleOnExit(thread_id_t self) {
 //    if (it->second)
 //      return;
 //  }
-  
+
   // mark program as exiting if needed
   if (self == main_thd_id_)
     program_exiting_ = true;
@@ -1114,8 +1114,8 @@ void Controller::SetAffinity() {
 void Controller::SetSchedPolicy() {
   DEBUG_FMT_PRINT_SAFE("Setting os sched policy to FIFO\n");
 
-  struct sched_param param;
-  param.sched_priority = knob_->ValueInt("realtime_priority");
+  // struct sched_param param;
+  // param.sched_priority = knob_->ValueInt("realtime_priority");
 //  if (sched_setscheduler(0, SCHED_FIFO, &param)) {
 //    fprintf(stderr, "errno = %d\n", errno);
 //    Abort("SetStrictPriority failed\n");
@@ -1258,7 +1258,7 @@ Controller::Region::Map::iterator Controller::FindRegion(address_t iaddr, Inst *
   }
 
   it--;
-  
+
   // If we are past the region, we don't assume it is an oob error,
   // as this does not seem to work reliably.
   // Instead, make a new region.
@@ -1267,7 +1267,7 @@ Controller::Region::Map::iterator Controller::FindRegion(address_t iaddr, Inst *
     AllocSRegion(iaddr, 1, inst->image());
     return region_table_.find(iaddr);
   }
-  
+
   return it;
 //  Region *region = it->second;
 //  address_t region_start = region->addr;
@@ -1329,9 +1329,9 @@ bool Controller::FreeDRegion(address_t addr) {
     FreeBarrierInfo(region);
     // don't free any memory when checking for oob errors
     // or if it contains sync objects
-    if(check_mem_ 
+    if(check_mem_
         || region->mutex_info_table.size() > 0
-        || region->cond_info_table.size() > 0 
+        || region->cond_info_table.size() > 0
         || region->barrier_info_table.size() > 0) {
       return false;
     }
@@ -1463,14 +1463,14 @@ IMPLEMENT_WRAPPER_HANDLER(PthreadCreate, Controller) {
 
   // wait until the new child thread start
   thread_id_t child_thd_id = WaitForNewChild(wrapper);
-  
+
   CALL_ANALYSIS_FUNC2(PthreadFunc,
                       AfterPthreadCreate,
                       self,
                       GetThdClk(wrapper->tid()),
                       inst,
                       child_thd_id);
-  
+
   LockKernel();
   while(active_table_.at(child_thd_id) == true) {
     UnlockKernel();
@@ -1478,7 +1478,7 @@ IMPLEMENT_WRAPPER_HANDLER(PthreadCreate, Controller) {
     LockKernel();
   }
   UnlockKernel();
-  
+
 }
 
 IMPLEMENT_WRAPPER_HANDLER(PthreadJoin, Controller) {
@@ -1561,7 +1561,7 @@ IMPLEMENT_WRAPPER_HANDLER(PthreadMutexInit, Controller) {
         MutexInfo *mutex_info = GetMutexInfo(mutex_addr, inst);
         mutex_info->recursive = 0;
       }
-      
+
     }
   }
 }
@@ -1731,7 +1731,7 @@ IMPLEMENT_WRAPPER_HANDLER(Exit, Controller) {
   LockKernel();
   program_exiting_ =  true;
   UnlockKernel();
-  PIN_CallApplicationFunction(wrapper->ctxt(), wrapper->tid(), CALLINGSTD_DEFAULT, pthreadExitFunPtr_, PIN_PARG(void*), 0, PIN_PARG_END());
+  PIN_CallApplicationFunction(wrapper->ctxt(), wrapper->tid(), CALLINGSTD_DEFAULT, pthreadExitFunPtr_, NULL, PIN_PARG(void*), 0, PIN_PARG_END());
 }
 
 IMPLEMENT_WRAPPER_HANDLER(PthreadCondTimedwait, Controller) {
@@ -2031,13 +2031,13 @@ IMPLEMENT_WRAPPER_HANDLER(Free, Controller) {
 void Controller::HandleSignalReceived(THREADID tid, INT32 sig,
     const CONTEXT* ctxt_from, CONTEXT* ctxt_to) {
   std::cout << "HandleSignalReceived " << tid << " " << sig << " " << std::endl;
-  
+
   if(sig != SIGINT) {
     std::cout << "ERROR: signal " << sig << " !!!!" << std::endl;
   }
-  
+
   for(auto& tid_bool : enable_table_) {
-    std::cout << "Stack for thread " << thread_table_[tid_bool.first]->uid() 
+    std::cout << "Stack for thread " << thread_table_[tid_bool.first]->uid()
         << ":" << std::endl;
     std::cout << callstack_info_->GetCallStack(tid_bool.first)->ToString();
   }
@@ -2047,7 +2047,7 @@ void Controller::HandleSignalReceived(THREADID tid, INT32 sig,
 
 void Controller::HandleSyscallEntry(THREADID tid, CONTEXT* ctxt,
     SYSCALL_STANDARD std) {
-  int syscall_num = (int)PIN_GetSyscallNumber(ctxt, std);  
+  int syscall_num = (int)PIN_GetSyscallNumber(ctxt, std);
   switch(syscall_num) {
     case SYS_sched_get_priority_max:
     {
@@ -2086,7 +2086,7 @@ void Controller::HandleSyscallEntry(THREADID tid, CONTEXT* ctxt,
       thread_id_t self = Self();
       enable_table_[self] = false;
       Schedule(self, 0, OP_THREAD_END, 0);
-      assert(0 && "Got past EXIT"); 
+      assert(0 && "Got past EXIT");
       UnlockKernel();
       GetVmLock();
       PIN_LockClient();

@@ -44,7 +44,7 @@ class Thread {
   typedef std::vector<Thread *> Vec;
   typedef std::set<Thread *> Set;
   typedef std::map<uid_t, Thread *> UidMap;
-  typedef std::tr1::unordered_map<hash_val_t, Vec> HashMap;
+  typedef std::unordered_map<hash_val_t, Vec> HashMap;
 
   uid_t uid() const { return uid_; }
 
@@ -80,8 +80,8 @@ class Object {
   typedef uint32 idx_t;
   typedef size_t hash_val_t;
   typedef std::vector<Object *> Vec;
-  typedef std::tr1::unordered_map<uid_t, Object *> UidMap;
-  typedef std::tr1::unordered_map<hash_val_t, Vec> HashMap;
+  typedef std::unordered_map<uid_t, Object *> UidMap;
+  typedef std::unordered_map<hash_val_t, Vec> HashMap;
 
   uid_t uid() { return uid_; }
 
@@ -181,17 +181,17 @@ class Action {
  public:
   class thread_comparator {
      public:
-        bool operator()(const Thread * x,const Thread * y) { return x->uid() < y->uid(); } 
+        bool operator()(const Thread * x,const Thread * y) { return x->uid() < y->uid(); }
   };
-  
+
   typedef uint64 idx_t;
   typedef std::vector<Action *> Vec;
   typedef std::list<Action *> List;
   typedef std::set<Action *> Set;
   typedef std::map<Thread *, Action *, thread_comparator> Map;
-  
 
-  
+
+
   bool IsThreadOp();
   bool IsMutexOp();
   bool IsCondOp();

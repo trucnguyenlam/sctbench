@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -45,24 +45,24 @@ END_LEGAL */
 #define EXPORT_SYM __declspec( dllexport )
 #endif
 
-int x = 0;
 
 EXPORT_SYM
-void SetXto1()
+void SetXto1(int *x)
 {
-    x = 1;
+    *x = 1;
 }
 
 EXPORT_SYM
-void SetXto2()
+void SetXto2(int *x)
 {
-    x = 2;
+    *x = 2;
 }
 
 EXPORT_SYM
 int main()
 {
-    SetXto1();
+    int x = 0;
+    SetXto1(&x);
     printf ("x is %d\n", x);
     exit (0);
 }

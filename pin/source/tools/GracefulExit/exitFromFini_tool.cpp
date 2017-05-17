@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -122,7 +122,7 @@ static VOID ThreadFini(THREADID threadIndex, CONTEXT const * c, INT32 code, VOID
         fflush(stderr);
         PIN_ExitApplication(0);
     case 5:
-        if (threadIndex != 0) break; // in scenario 5, call PIN_ExitApplication for the main thread only.
+        if (threadIndex != 0) break; // in scenario 5, call PIN_ExitProcess for the main thread only.
     case 4:
         fprintf(stderr, "TOOL: <%d> calling PIN_ExitProcess from thread fini for thread %d\n",
                 *tidData, threadIndex);

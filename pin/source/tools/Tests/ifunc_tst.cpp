@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -29,68 +29,99 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
 #include <stdio.h>
-#include "pin.H"
 #include <iostream>
 #include <string.h>
+#include "pin.H"
 
-// This tool looks for memcpy symbol if the symbol is IFUNC it prints "Found IFUNC memcpy"
-// otherwise it prints "Found non IFUNC memcpy"
-// The tool also adds an istrumentation functions before the memcpy that 
-// prints "memcpy called" in case of non IFUNC memcpy and "ifunc memcpy called" in case of IFUNC memcpy
+using namespace std;
 
-VOID Memcpy(ADDRINT arg1, ADDRINT arg2, ADDRINT arg3)
+KNOB<BOOL> RunInProbeMode(KNOB_MODE_WRITEONCE, "pintool", "probe_mode", "0", "Run Pin in probe mode");
+
+VOID Strcmp(const char * str1, const char * str2)
 {
-    cout << "memcpy called" << endl;
-}
-VOID IfuncMemcpy()
-{
-    cout << "ifunc memcpy called" << endl;
+    cout << "strcmp called" << endl;
 }
 
-VOID Routine(RTN rtn, void * v)
+VOID IfuncStrcmp()
 {
-    RTN_Open(rtn);
-    if(strcmp(RTN_Name(rtn).c_str(),"memcpy")==0)
+    cout << "ifunc strcmp called" << endl;
+}
+
+VOID Routine(RTN rtn)
+{
+    if (!RunInProbeMode) RTN_Open(rtn);
+
+    // In some libc implementations, the bcmp and strcmp symbols have the same address.
+    // Since Pin only creates one RTN per start address, the RTN name will be eithor bcmp or strcmp.
+    bool isStrcmp = strcmp(RTN_Name(rtn).c_str(), "strcmp")==0 ;
+    bool isSbcmp = strcmp(RTN_Name(rtn).c_str(), "bcmp")==0 ;
+
+    if (isStrcmp || isSbcmp)
     {
-        if(SYM_IFunc(RTN_Sym(rtn)))
+        if(SYM_IFuncResolver(RTN_Sym(rtn)))
         {
-            cout << "Found IFUNC memcpy"<< endl;
-            RTN_InsertCall(rtn, IPOINT_BEFORE, AFUNPTR(IfuncMemcpy), IARG_END);
+            cout << "Found IFUNC strcmp"<< endl;
+            if (RunInProbeMode)
+            {
+                RTN_InsertCallProbed(rtn, IPOINT_BEFORE, AFUNPTR(IfuncStrcmp), IARG_END);
+            }
+            else
+            {
+                RTN_InsertCall(rtn, IPOINT_BEFORE, AFUNPTR(IfuncStrcmp), IARG_END);
+            }
         }
         else
         {
-            cout << "Found non IFUNC memcpy"<< endl;
-            RTN_InsertCall(rtn, IPOINT_BEFORE, AFUNPTR(Memcpy), IARG_FUNCARG_ENTRYPOINT_VALUE, 0, 
-                           IARG_FUNCARG_ENTRYPOINT_VALUE, 1, IARG_FUNCARG_ENTRYPOINT_VALUE, 2 , IARG_END);
+            cout << "Found non IFUNC strcmp"<< endl;
+            if (RunInProbeMode)
+            {
+                RTN_InsertCallProbed(rtn, IPOINT_BEFORE, AFUNPTR(Strcmp), IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
+                                     IARG_FUNCARG_ENTRYPOINT_VALUE, 1, IARG_END);
+            }
+            else
+            {
+                RTN_InsertCall(rtn, IPOINT_BEFORE, AFUNPTR(Strcmp), IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
+                               IARG_FUNCARG_ENTRYPOINT_VALUE, 1, IARG_END);
+            }
         }
     }
-    RTN_Close(rtn);
+    if (!RunInProbeMode) RTN_Close(rtn);
 }
 
 
 VOID Image(IMG img, void * v)
 {
-    cout << "IMG = " << IMG_Name(img) << endl;
     for( SEC sec=IMG_SecHead(img); SEC_Valid(sec) ; sec=SEC_Next(sec) )
     {
         if ( SEC_IsExecutable(sec) )
         {
             for( RTN rtn=SEC_RtnHead(sec); RTN_Valid(rtn) ; rtn=RTN_Next(rtn) )
-                Routine(rtn,v);
+                Routine( rtn);
         }
     }
 }
 
 
+
 int main(int argc, char * argv[])
 {
     PIN_Init(argc, argv);
+
     PIN_InitSymbolsAlt( SYMBOL_INFO_MODE(UINT32(IFUNC_SYMBOLS) |  UINT32(DEBUG_OR_EXPORT_SYMBOLS)));
 
     IMG_AddInstrumentFunction(Image,0);
     
     // Never returns
-    PIN_StartProgram();
+    if (RunInProbeMode)
+    {
+        cout << "Testing the Probe mode." << endl;
+        PIN_StartProgramProbed();
+    }
+    else
+    {
+        cout << "Testing the JIT mode." << endl;
+        PIN_StartProgram();
+    }
     
     return 0;
 }

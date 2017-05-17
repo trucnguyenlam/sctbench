@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><head><meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1">
-<title>Pin: Pin 2.12 User Guide</title>
+<title>Pin: Pin 2.14 User Guide</title>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <link href="tabs.css" rel="stylesheet" type="text/css">
 </head><body>
@@ -9,6 +9,7 @@
   <ul>
     <li id="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -21,17 +22,17 @@
       </form>
     </li>
   </ul></div>
-<h1>Pin 2.12 User Guide</h1>
+<h1>Pin 2.14 User Guide</h1>
 <p>
 ======================================================================================== <h2><a class="anchor" name="INTRO">
 Introduction</a></h2>
 ========================================================================================<p>
-Pin is a tool for the instrumentation of programs. It supports the Android*, Linux*, OSX* and Windows* operating systems and executables for the IA-32, Intel(R) 64 architectures.<p>
+Pin is a tool for the instrumentation of programs. It supports the Android*, Linux*, OS X* and Windows* operating systems and executables for the IA-32, Intel(R) 64 and Intel(R) Many Integrated Core architectures.<p>
 Pin allows a tool to insert arbitrary code (written in C or C++) in arbitrary places in the executable. The code is added dynamically while the executable is running. This also makes it possible to attach Pin to an already running process.<p>
 Pin provides a rich API that abstracts away the underlying instruction set idiosyncracies and allows context information such as register contents to be passed to the injected code as parameters. Pin automatically saves and restores the registers that are overwritten by the injected code so the application continues to work. Limited access to symbol and debug information is available as well.<p>
 Pin includes the source code for a large number of example instrumentation tools like basic block profilers, cache simulators, instruction trace generators, etc. It is easy to derive new tools using the examples as a template.<p>
 Tutorial Sections<ul>
-<li><a class="el" href="index.html#INSTRUMENTING">How to Instrument With Pin</a></li><li><a class="el" href="index.html#EXAMPLES">Examples</a></li><li><a class="el" href="index.html#CALLBACK">Callbacks</a></li><li><a class="el" href="index.html#MODIFYING">Modifying Application Instructions</a></li><li><a class="el" href="index.html#APPDEBUG">The Pin Advanced Debugging Extensions</a></li><li><a class="el" href="index.html#EX">Applying a Pintool to an Application</a></li><li><a class="el" href="index.html#DEBUGGING">Debugging Tips for Debugging a Pintool</a></li><li><a class="el" href="index.html#LOGGING">Recording Messages from a Pintool</a></li><li><a class="el" href="index.html#PERFORMANCE">Performance Considerations</a></li><li><a class="el" href="index.html#RESTRICTIONS">PinTools Information and Restrictions</a></li><li><a class="el" href="index.html#WINLIBRARIES">Libraries for Windows</a></li><li><a class="el" href="index.html#LIBRARIES">Libraries for Linux</a></li><li><a class="el" href="index.html#INSTALLATION">Installation</a></li><li><a class="el" href="index.html#BUILDINGTOOLS">Building Your Own Tool</a></li><li><a class="el" href="index.html#MAKEFILES">Pin's makefile Infrastructure</a></li><li><a class="el" href="index.html#FEEDBACK">Feedback</a></li><li><a class="el" href="index.html#LEGAL">Disclaimer and Legal Information</a></li></ul>
+<li><a class="el" href="index.html#INSTRUMENTING">How to Instrument With Pin</a></li><li><a class="el" href="index.html#EXAMPLES">Examples</a></li><li><a class="el" href="index.html#CALLBACK">Callbacks</a></li><li><a class="el" href="index.html#MODIFYING">Modifying Application Instructions</a></li><li><a class="el" href="index.html#APPDEBUG">The Pin Advanced Debugging Extensions</a></li><li><a class="el" href="index.html#EX">Applying a Pintool to an Application</a></li><li><a class="el" href="index.html#DEBUGGING">Debugging Tips for Debugging a Pintool</a></li><li><a class="el" href="index.html#LOGGING">Recording Messages from a Pintool</a></li><li><a class="el" href="index.html#PERFORMANCE">Performance Considerations</a></li><li><a class="el" href="index.html#MEMORY">Memory management</a></li><li><a class="el" href="index.html#RESTRICTIONS">PinTools Information and Restrictions</a></li><li><a class="el" href="index.html#WINDOWS_TOOLS">Building Tools on windows</a></li><li><a class="el" href="index.html#WINLIBRARIES">Libraries for Windows</a></li><li><a class="el" href="index.html#LIBRARIES">Libraries for Linux</a></li><li><a class="el" href="index.html#INSTALLATION">Installation</a></li><li><a class="el" href="index.html#XEONPHIUSAGE">Usage Instructions for Intel(R) Xeon Phi(TM)</a></li><li><a class="el" href="index.html#BUILDINGTOOLS">Building Your Own Tool</a></li><li><a class="el" href="index.html#MAKEFILES">Pin's makefile Infrastructure</a></li><li><a class="el" href="index.html#FEEDBACK">Feedback</a></li><li><a class="el" href="index.html#LEGAL">Disclaimer and Legal Information</a></li></ul>
 <p>
 Reference Sections<ul>
 <li><a class="el" href="group__API__REF.html">Pin API reference</a></li><li><a class="el" href="group__KNOBS.html">Pin Command Line Switches</a></li><li><a class="el" href="group__INSTLIB.html">Instrumentation Library</a></li></ul>
@@ -40,7 +41,7 @@ Reference Sections<ul>
 How to Instrument with Pin</a></h2>
 ========================================================================================<p>
 Table of Contents<ul>
-<li><a class="el" href="index.html#Pin">Pin</a></li><li><a class="el" href="index.html#Pintools">Pintools</a></li><li><a class="el" href="index.html#Observations">Observations</a></li><li><a class="el" href="index.html#GRAN">Instrumentation Granularity</a></li><li><a class="el" href="index.html#SYMBOLS">Symbols</a></li><li><a class="el" href="index.html#FP">Floating Point Support in Analysis Routines</a></li><li><a class="el" href="index.html#MT">Instrumenting Multi-threaded Applications</a></li><li><a class="el" href="index.html#Deadlock">Avoiding Deadlocks in Multi-threaded Applications</a></li></ul>
+<li><a class="el" href="index.html#Pin">Pin</a></li><li><a class="el" href="index.html#Pintools">Pintools</a></li><li><a class="el" href="index.html#Observations">Observations</a></li><li><a class="el" href="index.html#GRAN">Instrumentation Granularity</a></li><li><a class="el" href="index.html#JIT_API">Managed platforms support</a></li><li><a class="el" href="index.html#SYMBOLS">Symbols</a></li><li><a class="el" href="index.html#FP">Floating Point Support in Analysis Routines</a></li><li><a class="el" href="index.html#MT">Instrumenting Multi-threaded Applications</a></li><li><a class="el" href="index.html#Deadlock">Avoiding Deadlocks in Multi-threaded Applications</a></li></ul>
 <h3><a class="anchor" name="Pin">
 Pin</a></h3>
 The best way to think about Pin is as a "just in time" (JIT) compiler. The input to this compiler is not bytecode, however, but a regular executable. Pin intercepts the execution of the first instruction of the executable and generates ("compiles") new code for the straight line code sequence starting at this instruction. It then transfers control to the generated sequence. The generated code sequence is almost identical to the original one, but Pin ensures that it regains control when a branch exits the sequence. After regaining control, Pin generates more code for the branch target and continues execution. Pin makes this efficient by keeping all of the generated code in memory so it can be reused and directly branching from one sequence to another.<p>
@@ -64,7 +65,7 @@ Pin and the Pintool control a program starting with the very first instruction. 
 When writing tools, it is more important to tune the analysis code than the instrumentation code. This is because the instrumentation is executed once, but analysis code is called many times.<h3><a class="anchor" name="GRAN">
 Instrumentation Granularity</a></h3>
 As described above, Pin's instrumentation is "just in time" (JIT). Instrumentation occurs immediately before a code sequence is executed for the first time. We call this mode of operation <em> trace instrumentation </em>.<p>
-Trace instrumentation lets the Pintool inspect and instrument an executable one trace at a time. Traces usually begin at the target of a taken branch and end with an unconditional branch, including calls and returns. Pin guarantees that a trace is only entered at the top, but it may contain multiple exits. If a branch joins the middle of a trace, Pin constructs a new trace that begins with the branch target. Pin breaks the trace into basic blocks, <em>BBLs</em>. A BBL is a single entrance, single exit sequence of instructions. Branches to the middle of a bbl begin a new trace and hence a new BBL. It is often possible to insert a single analysis call for a BBL, instead of one analysis call for every instruction. Reducing the number of analysis calls makes instrumentation more efficient. Trace instrumentation utilizes the <a class="el" href="group__TRACE__BASIC__API.html#gb3762f773502ad865216ef941c38799e">TRACE_AddInstrumentFunction</a> API call.<p>
+Trace instrumentation lets the Pintool inspect and instrument an executable one trace at a time. Traces usually begin at the target of a taken branch and end with an unconditional branch, including calls and returns. Pin guarantees that a trace is only entered at the top, but it may contain multiple exits. If a branch joins the middle of a trace, Pin constructs a new trace that begins with the branch target. Pin breaks the trace into basic blocks, <em>BBLs</em>. A BBL is a single entrance, single exit sequence of instructions. Branches to the middle of a bbl begin a new trace and hence a new BBL. It is often possible to insert a single analysis call for a BBL, instead of one analysis call for every instruction. Reducing the number of analysis calls makes instrumentation more efficient. Trace instrumentation utilizes the <a class="el" href="group__TRACE__BASIC__API.html#g0261da0abe384db4e2f97cd31cf986f7">TRACE_AddInstrumentFunction</a> API call.<p>
 Note, though, that since Pin is discovering the control flow of the program dynamically as it executes, Pin's BBL can be different from the classical definition of a BBL which you will find in a compiler textbook. For instance, consider the code generated for the body of a switch statement like this <div class="fragment"><pre class="fragment">    <span class="keywordflow">switch</span>(i)
     {
         <span class="keywordflow">case</span> 4: total++;
@@ -85,13 +86,43 @@ It will generate instructions something like this (for the IA-32 architecture) <
         addl    $1, -4(%ebp)
 </pre></div><p>
 In terms of classical basic blocks, each addl instruction is in a single instruction basic block. However as the different switch cases are executed, Pin will generate BBLs which contain all four instructions (when the .L7 case is entered), three instructions (when the .L6 case is entered), and so on. This means that counting Pin BBLs is unlikely to give the count you would expect if you thought that Pin BBLs were the same as the basic blocks in the text book. Here, for instance, if the code branches to .L7 you will count one Pin BBL, but there are four classical basic blocks executed.<p>
-Pin also breaks BBLs on some other instructions which may be unexpected, for instance (on IA-32 and Intel 64 architectures) cpuid, popf and REP prefixed instructions all end traces and therefore BBLs. Since REP prefixed instructions are treated as implicit loops, if a REP prefixed instruction iterates more than once, iterations after the first will cause a single instruction BBL to be generated, so in this case you would see more basic blocks executed than you might expect.<p>
-As a convenience for Pintool writers, Pin also offers an <em> instruction instrumentation </em> mode which lets the tool inspect and instrument an executable a single instruction at a time. This is essentially identical to trace instrumentation where the Pintool writer has been freed from the responsibilty of iterating over the instructions inside a trace. As decribed under trace instrumentation, certain BBLs and the instructions inside of them may be generated (and hence instrumented) multiple times. Instruction instrumentation utilizes the <a class="el" href="group__INS__INST__API.html#ga80cd9a7905b82a86b9e31d9bf589dbe">INS_AddInstrumentFunction</a> API call.<p>
+Pin also breaks BBLs on some other instructions which may be unexpected, for instance cpuid, popf and REP prefixed instructions all end traces and therefore BBLs. Since REP prefixed instructions are treated as implicit loops, if a REP prefixed instruction iterates more than once, iterations after the first will cause a single instruction BBL to be generated, so in this case you would see more basic blocks executed than you might expect.<p>
+As a convenience for Pintool writers, Pin also offers an <em> instruction instrumentation </em> mode which lets the tool inspect and instrument an executable a single instruction at a time. This is essentially identical to trace instrumentation where the Pintool writer has been freed from the responsibilty of iterating over the instructions inside a trace. As decribed under trace instrumentation, certain BBLs and the instructions inside of them may be generated (and hence instrumented) multiple times. Instruction instrumentation utilizes the <a class="el" href="group__INS__INST__API.html#gad5fd5cdd6c1cd37e57a1264e93b0435">INS_AddInstrumentFunction</a> API call.<p>
 Sometimes, however, it can be useful to look at different granularity than a trace. For this purpose Pin offers two additional modes: image and routine instrumentation. These modes are implemented by "caching" instrumentation requests and hence incur a space overhead, these modes are aslo referred to as ahead-of-time instrumentation.<p>
-Image instrumentation lets the Pintool inspect and instrument an entire image, IMG, when it is first loaded. A Pintool can walk the sections, SEC, of the image, the routines, RTN, of a section, and the instructions, INS of a routine. Instrumentation can be inserted so that it is executed before or after a routine is executed, or before or after an instruction is executed. Image instrumentation utilizes the <a class="el" href="group__IMG__BASIC__API.html#gb0ad0d50126fd5ddcfee28005c681049">IMG_AddInstrumentFunction</a> API call. Image instrumentation depends on symbol information to determine routine boundaries hence <a class="el" href="group__PIN__CONTROL.html#ga6749650a8dce7151075fcc9345f7bd9">PIN_InitSymbols</a> must be called before <a class="el" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init</a>.<p>
+Image instrumentation lets the Pintool inspect and instrument an entire image, IMG, when it is first loaded. A Pintool can walk the sections, SEC, of the image, the routines, RTN, of a section, and the instructions, INS of a routine. Instrumentation can be inserted so that it is executed before or after a routine is executed, or before or after an instruction is executed. Image instrumentation utilizes the <a class="el" href="group__IMG__BASIC__API.html#g4867c865fcf260951b7d750aaaaa0007">IMG_AddInstrumentFunction</a> API call. Image instrumentation depends on symbol information to determine routine boundaries hence <a class="el" href="group__PIN__CONTROL.html#ga6749650a8dce7151075fcc9345f7bd9">PIN_InitSymbols</a> must be called before <a class="el" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init</a>.<p>
 Routine instrumentation lets the Pintool inspect and instrument an entire routine when the image it is contained in is first loaded. A Pintool can walk the instructions of a routine. There is not enough information available to break the instructions into BBLs. Instrumentation can be inserted so that it is executed before or after a routine is executed, or before or after an instruction is executed. Routine instrumentation is provided as a convenience for Pintool writers, as an alternative to walking the sections and routines of the image during the Image instrumentation, as described in the previous paragraph.<p>
-Routine instrumentation utilizes the <a class="el" href="group__RTN__BASIC__API.html#g8622a6ba858eb8d55df4e006eb165e57">RTN_AddInstrumentFunction</a> API call. Instrumentation of routine exits does not work reliably in the presence of tail calls or when return instructions cannot reliably be detected.<p>
-Note that in both Image and Routine instrumentation, it is not possible to know whether or not a routine will actually be executed (since these instrumentations are done at image load time). It is possible to walk the instructions only of routines that are executed, in the Trace or Instruction instrumentation routines, by identifying instructions that are the start of routines. See the tool Tests/parse_executed_rtns.cpp.<h3><a class="anchor" name="SYMBOLS">
+Routine instrumentation utilizes the <a class="el" href="group__RTN__BASIC__API.html#g50b3794c06a99774ed62abec8ad3b173">RTN_AddInstrumentFunction</a> API call. Instrumentation of routine exits does not work reliably in the presence of tail calls or when return instructions cannot reliably be detected.<p>
+Note that in both Image and Routine instrumentation, it is not possible to know whether or not a routine will actually be executed (since these instrumentations are done at image load time). It is possible to walk the instructions only of routines that are executed, in the Trace or Instruction instrumentation routines, by identifying instructions that are the start of routines. See the tool Tests/parse_executed_rtns.cpp.<h3><a class="anchor" name="JIT_API">
+Managed platforms support</a></h3>
+Pin supports all executables including the managed binaries. From Pin point of view managed binary is one more kind of a self-modifying program. There is a way to cause Pin to differentiate the just-in-time compiled code (Jitted code) from all other dynamically generated code and associate Jitted code with appropriate managed functions. To get this functionality, the just-in-time compiler (Jitter) of the running managed platform should support <a href="http://software.intel.com/sites/products/documentation/doclib/iss/2013/amplifier/lin/ug_docs/GUID-17D7238B-DD19-45DB-B5E0-D9B344D1BE96.htm">Jit Profiling API</a><p>
+The following capabilities are supported:<ul>
+<li><a class="el" href="group__RTN__BASIC__API.html#gb36b828dc06d754e79780245d938dc7b">RTN_IsDynamic()</a> API is used to indentify dynamically created code. A routine can be marked as dynamically created using Jit Profiling API only.</li><li>A Pin tool can instrument Jitted routines using <a class="el" href="group__RTN__BASIC__API.html#g50b3794c06a99774ed62abec8ad3b173">RTN_AddInstrumentFunction</a> API See the examples <a class="el" href="index.html#JitApiTools">Managed platforms support</a> for more information.</li></ul>
+<p>
+Following conditions must be satisfied to get the managed platforms support: <ul>
+<li>
+Set INTEL_JIT_PROFILER32 and INTEL_JIT_PROFILER64 environment variables to appropriate pinjitprofiling dynamic library <ol>
+<li>
+For Windows:<p>
+<div class="fragment"><pre class="fragment">            set INTEL_JIT_PROFILER32=&lt;The Pin kit full path&gt;\ia32\bin\pinjitprofiling.dll
+            set INTEL_JIT_PROFILER64=&lt;The Pin kit full path&gt;\intel64\bin\pinjitprofiling.dll
+</pre></div><p>
+</li>
+<li>
+For Linux:<p>
+<div class="fragment"><pre class="fragment">            setenv INTEL_JIT_PROFILER32 &lt;The Pin kit full path&gt;/ia32/bin/libpinjitprofiling.so
+            setenv INTEL_JIT_PROFILER64 &lt;The Pin kit full path&gt;/intel64/bin/libpinjitprofiling.so
+</pre></div><p>
+</li>
+</ol>
+<p>
+</li>
+<li>
+Add the knob support_jit_api to the Pin command line as Pin tool option:<p>
+<div class="fragment"><pre class="fragment">    &lt;Pin executable&gt; &lt;pin options&gt; -t &lt;Pin tool&gt; -support_jit_api &lt;Other Pin tool options&gt; -- &lt;Test application&gt; &lt;Test application options&gt;
+</pre></div><p>
+</li>
+</ul>
+<h3><a class="anchor" name="SYMBOLS">
 Symbols</a></h3>
 Pin provides access to function names using the symbol object (SYM). Symbol objects only provide information about the function symbols in the application. Information about other types of symbols (e.g. data symbols), must be obtained independently by the tool.<p>
 On Windows, you can use dbghelp.dll for this. Note that using dbghelp.dll in an instrumented process is not safe and can cause dead-locks in some cases. A possible solution is to find symbols using a different non-instrumented process.<p>
@@ -109,37 +140,40 @@ Pin also provides an analysis routine argument (IARG_THREAD_ID), which passes a 
 In addition to the Pin thread ID, the Pin API provides an efficient thread local storage (TLS), with the option to allocate a new TLS key and associate it with a given data destruction function. Any thread of the process can store and retrieve values in its own slot, referenced by the allocated key. The initial value associated with the key in all threads is NULL. See the example <a class="el" href="index.html#InscountTLS">Using TLS</a> for more information.<p>
 False sharing occurs when multiple threads access different parts of the same cache line and at least one of them is a write. To maintain memory coherency, the computer must copy the memory from one CPU's cache to another, even though data is not truly shared. False sharing can usually be avoided by padding critical data structures to the size of a cache line, or by rearranging the data layout of structures. See the example <a class="el" href="index.html#InscountTLS">Using TLS</a> for more information.<h3><a class="anchor" name="Deadlock">
 Avoiding Deadlocks in Multi-threaded Applications</a></h3>
-Since Pin, the tool, and the application may each acquire and release locks, Pin tool developers must take care to avoid deadlocks with either the application or Pin. Deadlocks generally occur when two threads acquire the same locks in a different order. For example, thread A acquires lock L1 and then acquires lock L2, while thread B acquires lock L2 and then acquires lock L1. This will lead to a deadlock if thread A holds lock L1 and waits for L2 while thread B holds lock L2 and waits for L1. To avoid such deadlocks, Pin imposes a hierarchy on the order in which locks must be acquired. Pin generally acquires its own internal locks before the tool acquires any lock (e.g. via <a class="el" href="group__LOCK.html#g36070bd375e4defc52ecfc38f9c46732">GetLock()</a>). Additionally, we assume that the application may acquire locks at the top of this hierarchy (i.e. before Pin acquires its internal locks). The following diagram illustrates the hierarchy: <div class="fragment"><pre class="fragment">Application locks -&gt; Pin internal locks -&gt; Tool locks
+Since Pin, the tool, and the application may each acquire and release locks, Pin tool developers must take care to avoid deadlocks with either the application or Pin. Deadlocks generally occur when two threads acquire the same locks in a different order. For example, thread A acquires lock L1 and then acquires lock L2, while thread B acquires lock L2 and then acquires lock L1. This will lead to a deadlock if thread A holds lock L1 and waits for L2 while thread B holds lock L2 and waits for L1. To avoid such deadlocks, Pin imposes a hierarchy on the order in which locks must be acquired. Pin generally acquires its own internal locks before the tool acquires any lock (e.g. via <a class="el" href="group__LOCK.html#gc7b6e6ed4fb7e14452b85b96d5c42c10">PIN_GetLock()</a>). Additionally, we assume that the application may acquire locks at the top of this hierarchy (i.e. before Pin acquires its internal locks). The following diagram illustrates the hierarchy: <div class="fragment"><pre class="fragment">Application locks -&gt; Pin internal locks -&gt; Tool locks
 </pre></div> Pin tool developers should design their Pin tools such that they never break this lock hierarchy, and they can do so by following these basic guidelines:<ul>
 <li>If the tool acquires any locks from within a Pin call-back, it must release those locks before returning from that call-back. Holding a lock across Pin call-backs violates the hierarchy with respect to the Pin internal locks.</li><li>If the tool acquires any locks from within an analysis routine, it must release those locks before returning from the analysis routine. Holding a lock across Pin analysis routines violates the hierarchy with respect to Pin internal locks and other locks used by the instrumented application itself.</li><li>If the tool calls a Pin API from within a Pin call-back or analysis routine, it should not hold any tool locks when calling the API. Some of the Pin APIs use the internal Pin locks so holding a tool lock before invoking these APIs violates the hierarchy with respect to the Pin internal locks.</li><li>If the tool calls a Pin API from within an analysis routine, it may need to acquire the Pin client lock first by calling <a class="el" href="group__PIN__CONTROL.html#gc5d4cd777e5c34bb760ea6768e054f20">PIN_LockClient()</a>. This depends on the API, so check the documentation for the specific API for more information. Note that the tool should not hold any other locks when calling <a class="el" href="group__PIN__CONTROL.html#gc5d4cd777e5c34bb760ea6768e054f20">PIN_LockClient()</a>, as described in the previous item.</li></ul>
 <p>
 While these guidelines are sufficient in most cases, they may turn out to be too restrictive for certain use-cases. The next set of guidelines explains the conditions in which it is safe to relax the basic guidelines above:<ul>
 <li>In JIT mode, the tool may acquire locks from within an analysis routine and not release them, providing it releases these locks before leaving the trace that contains the analysis routine. The tool must expect that the trace may exit "early" if an application instruction raises an exception. Any lock <code>L</code>, which the tool might hold when the application raises an exception, must obey the following sub-rules:<ul>
-<li>The tool must establish a call-back that executes when the application raises an exception and this call-back must release lock <code>L</code> if it was acquired at the time the exception occurred. Tools can use <a class="el" href="group__PIN__CONTROL.html#gdb70938ef31309447fe65a653667334a">PIN_AddContextChangeFunction()</a> to establish this call-back.</li><li>The tool must not acquire lock <code>L</code> from within any Pin call-back, to avoid violating the hierarchy with respect to the Pin internal locks.</li></ul>
+<li>The tool must establish a call-back that executes when the application raises an exception and this call-back must release lock <code>L</code> if it was acquired at the time the exception occurred. Tools can use <a class="el" href="group__PIN__CONTROL.html#gfe475fc12b9060e8e45cbfccd7d592c8">PIN_AddContextChangeFunction()</a> to establish this call-back.</li><li>The tool must not acquire lock <code>L</code> from within any Pin call-back, to avoid violating the hierarchy with respect to the Pin internal locks.</li></ul>
 </li><li>If the tool calls a Pin API from an analysis routine, it may acquire and hold a lock <code>L</code> while calling the API providing that:<ul>
-<li>Lock <code>L</code> is not being acquired from any Pin call-back. This avoids the hierarchy violation with respect to the Pin internal locks.</li><li>The Pin API being invoked does not cause application code to execute (e.g., <a class="el" href="group__PIN__CONTROL.html#g3d341cb1f0ce6c150d0b3047e6a7930e">PIN_CallApplicationFunction()</a>). This avoids the hierarchy violation with respect to the locks used by the application itself.</li></ul>
+<li>Lock <code>L</code> is not being acquired from any Pin call-back. This avoids the hierarchy violation with respect to the Pin internal locks.</li><li>The Pin API being invoked does not cause application code to execute (e.g., <a class="el" href="group__PIN__CONTROL.html#g5280354edd95efc19a837617ff63ba51">PIN_CallApplicationFunction()</a>). This avoids the hierarchy violation with respect to the locks used by the application itself.</li></ul>
 </li></ul>
 <p>
 ======================================================================================== <h2><a class="anchor" name="EXAMPLES">
 Examples</a></h2>
 ========================================================================================<p>
 Table of Contents<ul>
-<li><a class="el" href="index.html#BuildingExamples">Building the Example Tools</a></li><li><a class="el" href="index.html#WindowsNotes">Notes for Building Tools for Windows</a></li><li><a class="el" href="index.html#SimpleCount">Simple Instruction Count (Instruction Instrumentation)</a></li><li><a class="el" href="index.html#IAddressTrace">Instruction Address Trace (Instruction Instrumentation)</a></li><li><a class="el" href="index.html#MAddressTrace">Memory Reference Trace (Instruction Instrumentation)</a></li><li><a class="el" href="index.html#ImageLoad">Detecting the Loading and Unloading of Images (Image Instrumentation)</a></li><li><a class="el" href="index.html#inscount1">More Efficient Instruction Counting (Trace Instrumentation)</a></li><li><a class="el" href="index.html#ProcInstrCount">Procedure Instruction Count (Routine Instrumentation)</a></li><li><a class="el" href="index.html#SafeCopy">Using PIN_SafeCopy()</a></li><li><a class="el" href="index.html#Invocation">Order of Instrumentation</a></li><li><a class="el" href="index.html#FunctionArguments">Finding the Value of Function Arguments</a></li><li><a class="el" href="index.html#FindSymbol">Finding Functions By Name on Windows</a></li><li><a class="el" href="index.html#MallocMT">Instrumenting Threaded Applications</a></li><li><a class="el" href="index.html#InscountTLS">Using TLS</a></li><li><a class="el" href="index.html#Buffering">Using the Fast Buffering APIs</a></li><li><a class="el" href="index.html#StaticInstructionCounts">Finding the Static Properties of an Image</a></li><li><a class="el" href="index.html#DetachPin">Detaching Pin from the Application</a></li><li><a class="el" href="index.html#ReplaceSigProbed">Replacing a Routine in Probe Mode</a></li><li><a class="el" href="index.html#FollowChild">Instrumenting Child Processes</a></li><li><a class="el" href="index.html#ForkOnLinux">Instrumenting Before and After Forks</a></li></ul>
+<li><a class="el" href="index.html#BuildingExamples">Building the Example Tools</a></li><li><a class="el" href="index.html#WindowsNotes">Notes for Building Tools for Windows</a></li><li><a class="el" href="index.html#SimpleCount">Simple Instruction Count (Instruction Instrumentation)</a></li><li><a class="el" href="index.html#IAddressTrace">Instruction Address Trace (Instruction Instrumentation)</a></li><li><a class="el" href="index.html#MAddressTrace">Memory Reference Trace (Instruction Instrumentation)</a></li><li><a class="el" href="index.html#ImageLoad">Detecting the Loading and Unloading of Images (Image Instrumentation)</a></li><li><a class="el" href="index.html#inscount1">More Efficient Instruction Counting (Trace Instrumentation)</a></li><li><a class="el" href="index.html#ProcInstrCount">Procedure Instruction Count (Routine Instrumentation)</a></li><li><a class="el" href="index.html#SafeCopy">Using PIN_SafeCopy()</a></li><li><a class="el" href="index.html#Invocation">Order of Instrumentation</a></li><li><a class="el" href="index.html#FunctionArguments">Finding the Value of Function Arguments</a></li><li><a class="el" href="index.html#FindSymbol">Finding Functions By Name on Windows</a></li><li><a class="el" href="index.html#MallocMT">Instrumenting Threaded Applications</a></li><li><a class="el" href="index.html#InscountTLS">Using TLS</a></li><li><a class="el" href="index.html#Buffering">Using the Fast Buffering APIs</a></li><li><a class="el" href="index.html#StaticInstructionCounts">Finding the Static Properties of an Image</a></li><li><a class="el" href="index.html#DetachPin">Detaching Pin from the Application</a></li><li><a class="el" href="index.html#ReplaceSigProbed">Replacing a Routine in Probe Mode</a></li><li><a class="el" href="index.html#FollowChild">Instrumenting Child Processes</a></li><li><a class="el" href="index.html#ForkOnLinux">Instrumenting Before and After Forks</a></li><li><a class="el" href="index.html#JitApiTools">Managed platforms support</a></li></ul>
 <p>
 To illustrate how to write Pintools, we present some simple examples. In the web based version of the manual, you can click on a function in the Pin API to see its documentation.<p>
 All the examples presented in the manual can be found in the source/tools/ManualExamples directory.<h3><a class="anchor" name="BuildingExamples">
 Building the Example Tools</a></h3>
-To build all examples in a directory: <div class="fragment"><pre class="fragment">$ cd source/tools/ManualExamples
-$ make all
+To build all examples in a directory for ia32 architecture: <div class="fragment"><pre class="fragment">$ cd source/tools/ManualExamples
+$ make all TARGET=ia32
+</pre></div><p>
+To build all examples in a directory for intel64 architecture: <div class="fragment"><pre class="fragment">$ cd source/tools/ManualExamples
+$ make all TARGET=intel64
 </pre></div><p>
 To build and run a specific example (e.g., inscount0): <div class="fragment"><pre class="fragment">$ cd source/tools/ManualExamples
-$ make inscount0.test
+$ make inscount0.test TARGET=intel64
 </pre></div><p>
 To build a specific example without running it (e.g., inscount0): <div class="fragment"><pre class="fragment">$ cd source/tools/ManualExamples
-$ make obj-intel64/inscount0.so
+$ make obj-intel64/inscount0.so TARGET=intel64
 </pre></div><p>
-The above applies to the Intel(R) 64 architecture. For the IA-32 architecture, use "obj-ia32" instead of "obj-intel64": <div class="fragment"><pre class="fragment">$ cd source/tools/ManualExamples
-$ make obj-ia32/inscount0.so
+The above applies to the Intel(R) 64 architecture. For the IA-32 architecture, use TARGET=ia32 instead. <div class="fragment"><pre class="fragment">$ cd source/tools/ManualExamples
+$ make obj-ia32/inscount0.so TARGET=ia32
 </pre></div><h3><a class="anchor" name="WindowsNotes">
 Notes for Building Tools for Windows</a></h3>
 Since the tools are built using make, be sure to install cygwin make first.<p>
@@ -147,7 +181,7 @@ Open the Visual Studio Command Prompt corresponding to your target architecture,
 Simple Instruction Count (Instruction Instrumentation)</a></h3>
 The example below instruments a program to count the total number of instructions executed. It inserts a call to <code>docount</code> before every instruction. When the program exits, it saves the count in the file <code>inscount.out</code>.<p>
 Here is how to run it and display its output (note that the file list is the <code>ls</code> output, so it may be different on your machine, similarly the instruction count will depend on the implementation of <code>ls</code>):<p>
-<div class="fragment"><pre class="fragment">$ pin -t inscount0.so -- /bin/ls
+<div class="fragment"><pre class="fragment">$ ../../../pin -t obj-intel64/inscount0.so -- /bin/ls
 Makefile          atrace.o     imageload.out  itrace      proccount
 Makefile.example  imageload    inscount0      itrace.o    proccount.o
 atrace            imageload.o  inscount0.o    itrace.out
@@ -156,7 +190,7 @@ Count 422838
 $
 </pre></div><p>
 The KNOB exhibited in the example below overwrites the default name for the output file. To use this feature, add "-o &lt;file_name&gt;" to the command line. Tool command line options should be inserted between the tool name and the double dash ("--"). For more information on how to add command line options to your tool, please see <a class="el" href="group__KNOB__API.html">KNOB: Commandline Option Handling</a>.<p>
-<div class="fragment"><pre class="fragment">$ pin -t inscount0.so -o inscount0.log -- /bin/ls
+<div class="fragment"><pre class="fragment">$ ../../../pin -t obj-intel64/inscount0.so -o inscount0.log -- /bin/ls
 </pre></div><p>
 The example can be found in source/tools/ManualExamples/inscount0.cpp<p>
 <div class="fragment"><pre class="fragment"><span class="preprocessor">#include &lt;iostream&gt;</span>
@@ -216,10 +250,10 @@ INT32 Usage()
     OutFile.open(KnobOutputFile.Value().c_str());
 
     <span class="comment">// Register Instruction to be called to instrument instructions</span>
-    <a class="code" href="group__INS__INST__API.html#ga80cd9a7905b82a86b9e31d9bf589dbe">INS_AddInstrumentFunction</a>(Instruction, 0);
+    <a class="code" href="group__INS__INST__API.html#gad5fd5cdd6c1cd37e57a1264e93b0435">INS_AddInstrumentFunction</a>(Instruction, 0);
 
     <span class="comment">// Register Fini to be called when the application exits</span>
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
     
     <span class="comment">// Start the program, never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -232,7 +266,7 @@ In the previous example, we did not pass any arguments to <code>docount</code>, 
 With a small change, we can turn the instruction counting example into a Pintool that prints the address of every instruction that is executed. This tool is useful for understanding the control flow of a program for debugging, or in processor design when simulating an instruction cache.<p>
 We change the arguments to INS_InsertCall to pass the address of the instruction about to be executed. We replace <code>docount</code> with <code>printip</code>, which prints the instruction address. It writes its output to the file <code>itrace.out</code>.<p>
 This is how to run it and look at the output:<p>
-<div class="fragment"><pre class="fragment">$ pin -t itrace.so -- /bin/ls
+<div class="fragment"><pre class="fragment">$ ../../../pin -t obj-intel64/itrace.so -- /bin/ls
 Makefile          atrace.o     imageload.out  itrace      proccount
 Makefile.example  imageload    inscount0      itrace.o    proccount.o
 atrace            imageload.o  inscount0.o    itrace.out
@@ -296,10 +330,10 @@ INT32 Usage()
     <span class="keywordflow">if</span> (<a class="code" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init</a>(argc, argv)) <span class="keywordflow">return</span> Usage();
 
     <span class="comment">// Register Instruction to be called to instrument instructions</span>
-    <a class="code" href="group__INS__INST__API.html#ga80cd9a7905b82a86b9e31d9bf589dbe">INS_AddInstrumentFunction</a>(Instruction, 0);
+    <a class="code" href="group__INS__INST__API.html#gad5fd5cdd6c1cd37e57a1264e93b0435">INS_AddInstrumentFunction</a>(Instruction, 0);
 
     <span class="comment">// Register Fini to be called when the application exits</span>
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
     
     <span class="comment">// Start the program, never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -310,10 +344,10 @@ INT32 Usage()
 Memory Reference Trace (Instruction Instrumentation)</a></h3>
 The previous example instruments all instructions. Sometimes a tool may only want to instrument a class of instructions, like memory operations or branch instructions. A tool can do this by using the Pin API which includes functions that classify and examine instructions. The basic API is common to all instruction sets and is described <a class="el" href="group__INS__BASIC__API.html">here.</a> In addition, there is an instruction set specific API for the <a class="el" href="group__INS__BASIC__API__IA32.html">IA-32 ISA.</a><p>
 In this example, we show how to do more selective instrumentation by examining the instructions. This tool generates a trace of all memory addresses referenced by a program. This is also useful for debugging and for simulating a data cache in a processor.<p>
-We only instrument instructions that read or write memory. We also use <a class="el" href="group__INS__INST__API.html#g446df8cbefd4950b78cba7c9e7346053">INS_InsertPredicatedCall</a> instead of <a class="el" href="group__INS__INST__API.html#g82d2ecc73dcd5e2af26fef5bd6ff7190">INS_InsertCall</a> to avoid generating references to instructions that are predicated when the predicate is false. On IA-32 and Intel 64 architectures CMOVcc, FCMOVcc and REP prefixed string operations are treated as being predicated. For CMOVcc and FCMOVcc the predicate is the condition test implied by "cc", for REP prefixed string ops it is that the count register is non-zero.<p>
+We only instrument instructions that read or write memory. We also use <a class="el" href="group__INS__INST__API.html#g446df8cbefd4950b78cba7c9e7346053">INS_InsertPredicatedCall</a> instead of <a class="el" href="group__INS__INST__API.html#g82d2ecc73dcd5e2af26fef5bd6ff7190">INS_InsertCall</a> to avoid generating references to instructions that are predicated when the predicate is false. On IA-32 and Intel(R) 64 architectures CMOVcc, FCMOVcc and REP prefixed string operations are treated as being predicated. For CMOVcc and FCMOVcc the predicate is the condition test implied by "cc", for REP prefixed string ops it is that the count register is non-zero.<p>
 Since the instrumentation functions are only called once and the analysis functions are called every time an instruction is executed, it is much faster to instrument only the memory operations, as compared to the previous instruction trace example that instruments every instruction.<p>
 Here is how to run it and the sample output:<p>
-<div class="fragment"><pre class="fragment">$ pin -t pinatrace.so -- /bin/ls
+<div class="fragment"><pre class="fragment">$ ../../../pin -t obj-intel64/pinatrace.so -- /bin/ls
 Makefile          atrace.o    imageload.o    inscount0.o  itrace.out
 Makefile.example  atrace.out  imageload.out  itrace       proccount
 atrace            imageload   inscount0      itrace.o     proccount.o
@@ -415,8 +449,8 @@ INT32 Usage()
 
     trace = fopen(<span class="stringliteral">"pinatrace.out"</span>, <span class="stringliteral">"w"</span>);
 
-    <a class="code" href="group__INS__INST__API.html#ga80cd9a7905b82a86b9e31d9bf589dbe">INS_AddInstrumentFunction</a>(Instruction, 0);
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__INS__INST__API.html#gad5fd5cdd6c1cd37e57a1264e93b0435">INS_AddInstrumentFunction</a>(Instruction, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
 
     <span class="comment">// Never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -427,7 +461,7 @@ INT32 Usage()
 Detecting the Loading and Unloading of Images (Image Instrumentation)</a></h3>
 The example below prints a message to a trace file every time and image is loaded or unloaded. It really abuses the image instrumentation mode as the Pintool neither inspects the image nor adds instrumentation code.<p>
 If you invoke it on ls, you would see this output:<p>
-<div class="fragment"><pre class="fragment">$ pin -t imageload.so -- /bin/ls
+<div class="fragment"><pre class="fragment">$ ../../../pin -t obj-intel64/imageload.so -- /bin/ls
 Makefile          atrace.o    imageload.o    inscount0.o  proccount
 Makefile.example  atrace.out  imageload.out  itrace       proccount.o
 atrace            imageload   inscount0      itrace.o     trace.out
@@ -447,10 +481,17 @@ The example can be found in source/tools/ManualExamples/imageload.cpp<p>
 <span class="comment">// This tool prints a trace of image load and unload events</span>
 <span class="comment">//</span>
 
-<span class="preprocessor">#include &lt;stdio.h&gt;</span>
 <span class="preprocessor">#include "pin.H"</span>
+<span class="preprocessor">#include &lt;iostream&gt;</span>
+<span class="preprocessor">#include &lt;fstream&gt;</span>
+<span class="preprocessor">#include &lt;stdlib.h&gt;</span>
 
-FILE * trace;
+<span class="keyword">using namespace </span>std;
+
+KNOB&lt;string&gt; KnobOutputFile(<a class="code" href="group__KNOB__BASIC.html#gg7cca44bfaca0b4c0f4a6a469ae5b9d67f0336979b5a81ce10e8a3d8f2345d606">KNOB_MODE_WRITEONCE</a>, <span class="stringliteral">"pintool"</span>,
+    <span class="stringliteral">"o"</span>, <span class="stringliteral">"imageload.out"</span>, <span class="stringliteral">"specify file name"</span>);
+
+ofstream TraceFile;
 
 <span class="comment">// Pin calls this function every time a new img is loaded</span>
 <span class="comment">// It can instrument the image, but this example does not</span>
@@ -458,21 +499,21 @@ FILE * trace;
 
 VOID ImageLoad(IMG img, VOID *v)
 {
-    fprintf(trace, <span class="stringliteral">"Loading %s, Image id = %d\n"</span>, <a class="code" href="group__IMG__BASIC__API.html#g9f68164bfac7c031b82549eba91681c3">IMG_Name</a>(img).c_str(), <a class="code" href="group__IMG__BASIC__API.html#g9440e63ee69888e8889a90912f605316">IMG_Id</a>(img));
+    TraceFile &lt;&lt; <span class="stringliteral">"Loading "</span> &lt;&lt; <a class="code" href="group__IMG__BASIC__API.html#g491b26d161526b35498839f5cdf30a76">IMG_Name</a>(img) &lt;&lt; <span class="stringliteral">", Image id = "</span> &lt;&lt; <a class="code" href="group__IMG__BASIC__API.html#g9440e63ee69888e8889a90912f605316">IMG_Id</a>(img) &lt;&lt; endl;
 }
 
 <span class="comment">// Pin calls this function every time a new img is unloaded</span>
 <span class="comment">// You can't instrument an image that is about to be unloaded</span>
 VOID ImageUnload(IMG img, VOID *v)
 {
-    fprintf(trace, <span class="stringliteral">"Unloading %s\n"</span>, <a class="code" href="group__IMG__BASIC__API.html#g9f68164bfac7c031b82549eba91681c3">IMG_Name</a>(img).c_str());
+    TraceFile &lt;&lt; <span class="stringliteral">"Unloading "</span> &lt;&lt; <a class="code" href="group__IMG__BASIC__API.html#g491b26d161526b35498839f5cdf30a76">IMG_Name</a>(img) &lt;&lt; endl;
 }
 
 <span class="comment">// This function is called when the application exits</span>
 <span class="comment">// It closes the output file.</span>
 VOID Fini(INT32 code, VOID *v)
 {
-    fclose(trace);
+    <span class="keywordflow">if</span> (TraceFile.is_open()) { TraceFile.close(); }
 }
 
 <span class="comment">/* ===================================================================== */</span>
@@ -492,22 +533,22 @@ INT32 Usage()
 
 <span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> * argv[])
 {
-    trace = fopen(<span class="stringliteral">"imageload.out"</span>, <span class="stringliteral">"w"</span>);
-
     <span class="comment">// Initialize symbol processing</span>
     <a class="code" href="group__PIN__CONTROL.html#ga6749650a8dce7151075fcc9345f7bd9">PIN_InitSymbols</a>();
     
     <span class="comment">// Initialize pin</span>
     <span class="keywordflow">if</span> (<a class="code" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init</a>(argc, argv)) <span class="keywordflow">return</span> Usage();
     
+    TraceFile.open(KnobOutputFile.Value().c_str());
+    
     <span class="comment">// Register ImageLoad to be called when an image is loaded</span>
-    <a class="code" href="group__IMG__BASIC__API.html#gb0ad0d50126fd5ddcfee28005c681049">IMG_AddInstrumentFunction</a>(ImageLoad, 0);
+    <a class="code" href="group__IMG__BASIC__API.html#g4867c865fcf260951b7d750aaaaa0007">IMG_AddInstrumentFunction</a>(ImageLoad, 0);
 
     <span class="comment">// Register ImageUnload to be called when an image is unloaded</span>
-    <a class="code" href="group__IMG__BASIC__API.html#gbcbc2007e5a261dcd4893e9bd59ef7aa">IMG_AddUnloadFunction</a>(ImageUnload, 0);
+    <a class="code" href="group__IMG__BASIC__API.html#g8f27bbc6bbc60d15df64ca5e81b19c30">IMG_AddUnloadFunction</a>(ImageUnload, 0);
 
     <span class="comment">// Register Fini to be called when the application exits</span>
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
     
     <span class="comment">// Start the program, never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -578,10 +619,10 @@ INT32 Usage()
     OutFile.open(KnobOutputFile.Value().c_str());
 
     <span class="comment">// Register Instruction to be called to instrument instructions</span>
-    <a class="code" href="group__TRACE__BASIC__API.html#gb3762f773502ad865216ef941c38799e">TRACE_AddInstrumentFunction</a>(Trace, 0);
+    <a class="code" href="group__TRACE__BASIC__API.html#g0261da0abe384db4e2f97cd31cf986f7">TRACE_AddInstrumentFunction</a>(Trace, 0);
 
     <span class="comment">// Register Fini to be called when the application exits</span>
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
     
     <span class="comment">// Start the program, never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -592,7 +633,7 @@ INT32 Usage()
 Procedure Instruction Count (Routine Instrumentation)</a></h3>
 The example below instruments a program to count the number of times a procedure is called, and the total number of instructions executed in each procedure. When it finishes, it prints a profile to proccount.out<p>
 Executing the tool and sample output:<p>
-<div class="fragment"><pre class="fragment">$ pin -t proccount.so -- /bin/grep proccount.cpp Makefile
+<div class="fragment"><pre class="fragment">$ ../../../pin -t obj-intel64/proccount.so -- /bin/grep proccount.cpp Makefile
 proccount_SOURCES = proccount.cpp
 $ head proccount.out
               Procedure           Image            Address        Calls Instructions
@@ -661,7 +702,7 @@ VOID Routine(RTN rtn, VOID *v)
     <span class="comment">// The RTN goes away when the image is unloaded, so save it now</span>
     <span class="comment">// because we need it in the fini</span>
     rc-&gt;_name = <a class="code" href="group__RTN__BASIC__API.html#gb274bf5dadf6f1ae3259715ae161ebd1">RTN_Name</a>(rtn);
-    rc-&gt;_image = StripPath(<a class="code" href="group__IMG__BASIC__API.html#g9f68164bfac7c031b82549eba91681c3">IMG_Name</a>(<a class="code" href="group__SEC__BASIC__API.html#g12d872ebd06751c73246dc869cf49b91">SEC_Img</a>(<a class="code" href="group__RTN__BASIC__API.html#g9046edfd85722ef2f701282ba7a5c7a2">RTN_Sec</a>(rtn))).c_str());
+    rc-&gt;_image = StripPath(<a class="code" href="group__IMG__BASIC__API.html#g491b26d161526b35498839f5cdf30a76">IMG_Name</a>(<a class="code" href="group__SEC__BASIC__API.html#g3002fffef1eff03eb1d55ff6dc9c5977">SEC_Img</a>(<a class="code" href="group__RTN__BASIC__API.html#g9046edfd85722ef2f701282ba7a5c7a2">RTN_Sec</a>(rtn))).c_str());
     rc-&gt;_address = <a class="code" href="group__RTN__BASIC__API.html#gb74b01b5b6feb47a1f52d9f8ea7ea154">RTN_Address</a>(rtn);
     rc-&gt;_icount = 0;
     rc-&gt;_rtnCount = 0;
@@ -735,10 +776,10 @@ INT32 Usage()
     <span class="keywordflow">if</span> (<a class="code" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init</a>(argc, argv)) <span class="keywordflow">return</span> Usage();
 
     <span class="comment">// Register Routine to be called to instrument rtn</span>
-    <a class="code" href="group__RTN__BASIC__API.html#g8622a6ba858eb8d55df4e006eb165e57">RTN_AddInstrumentFunction</a>(Routine, 0);
+    <a class="code" href="group__RTN__BASIC__API.html#g50b3794c06a99774ed62abec8ad3b173">RTN_AddInstrumentFunction</a>(Routine, 0);
 
     <span class="comment">// Register Fini to be called when the application exits</span>
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
     
     <span class="comment">// Start the program, never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -750,7 +791,7 @@ Using PIN_SafeCopy()</a></h3>
 PIN_SafeCopy is used to copy the specified number of bytes from a source memory region to a destination memory region. This function guarantees safe return to the caller even if the source or destination regions are inaccessible (entirely or partially).<p>
 Use of this function also guarantees that the tool reads or writes the values used by the application. For example, on Windows, Pin replaces certain TEB fields when running a tool's analysis code. If the tool accessed these fields directly, it would see the modified values rather than the original ones. Using <a class="el" href="group__PIN__CONTROL.html#g1e6d08632dccfcd10aec3fbdd2562899">PIN_SafeCopy()</a> allows the tool to read or write the application's values for these fields.<p>
 We recommend using this API any time a tool reads or writes application memory.<p>
-<div class="fragment"><pre class="fragment">$ pin -t obj-ia32/safecopy.so -- /bin/cp makefile obj-ia32/safecopy.so.makefile.copy
+<div class="fragment"><pre class="fragment">$ ../../../pin -t obj-ia32/safecopy.so -- /bin/cp makefile obj-ia32/safecopy.so.makefile.copy
 $ head safecopy.out
 Emulate loading from addr 0xbff0057c to ebx
 Emulate loading from addr 0x64ffd4 to eax
@@ -838,7 +879,7 @@ INT32 Usage()
     <a class="code" href="group__PIN__CONTROL.html#ga6749650a8dce7151075fcc9345f7bd9">PIN_InitSymbols</a>();
 
     <span class="comment">// Register EmulateLoad to be called to instrument instructions</span>
-    <a class="code" href="group__INS__INST__API.html#ga80cd9a7905b82a86b9e31d9bf589dbe">INS_AddInstrumentFunction</a>(EmulateLoad, 0);
+    <a class="code" href="group__INS__INST__API.html#gad5fd5cdd6c1cd37e57a1264e93b0435">INS_AddInstrumentFunction</a>(EmulateLoad, 0);
 
     <span class="comment">// Never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();   
@@ -847,7 +888,7 @@ INT32 Usage()
 </pre></div><h3><a class="anchor" name="Invocation">
 Order of Instrumentation</a></h3>
 Pin provides tools with multiple ways to control the exection order of analysis calls. The exection order depends mainly on the insertion action (<a class="el" href="group__INST__ARGS.html#ga46cc1807fc61addd9afe69ee6736a21">IPOINT</a>) and call order (<a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a>). The example below illustrates this behavior by instrumenting all return instructions in three different ways. Additional examples can be found in source/tools/InstrumentationOrderAndVersion.<p>
-<div class="fragment"><pre class="fragment">$ pin -t obj-ia32/invocation.so -- obj-ia32/little_malloc
+<div class="fragment"><pre class="fragment">$ ../../../pin -t obj-ia32/invocation.so -- obj-ia32/little_malloc
 $ head invocation.out
 After: IP = 0x64bc5e
 Before: IP = 0x64bc5e
@@ -901,12 +942,12 @@ VOID After(<a class="code" href="group__CONTEXT__API.html#g70a3022fd8834c783509c
 <span class="comment"> */</span>
 VOID ImageLoad(IMG img, VOID *v)
 {
-    <span class="keywordflow">for</span> (SEC sec = <a class="code" href="group__IMG__BASIC__API.html#gc217d3b81c96828a0ee9a7574d3ac05f">IMG_SecHead</a>(img); <a class="code" href="group__SEC__BASIC__API.html#g1b12fe810ea34835d192449f8d41e226">SEC_Valid</a>(sec); sec = <a class="code" href="group__SEC__BASIC__API.html#g594dcea6346920b05dc979e379959a77">SEC_Next</a>(sec))
+    <span class="keywordflow">for</span> (SEC sec = <a class="code" href="group__IMG__BASIC__API.html#g33f7761534eeb9e0d8caffa9dd9c7b29">IMG_SecHead</a>(img); <a class="code" href="group__SEC__BASIC__API.html#g1b12fe810ea34835d192449f8d41e226">SEC_Valid</a>(sec); sec = <a class="code" href="group__SEC__BASIC__API.html#g75fc1b62fe6f1d67d36e3215e464f000">SEC_Next</a>(sec))
     {
         <span class="comment">// RTN_InsertCall() and INS_InsertCall() are executed in order of</span>
         <span class="comment">// appearance.  In the code sequence below, the IPOINT_AFTER is</span>
         <span class="comment">// executed before the IPOINT_BEFORE.</span>
-        <span class="keywordflow">for</span> (RTN rtn = <a class="code" href="group__SEC__BASIC__API.html#g3015a2dd44717006bca05e459b344b42">SEC_RtnHead</a>(sec); <a class="code" href="group__RTN__BASIC__API.html#g2883b22d046e8c6c5ac303465dfa4ed6">RTN_Valid</a>(rtn); rtn = <a class="code" href="group__RTN__BASIC__API.html#gf21d0d3fd6851e83e42827f09c03a4e7">RTN_Next</a>(rtn))
+        <span class="keywordflow">for</span> (RTN rtn = <a class="code" href="group__SEC__BASIC__API.html#g1a81afab78e506eb52b3c4d5fa81584d">SEC_RtnHead</a>(sec); <a class="code" href="group__RTN__BASIC__API.html#g2883b22d046e8c6c5ac303465dfa4ed6">RTN_Valid</a>(rtn); rtn = <a class="code" href="group__RTN__BASIC__API.html#gf21d0d3fd6851e83e42827f09c03a4e7">RTN_Next</a>(rtn))
         {
             <span class="comment">// Open the RTN.</span>
             <a class="code" href="group__RTN__BASIC__API.html#g7225aeb74e1fd3f3b554dbbc285653e0">RTN_Open</a>( rtn );
@@ -963,8 +1004,8 @@ INT32 Usage()
     <a class="code" href="group__PIN__CONTROL.html#ga6749650a8dce7151075fcc9345f7bd9">PIN_InitSymbols</a>();
 
     <span class="comment">// Register ImageLoad to be called to instrument instructions</span>
-    <a class="code" href="group__IMG__BASIC__API.html#gb0ad0d50126fd5ddcfee28005c681049">IMG_AddInstrumentFunction</a>(ImageLoad, 0);
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__IMG__BASIC__API.html#g4867c865fcf260951b7d750aaaaa0007">IMG_AddInstrumentFunction</a>(ImageLoad, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
 
     <span class="comment">// Write to a file since cout and cerr maybe closed by the application</span>
     OutFile.open(KnobOutputFile.Value().c_str());
@@ -981,7 +1022,7 @@ INT32 Usage()
 Finding the Value of Function Arguments</a></h3>
 Often one needs the know the value of the argument passed into a function, or the return value. You can use Pin to find this information. Using the <a class="el" href="group__RTN__BASIC__API.html#g006ef964b9e6e4d8e7880231e216344a">RTN_InsertCall()</a> function, you can specify the arguments of interest.<p>
 The example below prints the input argument for malloc() and free(), and the return value from malloc().<p>
-<div class="fragment"><pre class="fragment">$ pin -t obj-ia32/malloctrace.so -- /bin/cp makefile obj-ia32/malloctrace.so.makefile.copy
+<div class="fragment"><pre class="fragment">$ ../../../pin -t obj-ia32/malloctrace.so -- /bin/cp makefile obj-ia32/malloctrace.so.makefile.copy
 $ head malloctrace.out
 malloc(0x24d)
   returns 0x6504f8
@@ -1119,8 +1160,8 @@ INT32 Usage()
     TraceFile.setf(ios::showbase);
     
     <span class="comment">// Register Image to be called to instrument functions.</span>
-    <a class="code" href="group__IMG__BASIC__API.html#gb0ad0d50126fd5ddcfee28005c681049">IMG_AddInstrumentFunction</a>(Image, 0);
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__IMG__BASIC__API.html#g4867c865fcf260951b7d750aaaaa0007">IMG_AddInstrumentFunction</a>(Image, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
 
     <span class="comment">// Never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -1135,7 +1176,7 @@ INT32 Usage()
 Finding Functions By Name on Windows</a></h3>
 Finding functions by name on Windows requires a different methodology. Several symbols could resolve to the same function address. It is important to check all symbol names.<p>
 The following example finds the function name in the symbol table, and uses the symbol address to find the appropriate RTN.<p>
-<div class="fragment"><pre class="fragment">$ pin  -t obj-ia32\w_malloctrace.dll -- ..\Tests\obj-ia32\cp-pin.exe makefile w_malloctrace.makefile.copy
+<div class="fragment"><pre class="fragment">$ ..\..\..\pin -t obj-ia32\w_malloctrace.dll -- ..\Tests\obj-ia32\cp-pin.exe makefile w_malloctrace.makefile.copy
 $ head *.out
 Before: RtlAllocateHeap(00150000, 0, 0x94)
 After: RtlAllocateHeap  returns 0x153440
@@ -1214,7 +1255,7 @@ VOID Image(IMG img, VOID *v)
 {
     <span class="comment">// Walk through the symbols in the symbol table.</span>
     <span class="comment">//</span>
-    <span class="keywordflow">for</span> (SYM sym = <a class="code" href="group__IMG__BASIC__API.html#g80dd86f9de65aa86b2db7d33aae819ff">IMG_RegsymHead</a>(img); <a class="code" href="group__SYM__BASIC__API.html#ge83aad6ccb150a96e6bde242326a8ad4">SYM_Valid</a>(sym); sym = <a class="code" href="group__SYM__BASIC__API.html#ge180d8ef29e941662eae416f92adbd72">SYM_Next</a>(sym))
+    <span class="keywordflow">for</span> (SYM sym = <a class="code" href="group__IMG__BASIC__API.html#g348cdf7a038afa17459b49efac8ce4f1">IMG_RegsymHead</a>(img); <a class="code" href="group__SYM__BASIC__API.html#ge83aad6ccb150a96e6bde242326a8ad4">SYM_Valid</a>(sym); sym = <a class="code" href="group__SYM__BASIC__API.html#ge180d8ef29e941662eae416f92adbd72">SYM_Next</a>(sym))
     {
         string undFuncName = <a class="code" href="group__SYM__BASIC__API.html#gd02e31773f5a8aef5e5a70be7f09dd17">PIN_UndecorateSymbolName</a>(<a class="code" href="group__SYM__BASIC__API.html#g2322cb4a1c052fa27420f66b1f3eb8e3">SYM_Name</a>(sym), <a class="code" href="group__SYM__BASIC__API.html#gg8aa0db3277ed9b401a204bf2d1bdc6aa7ac5b7ca1c9423fbe3d44bfbda828c43">UNDECORATION_NAME_ONLY</a>);
 
@@ -1271,8 +1312,8 @@ VOID Fini(INT32 code, VOID *v)
     TraceFile.setf(ios::showbase);
     
     <span class="comment">// Register Image to be called to instrument functions.</span>
-    <a class="code" href="group__IMG__BASIC__API.html#gb0ad0d50126fd5ddcfee28005c681049">IMG_AddInstrumentFunction</a>(Image, 0);
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__IMG__BASIC__API.html#g4867c865fcf260951b7d750aaaaa0007">IMG_AddInstrumentFunction</a>(Image, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
 
     <span class="comment">// Never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -1285,9 +1326,9 @@ VOID Fini(INT32 code, VOID *v)
 <span class="comment">/* ===================================================================== */</span>
 </pre></div><h3><a class="anchor" name="MallocMT">
 Instrumenting Threaded Applications</a></h3>
-The following example demonstrates using the ThreadStart() and ThreadFini() notification callbacks. Although ThreadStart() and ThreadFini() are executed under the VM and client locks, they could still contend with resources that are shared by other analysis routines. Using PIN_GetLock() prevents this.<p>
-Note that there is known isolation issue when using Pin on Windows. On Windows, a deadlock can occur if a tool opens a file in a callback when run on a multi-threaded application. To work around this problem, open one file in main, and tag the data with the thread ID. See source/tools/ManualExamples/buffer-win.cpp as an example. This problem does not exist on Linux.<p>
-<div class="fragment"><pre class="fragment">$ pin -t obj-ia32/malloc_mt.so -- obj-ia32/thread_lin
+The following example demonstrates using the ThreadStart() and ThreadFini() notification callbacks. Although ThreadStart() and ThreadFini() are executed under the VM and client locks, they could still contend with resources that are shared by other analysis routines. Using <a class="el" href="group__LOCK.html#gc7b6e6ed4fb7e14452b85b96d5c42c10">PIN_GetLock()</a> prevents this.<p>
+Note that there is known isolation issue when using Pin on Windows. On Windows, a deadlock can occur if a tool opens a file in a callback when run on a multi-threaded application. To work around this problem, open one file in main, and tag the data with the thread ID. See source/tools/ManualExamples/buffer_windows.cpp as an example. This problem does not exist on Linux.<p>
+<div class="fragment"><pre class="fragment">$ ../../../pin -t obj-ia32/malloc_mt.so -- obj-ia32/thread_lin
 $ head malloc_mt.out
 thread begin 0
 thread 0 entered malloc(24d)
@@ -1310,7 +1351,7 @@ KNOB&lt;string&gt; KnobOutputFile(<a class="code" href="group__KNOB__BASIC.html#
 <span class="comment">//==============================================================</span>
 <span class="comment">//  Analysis Routines</span>
 <span class="comment">//==============================================================</span>
-<span class="comment">// Note:  threadid+1 is used as an argument to the GetLock()</span>
+<span class="comment">// Note:  threadid+1 is used as an argument to the PIN_GetLock()</span>
 <span class="comment">//        routine as a debugging aid.  This is the value that</span>
 <span class="comment">//        the lock is set to, so it must be non-zero.</span>
 
@@ -1324,28 +1365,28 @@ PIN_LOCK lock;
 <span class="comment">// This routine is executed every time a thread is created.</span>
 VOID ThreadStart(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> threadid, <a class="code" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, INT32 flags, VOID *v)
 {
-    <a class="code" href="group__LOCK.html#g36070bd375e4defc52ecfc38f9c46732">GetLock</a>(&amp;lock, threadid+1);
+    <a class="code" href="group__LOCK.html#gc7b6e6ed4fb7e14452b85b96d5c42c10">PIN_GetLock</a>(&amp;lock, threadid+1);
     fprintf(out, <span class="stringliteral">"thread begin %d\n"</span>,threadid);
     fflush(out);
-    <a class="code" href="group__LOCK.html#ge1f816bf92874cea96639dac6af37849">ReleaseLock</a>(&amp;lock);
+    <a class="code" href="group__LOCK.html#g85d4faf75e968d46ca52986058ebd8c7">PIN_ReleaseLock</a>(&amp;lock);
 }
 
 <span class="comment">// This routine is executed every time a thread is destroyed.</span>
 VOID ThreadFini(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> threadid, <span class="keyword">const</span> <a class="code" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, INT32 code, VOID *v)
 {
-    <a class="code" href="group__LOCK.html#g36070bd375e4defc52ecfc38f9c46732">GetLock</a>(&amp;lock, threadid+1);
+    <a class="code" href="group__LOCK.html#gc7b6e6ed4fb7e14452b85b96d5c42c10">PIN_GetLock</a>(&amp;lock, threadid+1);
     fprintf(out, <span class="stringliteral">"thread end %d code %d\n"</span>,threadid, code);
     fflush(out);
-    <a class="code" href="group__LOCK.html#ge1f816bf92874cea96639dac6af37849">ReleaseLock</a>(&amp;lock);
+    <a class="code" href="group__LOCK.html#g85d4faf75e968d46ca52986058ebd8c7">PIN_ReleaseLock</a>(&amp;lock);
 }
 
 <span class="comment">// This routine is executed each time malloc is called.</span>
 VOID BeforeMalloc( <span class="keywordtype">int</span> size, <a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> threadid )
 {
-    <a class="code" href="group__LOCK.html#g36070bd375e4defc52ecfc38f9c46732">GetLock</a>(&amp;lock, threadid+1);
+    <a class="code" href="group__LOCK.html#gc7b6e6ed4fb7e14452b85b96d5c42c10">PIN_GetLock</a>(&amp;lock, threadid+1);
     fprintf(out, <span class="stringliteral">"thread %d entered malloc(%d)\n"</span>, threadid, size);
     fflush(out);
-    <a class="code" href="group__LOCK.html#ge1f816bf92874cea96639dac6af37849">ReleaseLock</a>(&amp;lock);
+    <a class="code" href="group__LOCK.html#g85d4faf75e968d46ca52986058ebd8c7">PIN_ReleaseLock</a>(&amp;lock);
 }
 
 
@@ -1394,7 +1435,7 @@ INT32 Usage()
 <span class="keywordtype">int</span> main(INT32 argc, CHAR **argv)
 {
     <span class="comment">// Initialize the pin lock</span>
-    <a class="code" href="group__LOCK.html#g7b98e356ed047ffd72a7a8f7b63620af">InitLock</a>(&amp;lock);
+    <a class="code" href="group__LOCK.html#ga07949dcd22a1c5d8fe209767b4dd490">PIN_InitLock</a>(&amp;lock);
     
     <span class="comment">// Initialize pin</span>
     <span class="keywordflow">if</span> (<a class="code" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init</a>(argc, argv)) <span class="keywordflow">return</span> Usage();
@@ -1403,14 +1444,14 @@ INT32 Usage()
     out = fopen(KnobOutputFile.Value().c_str(), <span class="stringliteral">"w"</span>);
 
     <span class="comment">// Register ImageLoad to be called when each image is loaded.</span>
-    <a class="code" href="group__IMG__BASIC__API.html#gb0ad0d50126fd5ddcfee28005c681049">IMG_AddInstrumentFunction</a>(ImageLoad, 0);
+    <a class="code" href="group__IMG__BASIC__API.html#g4867c865fcf260951b7d750aaaaa0007">IMG_AddInstrumentFunction</a>(ImageLoad, 0);
 
     <span class="comment">// Register Analysis routines to be called when a thread begins/ends</span>
-    <a class="code" href="group__PIN__CONTROL.html#gd990464123111fae4a3e575039b11af7">PIN_AddThreadStartFunction</a>(ThreadStart, 0);
-    <a class="code" href="group__PIN__CONTROL.html#g2d6c3eea4ebe3e76baed4481b079e3b1">PIN_AddThreadFiniFunction</a>(ThreadFini, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g0549831d0b423aea93768b1bc491938b">PIN_AddThreadStartFunction</a>(ThreadStart, 0);
+    <a class="code" href="group__PIN__CONTROL.html#gc3f2c06e525bd0f23e8aa55f801989df">PIN_AddThreadFiniFunction</a>(ThreadFini, 0);
 
     <span class="comment">// Register Fini to be called when the application exits</span>
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
     
     <span class="comment">// Never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -1420,7 +1461,7 @@ INT32 Usage()
 </pre></div><h3><a class="anchor" name="InscountTLS">
 Using TLS</a></h3>
 Pin provides efficient thread local storage (TLS) APIs. These APIs allow a tool to create thread-specific data. The example below demonstrates how to use these APIs.<p>
-<div class="fragment"><pre class="fragment">$ pin -t obj-ia32/inscount_tls.so -- ./obj-ia32/thread_lin
+<div class="fragment"><pre class="fragment">$ ../../../pin -t obj-ia32/inscount_tls.so -- obj-ia32/thread_lin
 $ head
 Count[0]= 237993
 Count[1]= 213296
@@ -1480,9 +1521,9 @@ VOID <a class="code" href="group__INST__ARGS.html#gf3202cd2f4be9bf9d4fa7a035ece1
 
 VOID ThreadStart(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> threadid, <a class="code" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, INT32 flags, VOID *v)
 {
-    <a class="code" href="group__LOCK.html#g36070bd375e4defc52ecfc38f9c46732">GetLock</a>(&amp;lock, threadid+1);
+    <a class="code" href="group__LOCK.html#gc7b6e6ed4fb7e14452b85b96d5c42c10">PIN_GetLock</a>(&amp;lock, threadid+1);
     numThreads++;
-    <a class="code" href="group__LOCK.html#ge1f816bf92874cea96639dac6af37849">ReleaseLock</a>(&amp;lock);
+    <a class="code" href="group__LOCK.html#g85d4faf75e968d46ca52986058ebd8c7">PIN_ReleaseLock</a>(&amp;lock);
 
     thread_data_t* tdata = <span class="keyword">new</span> thread_data_t;
 
@@ -1543,19 +1584,19 @@ INT32 Usage()
     OutFile.open(KnobOutputFile.Value().c_str());
 
     <span class="comment">// Initialize the lock</span>
-    <a class="code" href="group__LOCK.html#g7b98e356ed047ffd72a7a8f7b63620af">InitLock</a>(&amp;lock);
+    <a class="code" href="group__LOCK.html#ga07949dcd22a1c5d8fe209767b4dd490">PIN_InitLock</a>(&amp;lock);
 
     <span class="comment">// Obtain  a key for TLS storage.</span>
     tls_key = <a class="code" href="group__PIN__THREAD__API.html#g36b79c1845d1874b1d6fbe7c8e7f3e91">PIN_CreateThreadDataKey</a>(0);
 
     <span class="comment">// Register ThreadStart to be called when a thread starts.</span>
-    <a class="code" href="group__PIN__CONTROL.html#gd990464123111fae4a3e575039b11af7">PIN_AddThreadStartFunction</a>(ThreadStart, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g0549831d0b423aea93768b1bc491938b">PIN_AddThreadStartFunction</a>(ThreadStart, 0);
 
     <span class="comment">// Register Instruction to be called to instrument instructions.</span>
-    <a class="code" href="group__TRACE__BASIC__API.html#gb3762f773502ad865216ef941c38799e">TRACE_AddInstrumentFunction</a>(Trace, 0);
+    <a class="code" href="group__TRACE__BASIC__API.html#g0261da0abe384db4e2f97cd31cf986f7">TRACE_AddInstrumentFunction</a>(Trace, 0);
 
     <span class="comment">// Register Fini to be called when the application exits.</span>
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
 
     <span class="comment">// Start the program, never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -1565,7 +1606,7 @@ INT32 Usage()
 </pre></div><h3><a class="anchor" name="Buffering">
 Using the Fast Buffering APIs</a></h3>
 Pin provides support for buffering data for processing. If all that your analysis callback does is to store its arguments into a buffer, then you should be able to use the buffering API instead, with some performance benefit. <a class="el" href="group__BUFFER__API.html#g16f88ae475a2539bfec3c7ce8b9eb16e">PIN_DefineTraceBuffer()</a> defines the buffer that will be used. The buffer is allocated by each thread when it starts up, and deallocated when the thread exits. <a class="el" href="group__INS__INST__API.html#g4b68e6136fdec6a50269edfa4ff4c977">INS_InsertFillBuffer()</a> writes the requested data directly to the given buffer. The callback delineated in the <a class="el" href="group__BUFFER__API.html#g16f88ae475a2539bfec3c7ce8b9eb16e">PIN_DefineTraceBuffer()</a> call is used to process the buffer when the buffer is nearly full, and when the thread exits. Pin does <b>not</b> serialize the calls to this callback, so it is the tool writers responsibilty to make sure this function is thread safe. This example records the PC of all instructions that access memory, and the effective address accessed by the instruction. Note that IARG_REG_REFERENCE, IARG_REG_CONST_REFERENCE and IARG_CONTEXT can NOT be used in the Fast Buffering APIs<p>
-<div class="fragment"><pre class="fragment">$ pin -t obj-ia32/buffer-lin.so -- ./obj-ia32/thread_lin
+<div class="fragment"><pre class="fragment">$ ../../../pin -t obj-ia32/buffer_linux.so -- obj-ia32/thread_lin
 $ tail buffer.out.*.*
 3263df   330108
 3263df   330108
@@ -1578,8 +1619,262 @@ $ tail buffer.out.*.*
 32641b   a92f43fc
 326421   a92f4bf8
 </pre></div><p>
-The example can be found in source/tools/ManualExamples/buffer-lin.cpp. This example is appropriate for Linux tools. If you are writing a tool for Windows, please see source/tools/ManualExamples/buffer-win.cpp<p>
-<div class="fragment"><pre class="fragment"></pre></div><h3><a class="anchor" name="StaticInstructionCounts">
+The example can be found in source/tools/ManualExamples/buffer_linux.cpp. This example is appropriate for Linux tools. If you are writing a tool for Windows, please see source/tools/ManualExamples/buffer_windows.cpp<p>
+<div class="fragment"><pre class="fragment"><span class="comment">/*</span>
+<span class="comment"> * Sample buffering tool</span>
+<span class="comment"> * </span>
+<span class="comment"> * This tool collects an address trace of instructions that access memory</span>
+<span class="comment"> * by filling a buffer.  When the buffer overflows,the callback writes all</span>
+<span class="comment"> * of the collected records to a file.</span>
+<span class="comment"> *</span>
+<span class="comment"> */</span>
+
+<span class="preprocessor">#include &lt;iostream&gt;</span>
+<span class="preprocessor">#include &lt;fstream&gt;</span>
+<span class="preprocessor">#include &lt;stdlib.h&gt;</span>
+<span class="preprocessor">#include &lt;stddef.h&gt;</span>
+
+<span class="preprocessor">#include "pin.H"</span>
+<span class="preprocessor">#include "portability.H"</span>
+<span class="keyword">using namespace </span>std;
+
+<span class="comment">/*</span>
+<span class="comment"> * Name of the output file</span>
+<span class="comment"> */</span>
+KNOB&lt;string&gt; KnobOutputFile(<a class="code" href="group__KNOB__BASIC.html#gg7cca44bfaca0b4c0f4a6a469ae5b9d67f0336979b5a81ce10e8a3d8f2345d606">KNOB_MODE_WRITEONCE</a>, <span class="stringliteral">"pintool"</span>, <span class="stringliteral">"o"</span>, <span class="stringliteral">"buffer.out"</span>, <span class="stringliteral">"output file"</span>);
+
+<span class="comment">/*</span>
+<span class="comment"> * The ID of the buffer</span>
+<span class="comment"> */</span>
+BUFFER_ID bufId;
+
+<span class="comment">/*</span>
+<span class="comment"> * Thread specific data</span>
+<span class="comment"> */</span>
+<a class="code" href="group__PIN__THREAD__API.html#g48422bbc491485657227fe94386b964c">TLS_KEY</a> mlog_key;
+
+<span class="comment">/*</span>
+<span class="comment"> * Number of OS pages for the buffer</span>
+<span class="comment"> */</span>
+<span class="preprocessor">#define NUM_BUF_PAGES 1024</span>
+<span class="preprocessor"></span>
+
+<span class="comment">/*</span>
+<span class="comment"> * Record of memory references.  Rather than having two separate</span>
+<span class="comment"> * buffers for reads and writes, we just use one struct that includes a</span>
+<span class="comment"> * flag for type.</span>
+<span class="comment"> */</span>
+<span class="keyword">struct </span>MEMREF
+{
+    ADDRINT     pc;
+    ADDRINT     ea;
+    UINT32      size;
+    BOOL        read;
+};
+
+
+<span class="comment">/*</span>
+<span class="comment"> * MLOG - thread specific data that is not handled by the buffering API.</span>
+<span class="comment"> */</span>
+<span class="keyword">class </span>MLOG
+{
+  <span class="keyword">public</span>:
+    MLOG(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid);
+    ~MLOG();
+
+    VOID DumpBufferToFile( <span class="keyword">struct</span> MEMREF * reference, UINT64 numElements, <a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid );
+
+  <span class="keyword">private</span>:
+    ofstream _ofile;
+};
+
+
+MLOG::MLOG(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid)
+{
+    string filename = KnobOutputFile.Value() + <span class="stringliteral">"."</span> + <a class="code" href="group__MISC__PRINT.html#gc6fa0ac95dc5a5baf1093baa1efc6b6c">decstr</a>(getpid_portable()) + <span class="stringliteral">"."</span> + <a class="code" href="group__MISC__PRINT.html#gc6fa0ac95dc5a5baf1093baa1efc6b6c">decstr</a>(tid);
+    
+    _ofile.open(filename.c_str());
+    
+    <span class="keywordflow">if</span> ( ! _ofile )
+    {
+        cerr &lt;&lt; <span class="stringliteral">"Error: could not open output file."</span> &lt;&lt; endl;
+        exit(1);
+    }
+    
+    _ofile &lt;&lt; hex;
+}
+
+
+MLOG::~MLOG()
+{
+    _ofile.close();
+}
+
+
+VOID MLOG::DumpBufferToFile( <span class="keyword">struct</span> MEMREF * reference, UINT64 numElements, <a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid )
+{
+    <span class="keywordflow">for</span>(UINT64 i=0; i&lt;numElements; i++, reference++)
+    {
+        <span class="keywordflow">if</span> (reference-&gt;ea != 0)
+            _ofile &lt;&lt; reference-&gt;pc &lt;&lt; <span class="stringliteral">"   "</span> &lt;&lt; reference-&gt;ea &lt;&lt; endl;
+    }
+}
+
+
+
+<span class="comment">/**************************************************************************</span>
+<span class="comment"> *</span>
+<span class="comment"> *  Instrumentation routines</span>
+<span class="comment"> *</span>
+<span class="comment"> **************************************************************************/</span>
+
+<span class="comment">/*</span>
+<span class="comment"> * Insert code to write data to a thread-specific buffer for instructions</span>
+<span class="comment"> * that access memory.</span>
+<span class="comment"> */</span>
+VOID Trace(<a class="code" href="group__TRACE__BASIC__API.html#g72dbbb83ae9ca6278053a75123c920cc">TRACE</a> trace, VOID *v)
+{
+    <span class="keywordflow">for</span>(BBL bbl = <a class="code" href="group__TRACE__BASIC__API.html#g1804f26fc605c9344d57be21b392796b">TRACE_BblHead</a>(trace); <a class="code" href="group__BBL__BASIC__API.html#g5aaace888f68ec067f60e3b74c0b9131">BBL_Valid</a>(bbl); bbl=<a class="code" href="group__BBL__BASIC__API.html#g60805b0620b58e2c9ca2add6e16d26ef">BBL_Next</a>(bbl))
+    {
+        <span class="keywordflow">for</span>(INS ins = <a class="code" href="group__BBL__BASIC__API.html#gc87b625878d4ba42dfbeac2c81ac48bc">BBL_InsHead</a>(bbl); <a class="code" href="group__INS__BASIC__API__GEN__IA32.html#g98b61a0ca7456dce466a5f773656e310">INS_Valid</a>(ins); ins=<a class="code" href="group__INS__BASIC__API__GEN__IA32.html#g2711640bba1359feb3385a0c7b42ff4b">INS_Next</a>(ins))
+        {
+            <span class="keywordflow">if</span> (!<a class="code" href="group__INS__BASIC__API__IA32.html#g2bfb17c6ec47cfc44627d3b6b09a5c63">INS_IsStandardMemop</a>(ins) &amp;&amp; !<a class="code" href="group__INS__BASIC__API__IA32.html#g56a84169084f4ba2a6c07d881acb165c">INS_HasMemoryVector</a>(ins))
+            {
+                <span class="comment">// We don't know how to treat these instructions</span>
+                <span class="keywordflow">continue</span>;
+            }
+
+            UINT32 memoryOperands = <a class="code" href="group__INS__BASIC__API__GEN__IA32.html#g5ee651cd69d153bb2ee86594a37e3ad6">INS_MemoryOperandCount</a>(ins);
+
+            <span class="keywordflow">for</span> (UINT32 memOp = 0; memOp &lt; memoryOperands; memOp++)
+            {
+                UINT32 refSize = <a class="code" href="group__INS__BASIC__API__GEN__IA32.html#ga7cbec34f1fc0e6387b44304f38f41c8">INS_MemoryOperandSize</a>(ins, memOp);
+
+                <span class="comment">// Note that if the operand is both read and written we log it once</span>
+                <span class="comment">// for each.</span>
+                <span class="keywordflow">if</span> (<a class="code" href="group__INS__BASIC__API__GEN__IA32.html#g9200fcba361c9272ad963a5c5cb5c235">INS_MemoryOperandIsRead</a>(ins, memOp))
+                {
+                    <a class="code" href="group__INS__INST__API.html#g4b68e6136fdec6a50269edfa4ff4c977">INS_InsertFillBuffer</a>(ins, <a class="code" href="group__INST__ARGS.html#gga46cc1807fc61addd9afe69ee6736a21067f64649fede2cbd09ede8c118c6a0c">IPOINT_BEFORE</a>, bufId,
+                                         <a class="code" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b5681897daee5920e5c9b437f7da52faa758e">IARG_INST_PTR</a>, offsetof(<span class="keyword">struct</span> MEMREF, pc),
+                                         <a class="code" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b5681883955f1b855db490b9fca95e5497995">IARG_MEMORYOP_EA</a>, memOp, offsetof(<span class="keyword">struct</span> MEMREF, ea),
+                                         <a class="code" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56814346d7faa1ba877f5bcaf6281473bea3">IARG_UINT32</a>, refSize, offsetof(<span class="keyword">struct</span> MEMREF, size), 
+                                         <a class="code" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b5681dbe9ffb8ed09a01b294343c88b0fe35f">IARG_BOOL</a>, TRUE, offsetof(<span class="keyword">struct</span> MEMREF, read),
+                                         IARG_END);
+                }
+
+                <span class="keywordflow">if</span> (<a class="code" href="group__INS__BASIC__API__GEN__IA32.html#g0cb7a4138a881972c59ca8c855765fba">INS_MemoryOperandIsWritten</a>(ins, memOp))
+                {
+                    <a class="code" href="group__INS__INST__API.html#g4b68e6136fdec6a50269edfa4ff4c977">INS_InsertFillBuffer</a>(ins, <a class="code" href="group__INST__ARGS.html#gga46cc1807fc61addd9afe69ee6736a21067f64649fede2cbd09ede8c118c6a0c">IPOINT_BEFORE</a>, bufId,
+                                         <a class="code" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b5681897daee5920e5c9b437f7da52faa758e">IARG_INST_PTR</a>, offsetof(<span class="keyword">struct</span> MEMREF, pc),
+                                         <a class="code" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b5681883955f1b855db490b9fca95e5497995">IARG_MEMORYOP_EA</a>, memOp, offsetof(<span class="keyword">struct</span> MEMREF, ea),
+                                         <a class="code" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56814346d7faa1ba877f5bcaf6281473bea3">IARG_UINT32</a>, refSize, offsetof(<span class="keyword">struct</span> MEMREF, size), 
+                                         <a class="code" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b5681dbe9ffb8ed09a01b294343c88b0fe35f">IARG_BOOL</a>, FALSE, offsetof(<span class="keyword">struct</span> MEMREF, read),
+                                         IARG_END);
+                }
+            }
+        }
+    }
+}
+
+
+<span class="comment">/**************************************************************************</span>
+<span class="comment"> *</span>
+<span class="comment"> *  Callback Routines</span>
+<span class="comment"> *</span>
+<span class="comment"> **************************************************************************/</span>
+
+VOID * BufferFull(BUFFER_ID <span class="keywordtype">id</span>, <a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid, <span class="keyword">const</span> <a class="code" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, VOID *buf,
+                  UINT64 numElements, VOID *v)
+{
+    <span class="keyword">struct </span>MEMREF * reference=(<span class="keyword">struct </span>MEMREF*)buf;
+
+    MLOG * mlog = static_cast&lt;MLOG*&gt;( <a class="code" href="group__DEPRECATED__PIN__API.html#g428ab4182b5fec58ee34b21362774d5f">PIN_GetThreadData</a>( mlog_key, tid ) );
+
+    mlog-&gt;DumpBufferToFile( reference, numElements, tid );
+    
+    <span class="keywordflow">return</span> buf;
+}
+
+
+<span class="comment">/*</span>
+<span class="comment"> * Note that opening a file in a callback is only supported on Linux systems.</span>
+<span class="comment"> * See buffer-win.cpp for how to work around this issue on Windows.</span>
+<span class="comment"> */</span>
+VOID ThreadStart(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid, <a class="code" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, INT32 flags, VOID *v)
+{
+    <span class="comment">// There is a new MLOG for every thread.  Opens the output file.</span>
+    MLOG * mlog = <span class="keyword">new</span> MLOG(tid);
+
+    <span class="comment">// A thread will need to look up its MLOG, so save pointer in TLS</span>
+    <a class="code" href="group__DEPRECATED__PIN__API.html#g1aa594f2e2588a78829ad0c608a55048">PIN_SetThreadData</a>(mlog_key, mlog, tid);
+
+}
+
+
+VOID ThreadFini(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid, <span class="keyword">const</span> <a class="code" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, INT32 code, VOID *v)
+{
+    MLOG * mlog = static_cast&lt;MLOG*&gt;(<a class="code" href="group__DEPRECATED__PIN__API.html#g428ab4182b5fec58ee34b21362774d5f">PIN_GetThreadData</a>(mlog_key, tid));
+
+    <span class="keyword">delete</span> mlog;
+
+    <a class="code" href="group__DEPRECATED__PIN__API.html#g1aa594f2e2588a78829ad0c608a55048">PIN_SetThreadData</a>(mlog_key, 0, tid);
+}
+
+
+<span class="comment">/* ===================================================================== */</span>
+<span class="comment">/* Print Help Message                                                    */</span>
+<span class="comment">/* ===================================================================== */</span>
+
+INT32 Usage()
+{
+    cerr &lt;&lt; <span class="stringliteral">"This tool demonstrates the basic use of the buffering API."</span> &lt;&lt; endl;
+    cerr &lt;&lt; endl &lt;&lt; KNOB_BASE::StringKnobSummary() &lt;&lt; endl;
+    <span class="keywordflow">return</span> -1;
+}
+
+
+<span class="comment">/* ===================================================================== */</span>
+<span class="comment">/* Main                                                                  */</span>
+<span class="comment">/* ===================================================================== */</span>
+<span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> *argv[])
+{
+    <span class="comment">// Initialize PIN library. Print help message if -h(elp) is specified</span>
+    <span class="comment">// in the command line or the command line is invalid</span>
+    <span class="keywordflow">if</span>( <a class="code" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init</a>(argc,argv) )
+    {
+        <span class="keywordflow">return</span> Usage();
+    }
+    
+    <span class="comment">// Initialize the memory reference buffer;</span>
+    <span class="comment">// set up the callback to process the buffer.</span>
+    <span class="comment">//</span>
+    bufId = <a class="code" href="group__BUFFER__API.html#g16f88ae475a2539bfec3c7ce8b9eb16e">PIN_DefineTraceBuffer</a>(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> MEMREF), NUM_BUF_PAGES,
+                                  BufferFull, 0);
+
+    <span class="keywordflow">if</span>(bufId == BUFFER_ID_INVALID)
+    {
+        cerr &lt;&lt; <span class="stringliteral">"Error: could not allocate initial buffer"</span> &lt;&lt; endl;
+        <span class="keywordflow">return</span> 1;
+    }
+
+    <span class="comment">// Initialize thread-specific data not handled by buffering api.</span>
+    mlog_key = <a class="code" href="group__PIN__THREAD__API.html#g36b79c1845d1874b1d6fbe7c8e7f3e91">PIN_CreateThreadDataKey</a>(0);
+   
+    <span class="comment">// add an instrumentation function</span>
+    <a class="code" href="group__TRACE__BASIC__API.html#g0261da0abe384db4e2f97cd31cf986f7">TRACE_AddInstrumentFunction</a>(Trace, 0);
+
+    <span class="comment">// add callbacks</span>
+    <a class="code" href="group__PIN__CONTROL.html#g0549831d0b423aea93768b1bc491938b">PIN_AddThreadStartFunction</a>(ThreadStart, 0);
+    <a class="code" href="group__PIN__CONTROL.html#gc3f2c06e525bd0f23e8aa55f801989df">PIN_AddThreadFiniFunction</a>(ThreadFini, 0);
+
+    <span class="comment">// Start the program, never returns</span>
+    <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
+    
+    <span class="keywordflow">return</span> 0;
+}
+
+
+</pre></div><h3><a class="anchor" name="StaticInstructionCounts">
 Finding the Static Properties of an Image</a></h3>
 It is also possible to use pin to examine binaries without instrumenting them. This is useful when you need to know static properties of an image. The sample tool below counts the number of instructions in an image, but does not insert any instrumentation.<p>
 The example can be found in source/tools/ManualExamples/staticcount.cpp<p>
@@ -1600,9 +1895,9 @@ VOID ImageLoad(IMG img, VOID *v)
 {
     UINT32 count = 0;
     
-    <span class="keywordflow">for</span> (SEC sec = <a class="code" href="group__IMG__BASIC__API.html#gc217d3b81c96828a0ee9a7574d3ac05f">IMG_SecHead</a>(img); <a class="code" href="group__SEC__BASIC__API.html#g1b12fe810ea34835d192449f8d41e226">SEC_Valid</a>(sec); sec = <a class="code" href="group__SEC__BASIC__API.html#g594dcea6346920b05dc979e379959a77">SEC_Next</a>(sec))
+    <span class="keywordflow">for</span> (SEC sec = <a class="code" href="group__IMG__BASIC__API.html#g33f7761534eeb9e0d8caffa9dd9c7b29">IMG_SecHead</a>(img); <a class="code" href="group__SEC__BASIC__API.html#g1b12fe810ea34835d192449f8d41e226">SEC_Valid</a>(sec); sec = <a class="code" href="group__SEC__BASIC__API.html#g75fc1b62fe6f1d67d36e3215e464f000">SEC_Next</a>(sec))
     { 
-        <span class="keywordflow">for</span> (RTN rtn = <a class="code" href="group__SEC__BASIC__API.html#g3015a2dd44717006bca05e459b344b42">SEC_RtnHead</a>(sec); <a class="code" href="group__RTN__BASIC__API.html#g2883b22d046e8c6c5ac303465dfa4ed6">RTN_Valid</a>(rtn); rtn = <a class="code" href="group__RTN__BASIC__API.html#gf21d0d3fd6851e83e42827f09c03a4e7">RTN_Next</a>(rtn))
+        <span class="keywordflow">for</span> (RTN rtn = <a class="code" href="group__SEC__BASIC__API.html#g1a81afab78e506eb52b3c4d5fa81584d">SEC_RtnHead</a>(sec); <a class="code" href="group__RTN__BASIC__API.html#g2883b22d046e8c6c5ac303465dfa4ed6">RTN_Valid</a>(rtn); rtn = <a class="code" href="group__RTN__BASIC__API.html#gf21d0d3fd6851e83e42827f09c03a4e7">RTN_Next</a>(rtn))
         {
             <span class="comment">// Prepare for processing of RTN, an  RTN is not broken up into BBLs,</span>
             <span class="comment">// it is merely a sequence of INSs </span>
@@ -1617,7 +1912,7 @@ VOID ImageLoad(IMG img, VOID *v)
             <a class="code" href="group__RTN__BASIC__API.html#g1e79031f51f9dbdc1726cc46b01870c3">RTN_Close</a>(rtn);
         }
     }
-    fprintf(stderr, <span class="stringliteral">"Image %s has  %d instructions\n"</span>, <a class="code" href="group__IMG__BASIC__API.html#g9f68164bfac7c031b82549eba91681c3">IMG_Name</a>(img).c_str(), count);
+    fprintf(stderr, <span class="stringliteral">"Image %s has  %d instructions\n"</span>, <a class="code" href="group__IMG__BASIC__API.html#g491b26d161526b35498839f5cdf30a76">IMG_Name</a>(img).c_str(), count);
 }
 
 <span class="comment">/* ===================================================================== */</span>
@@ -1645,7 +1940,7 @@ INT32 Usage()
     <span class="keywordflow">if</span> (<a class="code" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init</a>(argc, argv)) <span class="keywordflow">return</span> Usage();
 
     <span class="comment">// Register ImageLoad to be called when an image is loaded</span>
-    <a class="code" href="group__IMG__BASIC__API.html#gb0ad0d50126fd5ddcfee28005c681049">IMG_AddInstrumentFunction</a>(ImageLoad, 0);
+    <a class="code" href="group__IMG__BASIC__API.html#g4867c865fcf260951b7d750aaaaa0007">IMG_AddInstrumentFunction</a>(ImageLoad, 0);
 
     <span class="comment">// Start the program, never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -1710,11 +2005,11 @@ INT32 Usage()
 
     <span class="comment">// Callback function to invoke for every </span>
     <span class="comment">// execution of an instruction</span>
-    <a class="code" href="group__INS__INST__API.html#ga80cd9a7905b82a86b9e31d9bf589dbe">INS_AddInstrumentFunction</a>(Instruction, 0);
+    <a class="code" href="group__INS__INST__API.html#gad5fd5cdd6c1cd37e57a1264e93b0435">INS_AddInstrumentFunction</a>(Instruction, 0);
     
     <span class="comment">// Callback functions to invoke before</span>
     <span class="comment">// Pin releases control of the application</span>
-    <a class="code" href="group__PIN__CONTROL.html#g451060f5e998243df750ac16720cadcf">PIN_AddDetachFunction</a>(ByeWorld, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g4c85e2907788d57d10241d4f8b86a170">PIN_AddDetachFunction</a>(ByeWorld, 0);
     
     <span class="comment">// Never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -1774,7 +2069,7 @@ VOID ImageLoad( IMG img, VOID *v )
     
     <span class="keywordflow">if</span> (<a class="code" href="group__RTN__BASIC__API.html#g2883b22d046e8c6c5ac303465dfa4ed6">RTN_Valid</a>(rtn))
     {
-        cout &lt;&lt; <span class="stringliteral">"Replacing malloc in "</span> &lt;&lt; <a class="code" href="group__IMG__BASIC__API.html#g9f68164bfac7c031b82549eba91681c3">IMG_Name</a>(img) &lt;&lt; endl;
+        cout &lt;&lt; <span class="stringliteral">"Replacing malloc in "</span> &lt;&lt; <a class="code" href="group__IMG__BASIC__API.html#g491b26d161526b35498839f5cdf30a76">IMG_Name</a>(img) &lt;&lt; endl;
         
         <span class="comment">// Define a function prototype that describes the application routine</span>
         <span class="comment">// that will be replaced.</span>
@@ -1828,7 +2123,7 @@ INT32 Usage()
     
     <span class="comment">// Register ImageLoad to be called when an image is loaded</span>
     <span class="comment">//</span>
-    <a class="code" href="group__IMG__BASIC__API.html#gb0ad0d50126fd5ddcfee28005c681049">IMG_AddInstrumentFunction</a>( ImageLoad, 0 );
+    <a class="code" href="group__IMG__BASIC__API.html#g4867c865fcf260951b7d750aaaaa0007">IMG_AddInstrumentFunction</a>( ImageLoad, 0 );
     
     <span class="comment">// Start the program in probe mode, never returns</span>
     <span class="comment">//</span>
@@ -1839,8 +2134,8 @@ INT32 Usage()
 
 </pre></div><h3><a class="anchor" name="FollowChild">
 Instrumenting Child Processes</a></h3>
-The <a class="el" href="group__PIN__CONTROL.html#g7e45677714ab29a8d249f772de89f170">PIN_AddFollowChildProcessFunction()</a> allows you to define the function you will like to execute before an execv'd process starts. Use the -follow_execv option on the command line to instrument the child processes, like this:<p>
-<div class="fragment"><pre class="fragment">$ pin -follow_execv -t obj-intel64/follow_child_tool.so -- obj-intel64/follow_child_app1 obj-intel64/follow_child_app2
+The <a class="el" href="group__PIN__CONTROL.html#g4f667d78b5533ec07b15ef4df0d7a78e">PIN_AddFollowChildProcessFunction()</a> allows you to define the function you will like to execute before an execv'd process starts. Use the -follow_execv option on the command line to instrument the child processes, like this:<p>
+<div class="fragment"><pre class="fragment">$ ../../../pin -follow_execv -t obj-intel64/follow_child_tool.so -- obj-intel64/follow_child_app1 obj-intel64/follow_child_app2
 </pre></div><p>
 The example can be found in source/tools/ManualExamples/follow_child_tool.cpp. To build this test, execute: <div class="fragment"><pre class="fragment">$ make follow_child_tool.test
 </pre></div><p>
@@ -1866,7 +2161,7 @@ BOOL FollowChild(<a class="code" href="group__CHILD__PROCESS__API.html#g104e2b5e
 {
     <a class="code" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init</a>(argc, argv);
 
-    <a class="code" href="group__PIN__CONTROL.html#g7e45677714ab29a8d249f772de89f170">PIN_AddFollowChildProcessFunction</a>(FollowChild, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g4f667d78b5533ec07b15ef4df0d7a78e">PIN_AddFollowChildProcessFunction</a>(FollowChild, 0);
 
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
 
@@ -1875,11 +2170,11 @@ BOOL FollowChild(<a class="code" href="group__CHILD__PROCESS__API.html#g104e2b5e
 
 </pre></div><h3><a class="anchor" name="ForkOnLinux">
 Instrumenting Before and After Forks</a></h3>
-Pin allows Pintools to register for notification callbacks around forks. The <a class="el" href="group__PIN__CONTROL.html#gd7da7a3f8249e8708524ee4b35f6e9ce">PIN_AddForkFunction()</a> and <a class="el" href="group__PIN__CONTROL.html#g03f417057aac38bb39103bcaabef6f72">PIN_AddForkFunctionProbed()</a> callbacks allow you to define the function you want to execute at one of these FPOINTs: <div class="fragment"><pre class="fragment">    FPOINT_BEFORE            Call-back in parent, just before fork.  
+Pin allows Pintools to register for notification callbacks around forks. The <a class="el" href="group__PIN__CONTROL.html#ga141366d36aec81e19f4576de1c3f2e4">PIN_AddForkFunction()</a> and <a class="el" href="group__PIN__CONTROL.html#g1e0ca5fc45108b0610ad773bc56117f5">PIN_AddForkFunctionProbed()</a> callbacks allow you to define the function you want to execute at one of these FPOINTs: <div class="fragment"><pre class="fragment">    FPOINT_BEFORE            Call-back in parent, just before fork.  
     FPOINT_AFTER_IN_PARENT   Call-back in parent, immediately after fork.  
     FPOINT_AFTER_IN_CHILD    Call-back in child, immediately after fork.  
 </pre></div><p>
-Note that <a class="el" href="group__PIN__CONTROL.html#gd7da7a3f8249e8708524ee4b35f6e9ce">PIN_AddForkFunction()</a> is used for JIT mode and <a class="el" href="group__PIN__CONTROL.html#g03f417057aac38bb39103bcaabef6f72">PIN_AddForkFunctionProbed()</a> is used for Probed mode. If the fork() fails, the FPOINT_AFTER_IN_PARENT callback, if it is defined, will execute anyway.<p>
+Note that <a class="el" href="group__PIN__CONTROL.html#ga141366d36aec81e19f4576de1c3f2e4">PIN_AddForkFunction()</a> is used for JIT mode and <a class="el" href="group__PIN__CONTROL.html#g1e0ca5fc45108b0610ad773bc56117f5">PIN_AddForkFunctionProbed()</a> is used for Probed mode. If the fork() fails, the FPOINT_AFTER_IN_PARENT callback, if it is defined, will execute anyway.<p>
 The example can be found in source/tools/ManualExamples/fork_jit_tool.cpp. To build this test, execute: <div class="fragment"><pre class="fragment">$ make fork_jit_tool.test
 </pre></div><p>
 <div class="fragment"><pre class="fragment">
@@ -1912,17 +2207,17 @@ PIN_LOCK lock;
 
 VOID BeforeFork(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> threadid, <span class="keyword">const</span> <a class="code" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a>* ctxt, VOID * arg)
 {
-    <a class="code" href="group__LOCK.html#g36070bd375e4defc52ecfc38f9c46732">GetLock</a>(&amp;lock, threadid+1);
+    <a class="code" href="group__LOCK.html#gc7b6e6ed4fb7e14452b85b96d5c42c10">PIN_GetLock</a>(&amp;lock, threadid+1);
     cerr &lt;&lt; <span class="stringliteral">"TOOL: Before fork."</span> &lt;&lt; endl;
-    <a class="code" href="group__LOCK.html#ge1f816bf92874cea96639dac6af37849">ReleaseLock</a>(&amp;lock);
+    <a class="code" href="group__LOCK.html#g85d4faf75e968d46ca52986058ebd8c7">PIN_ReleaseLock</a>(&amp;lock);
     parent_pid = <a class="code" href="group__PIN__PROCESS__API.html#ga49549dfe3363154368aa80038463078">PIN_GetPid</a>();
 }
 
 VOID AfterForkInParent(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> threadid, <span class="keyword">const</span> <a class="code" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a>* ctxt, VOID * arg)
 {
-    <a class="code" href="group__LOCK.html#g36070bd375e4defc52ecfc38f9c46732">GetLock</a>(&amp;lock, threadid+1);
+    <a class="code" href="group__LOCK.html#gc7b6e6ed4fb7e14452b85b96d5c42c10">PIN_GetLock</a>(&amp;lock, threadid+1);
     cerr &lt;&lt; <span class="stringliteral">"TOOL: After fork in parent."</span> &lt;&lt; endl;
-    <a class="code" href="group__LOCK.html#ge1f816bf92874cea96639dac6af37849">ReleaseLock</a>(&amp;lock);
+    <a class="code" href="group__LOCK.html#g85d4faf75e968d46ca52986058ebd8c7">PIN_ReleaseLock</a>(&amp;lock);
 
     <span class="keywordflow">if</span> (<a class="code" href="group__PIN__PROCESS__API.html#ga49549dfe3363154368aa80038463078">PIN_GetPid</a>() != parent_pid)
     {
@@ -1933,9 +2228,9 @@ VOID AfterForkInParent(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c
 
 VOID AfterForkInChild(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> threadid, <span class="keyword">const</span> <a class="code" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a>* ctxt, VOID * arg)
 {
-    <a class="code" href="group__LOCK.html#g36070bd375e4defc52ecfc38f9c46732">GetLock</a>(&amp;lock, threadid+1);
+    <a class="code" href="group__LOCK.html#gc7b6e6ed4fb7e14452b85b96d5c42c10">PIN_GetLock</a>(&amp;lock, threadid+1);
     cerr &lt;&lt; <span class="stringliteral">"TOOL: After fork in child."</span> &lt;&lt; endl;
-    <a class="code" href="group__LOCK.html#ge1f816bf92874cea96639dac6af37849">ReleaseLock</a>(&amp;lock);
+    <a class="code" href="group__LOCK.html#g85d4faf75e968d46ca52986058ebd8c7">PIN_ReleaseLock</a>(&amp;lock);
     
     <span class="keywordflow">if</span> ((<a class="code" href="group__PIN__PROCESS__API.html#ga49549dfe3363154368aa80038463078">PIN_GetPid</a>() == parent_pid) || (getppid() != parent_pid))
     {
@@ -1953,17 +2248,323 @@ VOID AfterForkInChild(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c8
     }
     
     <span class="comment">// Initialize the pin lock</span>
-    <a class="code" href="group__LOCK.html#g7b98e356ed047ffd72a7a8f7b63620af">InitLock</a>(&amp;lock);
+    <a class="code" href="group__LOCK.html#ga07949dcd22a1c5d8fe209767b4dd490">PIN_InitLock</a>(&amp;lock);
     
     <span class="comment">// Register a notification handler that is called when the application</span>
     <span class="comment">// forks a new process.</span>
-    <a class="code" href="group__PIN__CONTROL.html#gd7da7a3f8249e8708524ee4b35f6e9ce">PIN_AddForkFunction</a>(<a class="code" href="group__PIN__CONTROL.html#ggb6974c15e664605870435c05a1bf33bd1bf77c6f3a5ac150cf7fb1c10f0429cf">FPOINT_BEFORE</a>, BeforeFork, 0);  
-    <a class="code" href="group__PIN__CONTROL.html#gd7da7a3f8249e8708524ee4b35f6e9ce">PIN_AddForkFunction</a>(<a class="code" href="group__PIN__CONTROL.html#ggb6974c15e664605870435c05a1bf33bdcba5c8d0ce036ae68ab51e180e5f7d35">FPOINT_AFTER_IN_PARENT</a>, AfterForkInParent, 0);
-    <a class="code" href="group__PIN__CONTROL.html#gd7da7a3f8249e8708524ee4b35f6e9ce">PIN_AddForkFunction</a>(<a class="code" href="group__PIN__CONTROL.html#ggb6974c15e664605870435c05a1bf33bd35c7c8f0fae3a1a1cbe29d6d79045c88">FPOINT_AFTER_IN_CHILD</a>, AfterForkInChild, 0);
+    <a class="code" href="group__PIN__CONTROL.html#ga141366d36aec81e19f4576de1c3f2e4">PIN_AddForkFunction</a>(<a class="code" href="group__PIN__CONTROL.html#ggb6974c15e664605870435c05a1bf33bd1bf77c6f3a5ac150cf7fb1c10f0429cf">FPOINT_BEFORE</a>, BeforeFork, 0);  
+    <a class="code" href="group__PIN__CONTROL.html#ga141366d36aec81e19f4576de1c3f2e4">PIN_AddForkFunction</a>(<a class="code" href="group__PIN__CONTROL.html#ggb6974c15e664605870435c05a1bf33bdcba5c8d0ce036ae68ab51e180e5f7d35">FPOINT_AFTER_IN_PARENT</a>, AfterForkInParent, 0);
+    <a class="code" href="group__PIN__CONTROL.html#ga141366d36aec81e19f4576de1c3f2e4">PIN_AddForkFunction</a>(<a class="code" href="group__PIN__CONTROL.html#ggb6974c15e664605870435c05a1bf33bd35c7c8f0fae3a1a1cbe29d6d79045c88">FPOINT_AFTER_IN_CHILD</a>, AfterForkInChild, 0);
     
     <span class="comment">// Never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
     
+    <span class="keywordflow">return</span> 0;
+}
+</pre></div><h3><a class="anchor" name="JitApiTools">
+Managed platforms support</a></h3>
+Pin allows Pintools to indentify dynamically created code using <a class="el" href="group__RTN__BASIC__API.html#gb36b828dc06d754e79780245d938dc7b">RTN_IsDynamic()</a> API (only code of functions which are reported by <a href="http://software.intel.com/sites/products/documentation/doclib/iss/2013/amplifier/lin/ug_docs/GUID-17D7238B-DD19-45DB-B5E0-D9B344D1BE96.htm">Jit Profiling API</a>). The following example demonstrates use of <a class="el" href="group__RTN__BASIC__API.html#gb36b828dc06d754e79780245d938dc7b">RTN_IsDynamic()</a> API. This example instruments a program to count the total number of instructions discovered and executed. The instructions are divided to three categories: native instructions, dynamic instructions and instructions without any known routine.<p>
+Here is how to run it and display its output with a 32 bit OpenCL sample on Windows:<p>
+<div class="fragment"><pre class="fragment">$ set CL_CONFIG_USE_VTUNE=True
+$ set INTEL_JIT_PROFILER32=ia32\bin\pinjitprofiling.dll
+$ ia32\bin\pin.exe -t source\tools\JitProfilingApiTests\obj-ia32\DynamicInsCount.dll -support_jit_api -o DynamicInsCount.out -- ..\OpenCL\Win32\Debug\BitonicSort.exe
+No command line arguments specified, using default values.
+Initializing OpenCL runtime...
+Trying to run on a CPU
+OpenCL data alignment is 128 bytes.
+Reading file 'BitonicSort.cl' (size 3435 bytes)
+Sort order is ascending
+Input size is 1048576 items
+Executing OpenCL kernel...
+Executing reference...
+Performing verification...
+Verification succeeded.
+NDRange perf. counter time 12994.272962 ms.
+Releasing resources...
+$ type JitInsCount.out
+===============================================
+Number of executed native instructions: 7631596649
+Number of executed jitted instructions: 438983207
+Number of executed instructions without any known routine: 12246
+===============================================
+Number of discovered native instructions: 870531
+Number of discovered jitted instructions: 223
+Number of discovered instructions without any known routine: 36
+===============================================
+
+$
+</pre></div><p>
+The example can be found in source.cpp<p>
+<div class="fragment"><pre class="fragment"><span class="preprocessor">#include "pin.H"</span>
+<span class="preprocessor">#include &lt;iostream&gt;</span>
+<span class="preprocessor">#include &lt;fstream&gt;</span>
+
+<span class="comment">// ==================================================================</span>
+<span class="comment">// Global variables</span>
+<span class="comment">// ==================================================================</span>
+
+UINT64 insNativeDiscoveredCount = 0;  <span class="comment">//number of discovered native instructions</span>
+UINT64 insDynamicDiscoveredCount = 0; <span class="comment">//number of discovered dynamic instructions</span>
+UINT64 insNoRtnDiscoveredCount = 0;   <span class="comment">//number of discovered instructions without any known routine</span>
+
+UINT64 insNativeExecutedCount = 0;  <span class="comment">//number of executed native instructions</span>
+UINT64 insDynamicExecutedCount = 0; <span class="comment">//number of executed dynamic instructions</span>
+UINT64 insNoRtnExecutedCount = 0;   <span class="comment">//number of executed instructions without any known routine</span>
+
+std::ostream * out = &amp;cerr;
+
+<span class="comment">// =====================================================================</span>
+<span class="comment">// Command line switches</span>
+<span class="comment">// =====================================================================</span>
+
+KNOB&lt;string&gt; KnobOutputFile(<a class="code" href="group__KNOB__BASIC.html#gg7cca44bfaca0b4c0f4a6a469ae5b9d67f0336979b5a81ce10e8a3d8f2345d606">KNOB_MODE_WRITEONCE</a>,  <span class="stringliteral">"pintool"</span>, <span class="stringliteral">"o"</span>, <span class="stringliteral">""</span>, <span class="stringliteral">"specify file name for output"</span>);
+
+<span class="comment">// =====================================================================</span>
+<span class="comment">// Utilities</span>
+<span class="comment">// =====================================================================</span>
+
+<span class="comment">// Print out help message.</span>
+INT32 Usage()
+{
+    cerr &lt;&lt; <span class="stringliteral">"This tool prints out the number of native and dynamic instructions"</span> &lt;&lt; endl;
+    cerr &lt;&lt; KNOB_BASE::StringKnobSummary() &lt;&lt; endl;
+    <span class="keywordflow">return</span> -1;
+}
+
+<span class="comment">// =====================================================================</span>
+<span class="comment">// Analysis routines</span>
+<span class="comment">// =====================================================================</span>
+
+<span class="comment">// This function is called before every native instruction is executed</span>
+VOID InsNativeCount()
+{
+    ++insNativeExecutedCount;
+}
+
+<span class="comment">// This function is called before every dynamic instruction is executed</span>
+VOID InsDynamicCount()
+{
+    ++insDynamicExecutedCount;
+}
+
+<span class="comment">// This function is called before every instruction without any known routine is executed</span>
+VOID InsNoRtnCount()
+{
+    ++insNoRtnExecutedCount;
+}
+
+<span class="comment">// =====================================================================</span>
+<span class="comment">// Instrumentation callbacks</span>
+<span class="comment">// =====================================================================</span>
+
+<span class="comment">// Pin calls this function every time a new instruction is encountered</span>
+VOID Instruction(INS ins, VOID *v)
+{
+    RTN rtn = <a class="code" href="group__INS__BASIC__API__GEN__IA32.html#ge180d58ae453f61a939b1c4c5a66c129">INS_Rtn</a>(ins);
+    <span class="keywordflow">if</span> (!<a class="code" href="group__RTN__BASIC__API.html#g2883b22d046e8c6c5ac303465dfa4ed6">RTN_Valid</a>(rtn))
+    {
+        ++insNoRtnDiscoveredCount;
+        <a class="code" href="group__INS__INST__API.html#g82d2ecc73dcd5e2af26fef5bd6ff7190">INS_InsertCall</a>(ins, <a class="code" href="group__INST__ARGS.html#gga46cc1807fc61addd9afe69ee6736a21067f64649fede2cbd09ede8c118c6a0c">IPOINT_BEFORE</a>, (AFUNPTR)InsNoRtnCount, IARG_END);
+    }
+    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="group__RTN__BASIC__API.html#gb36b828dc06d754e79780245d938dc7b">RTN_IsDynamic</a>(rtn))
+    {
+        ++insDynamicDiscoveredCount;
+        <a class="code" href="group__INS__INST__API.html#g82d2ecc73dcd5e2af26fef5bd6ff7190">INS_InsertCall</a>(ins, <a class="code" href="group__INST__ARGS.html#gga46cc1807fc61addd9afe69ee6736a21067f64649fede2cbd09ede8c118c6a0c">IPOINT_BEFORE</a>, (AFUNPTR)InsDynamicCount, IARG_END);
+    }
+    <span class="keywordflow">else</span>
+    {
+        ++insNativeDiscoveredCount;
+        <a class="code" href="group__INS__INST__API.html#g82d2ecc73dcd5e2af26fef5bd6ff7190">INS_InsertCall</a>(ins, <a class="code" href="group__INST__ARGS.html#gga46cc1807fc61addd9afe69ee6736a21067f64649fede2cbd09ede8c118c6a0c">IPOINT_BEFORE</a>, (AFUNPTR)InsNativeCount, IARG_END);
+    }
+}
+
+<span class="comment">// Print out analysis results.</span>
+<span class="comment">// This function is called when the application exits.</span>
+<span class="comment">// @param[in]   code            exit code of the application</span>
+<span class="comment">// @param[in]   v               value specified by the tool in the</span>
+<span class="comment">//                              PIN_AddFiniFunction function call</span>
+VOID Fini(INT32 code, VOID *v)
+{
+    *out &lt;&lt;  <span class="stringliteral">"==============================================="</span> &lt;&lt; endl;
+    *out &lt;&lt;  <span class="stringliteral">"Number of executed native instructions: "</span> &lt;&lt; insNativeExecutedCount &lt;&lt; endl;
+    *out &lt;&lt;  <span class="stringliteral">"Number of executed dynamic instructions: "</span> &lt;&lt; insDynamicExecutedCount &lt;&lt; endl;
+    *out &lt;&lt;  <span class="stringliteral">"Number of executed instructions without any known routine: "</span> &lt;&lt; insNoRtnExecutedCount &lt;&lt; endl;
+    *out &lt;&lt;  <span class="stringliteral">"==============================================="</span> &lt;&lt; endl;
+    *out &lt;&lt;  <span class="stringliteral">"Number of discovered native instructions: "</span> &lt;&lt; insNativeDiscoveredCount &lt;&lt; endl;
+    *out &lt;&lt;  <span class="stringliteral">"Number of discovered dynamic instructions: "</span> &lt;&lt; insDynamicDiscoveredCount &lt;&lt; endl;
+    *out &lt;&lt;  <span class="stringliteral">"Number of discovered instructions without any known routine: "</span> &lt;&lt; insNoRtnDiscoveredCount &lt;&lt; endl;
+    *out &lt;&lt;  <span class="stringliteral">"==============================================="</span> &lt;&lt; endl;
+
+    string fileName = KnobOutputFile.Value();
+    <span class="keywordflow">if</span> (!fileName.empty())
+    {
+        <span class="keyword">delete</span> out;
+    }
+}
+
+<span class="comment">// The main procedure of the tool.</span>
+<span class="comment">// This function is called when the application image is loaded but not yet started.</span>
+<span class="comment">// @param[in]   argc            total number of elements in the argv array</span>
+<span class="comment">// @param[in]   argv            array of command line arguments,</span>
+<span class="comment">//                              including pin -t &lt;toolname&gt; -- ...</span>
+<span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> *argv[])
+{
+    <span class="comment">// Initialize symbol processing</span>
+    <a class="code" href="group__PIN__CONTROL.html#ga6749650a8dce7151075fcc9345f7bd9">PIN_InitSymbols</a>();
+
+    <span class="comment">// Initialize PIN library. Print help message if -h(elp) is specified</span>
+    <span class="comment">// in the command line or the command line is invalid</span>
+    <span class="keywordflow">if</span>(<a class="code" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init</a>(argc,argv))
+    {
+        <span class="keywordflow">return</span> Usage();
+    }
+
+    string fileName = KnobOutputFile.Value();
+
+    <span class="keywordflow">if</span> (!fileName.empty())
+    {
+        out = <span class="keyword">new</span> std::ofstream(fileName.c_str());
+    }
+
+    <span class="comment">// Register Instruction to be called to instrument instructions</span>
+    <a class="code" href="group__INS__INST__API.html#gad5fd5cdd6c1cd37e57a1264e93b0435">INS_AddInstrumentFunction</a>(Instruction, NULL);
+
+    <span class="comment">// Register function to be called when the application exits</span>
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, NULL);
+
+    <span class="comment">// Start the program, never returns</span>
+    <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
+
+    <span class="keywordflow">return</span> 0;
+}
+</pre></div><p>
+Pin allows Pintools to instrument just compiled functions using <a class="el" href="group__RTN__BASIC__API.html#g50b3794c06a99774ed62abec8ad3b173">RTN_AddInstrumentFunction</a> API. Following example instruments a program to log Jitting and running of dynamic functions which are reported by <a href="http://software.intel.com/sites/products/documentation/doclib/iss/2013/amplifier/lin/ug_docs/GUID-17D7238B-DD19-45DB-B5E0-D9B344D1BE96.htm">Jit Profiling API</a>.<p>
+Here is how to run it with a 64 bit OpenCL sample on Linux:<p>
+<div class="fragment"><pre class="fragment">$ setenv CL_CONFIG_USE_VTUNE True
+$ setenv INTEL_JIT_PROFILER64 intel64/lib/libpinjitprofiling.so
+$ ./pin -t source/tools/JitProfilingApiTests/obj-intel64/DynamicFuncInstrument.so -support_jit_api -o DynamicFuncInstrument.out -- ..\OpenCL\Win32\Debug\BitonicSort.exe
+No command line arguments specified, using default values.
+Initializing OpenCL runtime...
+Trying to run on a CPU
+OpenCL data alignment is 128 bytes.
+Reading file 'BitonicSort.cl' (size 3435 bytes)
+Sort order is ascending
+Input size is 1048576 items
+Executing OpenCL kernel...
+Executing reference...
+Performing verification...
+Verification succeeded.
+NDRange perf. counter time 12994.272962 ms.
+Releasing resources...
+$
+</pre></div><p>
+The example can be found in source.cpp<p>
+<div class="fragment"><pre class="fragment"><span class="preprocessor">#include "pin.H"</span>
+<span class="preprocessor">#include &lt;iostream&gt;</span>
+<span class="preprocessor">#include &lt;fstream&gt;</span>
+
+<span class="comment">// =====================================================================</span>
+<span class="comment">// Global variables</span>
+<span class="comment">// =====================================================================</span>
+
+std::ostream * out = &amp;cerr;
+
+<span class="comment">// =====================================================================</span>
+<span class="comment">// Command line switches</span>
+<span class="comment">// =====================================================================</span>
+
+KNOB&lt;string&gt; KnobOutputFile(<a class="code" href="group__KNOB__BASIC.html#gg7cca44bfaca0b4c0f4a6a469ae5b9d67f0336979b5a81ce10e8a3d8f2345d606">KNOB_MODE_WRITEONCE</a>,  <span class="stringliteral">"pintool"</span>, <span class="stringliteral">"o"</span>, <span class="stringliteral">""</span>, <span class="stringliteral">"specify file name for output"</span>);
+
+<span class="comment">// =====================================================================</span>
+<span class="comment">// Utilities</span>
+<span class="comment">// =====================================================================</span>
+
+<span class="comment">// Print out help message.</span>
+INT32 Usage()
+{
+    cerr &lt;&lt; <span class="stringliteral">"This tool prints out the stack filtered by the dynamicaly created functions only"</span> &lt;&lt; endl;
+    cerr &lt;&lt; KNOB_BASE::StringKnobSummary() &lt;&lt; endl;
+    <span class="keywordflow">return</span> -1;
+}
+
+<span class="comment">// =====================================================================</span>
+<span class="comment">// Analysis routines</span>
+<span class="comment">// =====================================================================</span>
+
+VOID RtnCallPrint(CHAR * rtnName)
+{
+    *out &lt;&lt; <span class="stringliteral">"Before run "</span> &lt;&lt; rtnName &lt;&lt; endl;
+}
+
+<span class="comment">// =====================================================================</span>
+<span class="comment">// Instrumentation callbacks</span>
+<span class="comment">// =====================================================================</span>
+
+<span class="comment">// Pin calls this function every time a new rtn is executed</span>
+VOID Routine(RTN rtn, VOID *v)
+{
+    <span class="keywordflow">if</span> (!<a class="code" href="group__RTN__BASIC__API.html#gb36b828dc06d754e79780245d938dc7b">RTN_IsDynamic</a>(rtn))
+    {
+        <span class="keywordflow">return</span>;
+    }
+
+    *out &lt;&lt; <span class="stringliteral">"Just discovered "</span> &lt;&lt; <a class="code" href="group__RTN__BASIC__API.html#gb274bf5dadf6f1ae3259715ae161ebd1">RTN_Name</a>(rtn) &lt;&lt; endl;
+
+    <a class="code" href="group__RTN__BASIC__API.html#g7225aeb74e1fd3f3b554dbbc285653e0">RTN_Open</a>(rtn);
+
+    <span class="comment">// Insert a call at the entry point of a routine to increment the call count</span>
+    <a class="code" href="group__RTN__BASIC__API.html#g006ef964b9e6e4d8e7880231e216344a">RTN_InsertCall</a>(rtn, <a class="code" href="group__INST__ARGS.html#gga46cc1807fc61addd9afe69ee6736a21067f64649fede2cbd09ede8c118c6a0c">IPOINT_BEFORE</a>, (AFUNPTR)RtnCallPrint, <a class="code" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56811bf9954bfcc59b75c446dd2edd2875f0">IARG_ADDRINT</a>, <a class="code" href="group__RTN__BASIC__API.html#gb274bf5dadf6f1ae3259715ae161ebd1">RTN_Name</a>(rtn).c_str(), IARG_END);
+
+    <a class="code" href="group__RTN__BASIC__API.html#g1e79031f51f9dbdc1726cc46b01870c3">RTN_Close</a>(rtn);
+}
+
+<span class="comment">// Print out analysis results.</span>
+<span class="comment">// This function is called when the application exits.</span>
+<span class="comment">// @param[in]   code            exit code of the application</span>
+<span class="comment">// @param[in]   v               value specified by the tool in the</span>
+<span class="comment">//                              PIN_AddFiniFunction function call</span>
+VOID Fini(INT32 code, VOID *v)
+{
+    <span class="keyword">const</span> string fileName = KnobOutputFile.Value();
+    <span class="keywordflow">if</span> (!fileName.empty())
+    {
+        <span class="keyword">delete</span> out;
+    }
+}
+
+<span class="comment">// The main procedure of the tool.</span>
+<span class="comment">// This function is called when the application image is loaded but not yet started.</span>
+<span class="comment">// @param[in]   argc            total number of elements in the argv array</span>
+<span class="comment">// @param[in]   argv            array of command line arguments,</span>
+<span class="comment">//                              including pin -t &lt;toolname&gt; -- ...</span>
+<span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> *argv[])
+{
+    <span class="comment">// Initialize symbol processing</span>
+    <a class="code" href="group__PIN__CONTROL.html#ga6749650a8dce7151075fcc9345f7bd9">PIN_InitSymbols</a>();
+
+    <span class="comment">// Initialize PIN library. Print help message if -h(elp) is specified</span>
+    <span class="comment">// in the command line or the command line is invalid</span>
+    <span class="keywordflow">if</span>(<a class="code" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init</a>(argc,argv))
+    {
+        <span class="keywordflow">return</span> Usage();
+    }
+
+    <span class="keyword">const</span> string fileName = KnobOutputFile.Value();
+
+    <span class="keywordflow">if</span> (!fileName.empty())
+    {
+        out = <span class="keyword">new</span> std::ofstream(fileName.c_str());
+    }
+
+    <span class="comment">// Register Routine to be called to instrument rtn</span>
+    <a class="code" href="group__RTN__BASIC__API.html#g50b3794c06a99774ed62abec8ad3b173">RTN_AddInstrumentFunction</a>(Routine, 0);
+
+    <span class="comment">// Register function to be called when the application exits</span>
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, NULL);
+
+    <span class="comment">// Start the program, never returns</span>
+    <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
+
     <span class="keywordflow">return</span> 0;
 }
 </pre></div><p>
@@ -1972,10 +2573,11 @@ Callbacks</a></h2>
 ========================================================================================<p>
 The examples in the previous section have introduced a number of ways to register callback functions via the Pin API, such as:<p>
 <ul>
-<li><a class="el" href="group__INS__INST__API.html#ga80cd9a7905b82a86b9e31d9bf589dbe">INS_AddInstrumentFunction</a> (INSCALLBACK fun, VOID *val)</li><li><a class="el" href="group__TRACE__BASIC__API.html#gb3762f773502ad865216ef941c38799e">TRACE_AddInstrumentFunction</a> (TRACECALLBACK fun, VOID *val)</li><li><a class="el" href="group__RTN__BASIC__API.html#g8622a6ba858eb8d55df4e006eb165e57">RTN_AddInstrumentFunction</a> (RTNCALLBACK fun, VOID *val)</li><li><a class="el" href="group__IMG__BASIC__API.html#gb0ad0d50126fd5ddcfee28005c681049">IMG_AddInstrumentFunction</a> (IMGCALLBACK fun, VOID *val)</li><li><a class="el" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a> (FINICALLBACK fun, VOID *val)</li><li><a class="el" href="group__PIN__CONTROL.html#g451060f5e998243df750ac16720cadcf">PIN_AddDetachFunction</a> (DETACHCALLBACK fun, VOID *val)</li></ul>
+<li><a class="el" href="group__INS__INST__API.html#gad5fd5cdd6c1cd37e57a1264e93b0435">INS_AddInstrumentFunction</a> (INSCALLBACK fun, VOID *val)</li><li><a class="el" href="group__TRACE__BASIC__API.html#g0261da0abe384db4e2f97cd31cf986f7">TRACE_AddInstrumentFunction</a> (TRACECALLBACK fun, VOID *val)</li><li><a class="el" href="group__RTN__BASIC__API.html#g50b3794c06a99774ed62abec8ad3b173">RTN_AddInstrumentFunction</a> (RTNCALLBACK fun, VOID *val)</li><li><a class="el" href="group__IMG__BASIC__API.html#g4867c865fcf260951b7d750aaaaa0007">IMG_AddInstrumentFunction</a> (IMGCALLBACK fun, VOID *val)</li><li><a class="el" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a> (FINICALLBACK fun, VOID *val)</li><li><a class="el" href="group__PIN__CONTROL.html#g4c85e2907788d57d10241d4f8b86a170">PIN_AddDetachFunction</a> (DETACHCALLBACK fun, VOID *val)</li></ul>
 <p>
 The extra parameter <code>val</code> (shared by all the registration functions) will be passed to <code>fun</code> as its second argument whenever it is "called back". This is a standard mechanism used in GUI programming with callbacks.<p>
 If this feature is not needed, it is safe to pass 0 for <code>val</code> when registering a callback. The expected use of <code>val</code> is to pass a pointer to an instance of a class. Since <code>val</code> is a generic pointer, <code>fun</code> must cast it back to an object before dereferencing the pointer.<p>
+Note that all callback registration functions return a <a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> object which can later be used to manipulate the properties of the registered callback (for example change the order in which PIN executes callback functions of the same type). This can be done by calling API functions that manipulates the <a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> object (see <a class="el" href="group__PIN__CALLBACKS.html">PIN callbacks</a>)<p>
 ======================================================================================== <h2><a class="anchor" name="MODIFYING">
 Modifying Application Instructions</a></h2>
 ========================================================================================<p>
@@ -1985,10 +2587,10 @@ Note that in all of the cases where an instruction is modified, the modification
 ======================================================================================== <h2><a class="anchor" name="APPDEBUG">
 The Pin Advanced Debugging Extensions</a></h2>
 ========================================================================================<p>
-Pin's advanced debugging extensions allow you to debug an application, even while it runs under Pin. Moreover, your Pin tool can add support for new debugger commands, without making any changes to GDB or Visual Studio. This allows you to interactively control your Pin tool from within a live debugger session. Finally, Pin tools can add powerful new debugger features that are enabled via instrumentation. For example, a Pin tool can use instrumentation to look for an interesting condition (like a memory buffer overwrite) and then stop at a live debugger session when that condition occurs.<p>
+Pin's advanced debugging extensions allow you to debug an application, even while it runs under Pin in JIT mode. Moreover, your Pin tool can add support for new debugger commands, without making any changes to GDB or Visual Studio. This allows you to interactively control your Pin tool from within a live debugger session. Finally, Pin tools can add powerful new debugger features that are enabled via instrumentation. For example, a Pin tool can use instrumentation to look for an interesting condition (like a memory buffer overwrite) and then stop at a live debugger session when that condition occurs.<p>
 This section illustrates these three concepts:<p>
 <ul>
-<li>Enabling all the traditional debugger features even while running an application under Pin.</li></ul>
+<li>Enabling all the traditional debugger features even while running an application under Pin in JIT mode.</li></ul>
 <p>
 <ul>
 <li>Recognizing new debugger commands in your Pin tool to allow interactive control of the tool from a live debugger session.</li></ul>
@@ -1998,7 +2600,7 @@ This section illustrates these three concepts:<p>
 <p>
 These features are available on both Linux (using GDB) and on Windows (using Visual Studio). The Pin APIs are the same in both cases, but their usage from within the debugger is different because each debugger has a different UI. The following tutorial is divided into two sections: one that is Linux centric and another that is Windows centric. They both describe the same example, so you can continue by reading either section.<p>
 <ul>
-<li><a class="el" href="index.html#APPDEBUG_LINUX">Tutorial for Linux</a></li><li><a class="el" href="index.html#APPDEBUG_WINDOWS">Tutorial for Windows</a></li></ul>
+<li><a class="el" href="index.html#APPDEBUG_LINUX">Tutorial for Linux</a></li><li><a class="el" href="index.html#APPDEBUG_WINDOWS">Tutorial for Windows</a></li><li><a class="el" href="index.html#APPDEBUG_OSX">Tutorial for OS X*</a></li></ul>
 <p>
 Finally, note that these advanced debugging extensions are not at all related to debugging your Pintool. If you have a bug in your tool and need to debug it, see the section <a class="el" href="index.html#DEBUGGING">Tips for Debugging a Pintool</a> instead.<h3><a class="anchor" name="APPDEBUG_LINUX">
 Advanced Debugging Extensions on Linux</a></h3>
@@ -2009,7 +2611,7 @@ $ make DEBUG=1 stack-debugger.test
 </pre></div><p>
 The tool and its associated test application, "fibonacci", are built in a directory named "obj-ia32", "obj-intel64", etc., depending on your machine type.<p>
 To enable the debugging extensions, run Pin with the <a class="el" href="group__KNOBS.html#SWITCH_APPDEBUG">-appdebug</a> command line switch. This causes Pin to start the application and stop immediately before the first instruction. Pin then prints a message telling you to start GDB.<p>
-<div class="fragment"><pre class="fragment">$ pin -appdebug -t stack-debugger.so -- fibonacci 1000
+<div class="fragment"><pre class="fragment">$ ../../../pin -appdebug -t obj-intel64/stack-debugger.so -- obj-intel64/fibonacci 1000
 Application stopped until continued from debugger.
 Start GDB, then issue this command at the (gdb) prompt:
   target remote :33030
@@ -2039,7 +2641,7 @@ Of course, any information you observe in the debugger shows the application's "
 <h4><a class="anchor" name="APPDEBUG_LINUX_COMMANDS">
 Adding New Debugger Commands</a></h4>
 The previous section illustrated how you can enable the normal debugger features while running an application under Pin. Now, let's see how your Pintool can add new custom debugger commands, even without changing GDB. Custom debugger commands are useful because they allow you to control your Pintool interactively from within a live debugger session. For example, you can ask your Pintool to print out information that it has collected, or you can interactively enable instrumentation only for certain phases of the application.<p>
-To illustrate, see the call to <a class="el" href="group__APPDEBUG__API.html#gea5826d7103d2f8cfd14320d388dbad9">PIN_AddDebugInterpreter()</a> in the stack-debugger tool. That API sets up the following call-back function:<p>
+To illustrate, see the call to <a class="el" href="group__APPDEBUG__API.html#g5c3c5c6220acfad8860218b41410b07a">PIN_AddDebugInterpreter()</a> in the stack-debugger tool. That API sets up the following call-back function:<p>
 <div class="fragment"><pre class="fragment"><span class="keyword">static</span> BOOL DebugInterpreter(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid, <a class="code" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <span class="keyword">const</span> string &amp;cmd, string *result, VOID *)
 {
     TINFO_MAP::iterator it = ThreadInfos.find(tid);
@@ -2081,7 +2683,7 @@ To illustrate, see the call to <a class="el" href="group__APPDEBUG__API.html#gea
 
 }
 </pre></div><p>
-The <a class="el" href="group__APPDEBUG__API.html#gea5826d7103d2f8cfd14320d388dbad9">PIN_AddDebugInterpreter()</a> API allows a Pintool to establish a handler for extended GDB commands. For example, the code snippet above implements the new commands "stats" and "stacktrace on". You can execute these commands in GDB by using the "monitor" command:<p>
+The <a class="el" href="group__APPDEBUG__API.html#g5c3c5c6220acfad8860218b41410b07a">PIN_AddDebugInterpreter()</a> API allows a Pintool to establish a handler for extended GDB commands. For example, the code snippet above implements the new commands "stats" and "stacktrace on". You can execute these commands in GDB by using the "monitor" command:<p>
 <div class="fragment"><pre class="fragment">(gdb) monitor stats
 Current stack usage: 688 bytes.
 Maximum stack usage: 0 bytes.
@@ -2175,7 +2777,7 @@ The program is running.  Exit anyway? (y or n) y
 </pre></div><h4><a class="anchor" name="APPDEBUG_LINUX_LATER">
 Connecting the Debugger Later</a></h4>
 In the previous example, we used the Pin switch <a class="el" href="group__KNOBS.html#SWITCH_APPDEBUG">-appdebug</a> to stop the application and debug it from the first instruction. You can also enable Pin's debugging extensions without stopping at the first instruction. The following example shows how you can use the stack-debugger tool to start the application and attach with the debugger only after it triggers a stack limit breakpoint.<p>
-<div class="fragment"><pre class="fragment">$ pin -appdebug_enable -appdebug_silent -t stack-debugger.so -stackbreak 4000 -- fibonacci 1000
+<div class="fragment"><pre class="fragment">$ ../../../pin -appdebug_enable -appdebug_silent -t obj-intel64/stack-debugger.so -stackbreak 4000 -- obj-intel64/fibonacci 1000
 </pre></div><p>
 The <a class="el" href="group__KNOBS.html#SWITCH_APPDEBUG_ENABLE">-appdebug_enable</a> switch tells Pin to enable application debugging without stopping at the first instruction. The <a class="el" href="group__KNOBS.html#SWITCH_APPDEBUG_SILENT">-appdebug_silent</a> switch disables the message that tells how to connect with GDB. As we will see later, the Pintool can print a custom message instead. Finally, the "-stackbreak 4000" switch tells the stack-debugger tool to trigger a breakpoint when the stack grows to 4000 bytes. When the tool does trigger a breakpoint, it prints a message like this:<p>
 <div class="fragment"><pre class="fragment">Triggered stack-limit breakpoint.
@@ -2200,7 +2802,7 @@ Let's look at the code in the tool that connects to the debugger now.<p>
 
     *Output &lt;&lt; <span class="stringliteral">"Triggered stack-limit breakpoint.\n"</span>;
     *Output &lt;&lt; <span class="stringliteral">"Start GDB and enter this command:\n"</span>;
-    *Output &lt;&lt; <span class="stringliteral">"  target remote :"</span> &lt;&lt; std::dec &lt;&lt; info.<a class="code" href="structDEBUG__CONNECTION__INFO.html#73d65291e3ebef305deeffe69b4fdf60">_tcpServer</a>._tcpPort &lt;&lt; <span class="stringliteral">"\n"</span>;
+    *Output &lt;&lt; <span class="stringliteral">"  target remote :"</span> &lt;&lt; std::dec &lt;&lt; info.<a class="code" href="structDEBUG__CONNECTION__INFO.html#6db2e405e179244e88f096a69b78a3ea">_tcpServer</a>.<a class="code" href="struct__tcpServerStruct.html#2282227ed88e7a4cc12c6df5d9abf76e">_tcpPort</a> &lt;&lt; <span class="stringliteral">"\n"</span>;
     *Output &lt;&lt; std::flush;
 
     <span class="keywordflow">if</span> (<a class="code" href="group__APPDEBUG__API.html#g10470a2efb23fe149125a72fcf6ac337">PIN_WaitForDebuggerToConnect</a>(1000*KnobTimeout.Value()))
@@ -2259,7 +2861,7 @@ Open the source.cpp in Visual Studio 2012 and set a breakpoint to stop the execu
 <h4><a class="anchor" name="APPDEBUG_WINDOWS_COMMANDS">
 Adding New Debugger Commands</a></h4>
 The previous section illustrated how you can enable the normal debugger features while running an application under Pin. Now, let's see how your Pintool can add new custom debugger commands, even without changing Visual Studio. Custom debugger commands are useful because they allow you to control your Pintool interactively from within a live debugger session. For example, you can ask your Pintool to print out information that it has collected, or you can interactively enable instrumentation only for certain phases of the application.<p>
-To illustrate, see the call to <a class="el" href="group__APPDEBUG__API.html#gea5826d7103d2f8cfd14320d388dbad9">PIN_AddDebugInterpreter()</a> in the stack-debugger tool. That API sets up the following call-back function:<p>
+To illustrate, see the call to <a class="el" href="group__APPDEBUG__API.html#g5c3c5c6220acfad8860218b41410b07a">PIN_AddDebugInterpreter()</a> in the stack-debugger tool. That API sets up the following call-back function:<p>
 <div class="fragment"><pre class="fragment"><span class="keyword">static</span> BOOL DebugInterpreter(<a class="code" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid, <a class="code" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <span class="keyword">const</span> string &amp;cmd, string *result, VOID *)
 {
     TINFO_MAP::iterator it = ThreadInfos.find(tid);
@@ -2301,7 +2903,7 @@ To illustrate, see the call to <a class="el" href="group__APPDEBUG__API.html#gea
 
 }
 </pre></div><p>
-The <a class="el" href="group__APPDEBUG__API.html#gea5826d7103d2f8cfd14320d388dbad9">PIN_AddDebugInterpreter()</a> API allows a Pintool to establish a handler for extended debugger commands. For example, the code snippet above implements the new commands "stats" and "stacktrace on". You can execute these commands in Visual Studio by opening "DEBUG-&gt;Windows-&gt;Pin Console" in the IDE.<p>
+The <a class="el" href="group__APPDEBUG__API.html#g5c3c5c6220acfad8860218b41410b07a">PIN_AddDebugInterpreter()</a> API allows a Pintool to establish a handler for extended debugger commands. For example, the code snippet above implements the new commands "stats" and "stacktrace on". You can execute these commands in Visual Studio by opening "DEBUG-&gt;Windows-&gt;Pin Console" in the IDE.<p>
 <div align="center">
 <img src="stack-debugger-commands.png" alt="stack-debugger-commands.png">
 </div>
@@ -2388,7 +2990,15 @@ Then press F5 to continue execution. The application should stop in the debugger
 <img src="stack-debugger-custom-break.png" alt="stack-debugger-custom-break.png">
 </div>
 <p>
-When you are done, you can either continue the application with F5 or terminate it with SHIFT-F5.<p>
+When you are done, you can either continue the application with F5 or terminate it with SHIFT-F5.<h3><a class="anchor" name="APPDEBUG_OSX">
+Advanced Debugging Extensions on OS X*</a></h3>
+Pin's debugging extensions on OS X are very similar to Linux, with the one exception that the debugger used is LLDB. To work with LLDB, the -appdebug_lldb_options flag must be specified at the pin command line.<p>
+<div class="fragment"><pre class="fragment">$ ../../../pin -appdebug -appdebug_lldb_options -t obj-intel64/stack-debugger.dylib -- obj-intel64/fibonacci 1000
+Application stopped until continued from debugger.
+Start GDB, then issue this command at the (gdb) prompt:
+  target remote :33030
+</pre></div><p>
+<dl compact><dt><b>Warning:</b></dt><dd>For the debugger extensions to work properly, they require the target application symbols. Make sure to call <a class="el" href="group__PIN__CONTROL.html#ga6749650a8dce7151075fcc9345f7bd9">PIN_InitSymbols</a> in your pintool.</dd></dl>
 ======================================================================================== <h2><a class="anchor" name="EX">
 Applying a Pintool to an Application</a></h2>
 ========================================================================================<p>
@@ -2417,13 +3027,13 @@ These are a few of the Pin options are currently available. See <a class="el" hr
 The tool-options follow immediately after the tool specification and depend on the tool used.<p>
 Everything following the <code>--</code> is the command line for the application.<p>
 For example, to apply the itrace example (<a class="el" href="index.html#IAddressTrace">Instruction Address Trace (Instruction Instrumentation)</a>) to a run of the "ls" program:<p>
-<div class="fragment"><pre class="fragment">pin -t itrace.so -- /bin/ls
+<div class="fragment"><pre class="fragment">../../../pin -t obj-intel64/itrace.so -- /bin/ls
 </pre></div><p>
 To get a listing of the available command line options for Pin:<p>
 <div class="fragment"><pre class="fragment">pin -help
 </pre></div><p>
 To get a listing of the available command line options for the itrace example:<p>
-<div class="fragment"><pre class="fragment">pin -t itrace.so -help -- /bin/ls
+<div class="fragment"><pre class="fragment">../../../pin -t obj-intel64/itrace.so -help -- /bin/ls
 </pre></div><p>
 Note that in the last case <code>/bin/ls</code> is necessary on the command line but will not be executed.<h3><a class="anchor" name="MIXED-MODE">
 Instrumenting Applications on Intel(R) 64 Architectures</a></h3>
@@ -2447,9 +3057,9 @@ IMPORTANT: The description about invoking assumes that the application is a prog
  # (change 'itrace' to your desired tool)
 
  #!/bin/sh
- pin -t itrace.so -- application_binary.real $*
+ ../../../pin -t obj-intel64/itrace.so -- application_binary.real $*
 </pre></div><p>
-After you do this, whenever 'application_binary' is invoked indirectly (from some shell script or using 'exec'), the real binary will get invoked with the right pin/pintool options.<h3><a class="anchor" name="RESTRICTIONS">
+After you do this, whenever 'application_binary' is invoked indirectly (from some shell script or using 'exec'), the real binary will get invoked with the right pin/pintool options.<h3><a class="anchor" name="PINTOOL_RESTRICTIONS">
 Restrictions</a></h3>
 There is a known problem of using pin on systems protected by the "McAfee Host Intrusion Prevention"* antivirus software. We did not test coexistence of pin with other antivirus products that perform run-time execution monitoring.<p>
 There is a known problem of using Pin on Linux systems that prevent the use of ptrace attach via the sysctl /proc/sys/kernel/yama/ptrace_scope. In this case Pin is not able to use its default (parent) injection mode. To resolve this, either execute the following (as root): <div class="fragment"><pre class="fragment">$ echo 0 &gt; /proc/sys/kernel/yama/ptrace_scope
@@ -2487,7 +3097,7 @@ This GDB was configured as "x86_64-redhat-linux-gnu"...Using host libthread_db l
 </pre></div><p>
 In another window, start your application with the -pause_tool switch.<p>
 <div class="fragment"><pre class="fragment">$ ../../../pin -pause_tool 10 -t obj-intel64/opcodemix.so -- /bin/ls
-Pausing to attach to pid 28769
+Pausing for 10 seconds to attach to process with pid 28769
 To load the tool's debug info to gdb use:
    add-symbol-file .../source/tools/SimpleExamples/obj-intel64/opcodemix.so 0x2a959e9830
 </pre></div><p>
@@ -2522,17 +3132,17 @@ Detaching from program: .../intel64/bin/pinbin, process 28769
 </pre></div><p>
 If you recompile your program and then use the run command, gdb will notice that the binary has been changed and reread the debug information from the file. This does not always happen automatically when using attach. In this case you must use the "add-symbol-file" command again to make gdb reread the debug information.<h3><a class="anchor" name="DBG">
 Using the Visual Studio Debugger on Windows</a></h3>
-When running an application under the control of Pin and a Pintool there are two different programs residing in the address space. The application, and the Pin instrumentation engine together with your Pintool. The pintool is a dynamically loaded library (.dll) loaded by Pin. This section describes how to use the Visual Studio Debugger to find bugs in a Pintool. You cannot run Pin directly from the debugger since Pin uses the debugging API to start the application. Instead, you must invoke Pin from the command line with the -pause_tool switch, and use Visual Studio to attach to the Pin process from another window. The -pause_tool n switch makes Pin print out the process identifier (pid) and pause for n seconds. You have n seconds (20 in our example) to attach the application with the debugger.<p>
+When running an application under the control of Pin and a Pintool there are two different programs residing in the address space. The application, and the Pin instrumentation engine together with your Pintool. The pintool is a dynamically loaded library (.dll) loaded by Pin. This section describes how to use the Visual Studio Debugger to find bugs in a Pintool. You cannot run Pin directly from the debugger since Pin uses the debugging API to start the application. Instead, you must invoke Pin from the command line with the -pause_tool switch, and use Visual Studio to attach to the Pin process from another window. The -pause_tool n switch makes Pin print out the process identifier (pid) and pause for n seconds. You have n seconds (20 in our example) to attach the application with the debugger. Note, application resumes once the timeout expires. Attaching debugger later will not have the desired effect.<p>
 <div class="fragment"><pre class="fragment"> % pin &lt;pin options&gt; -pause_tool 20 -t &lt;tool name&gt;  &lt;tool options&gt; -- &lt;app name&gt; &lt;app options&gt;
-pin suspended process [id=&lt;pid&gt;] waiting for debugger attach. Press &lt;Enter&gt; when ready to continue...
+Pausing for 20 seconds to attach to process with pid 28769
 </pre></div><p>
-In the Visual Studio window, attach to the application process using the "Debug"-&gt;"Attach to Process" menu selection. You can set breakpoints in your tool in the usual way.<p>
+In the Visual Studio window, attach to the application process using the "Debug"-&gt;"Attach to Process" menu selection and wait until a breakpoint occurs. Then you can set breakpoints in your tool in the usual way.<p>
 Note, it is necessary to build your pin tool with debug symbols if you want symbolic information.<p>
 ======================================================================================== <h2><a class="anchor" name="LOGGING">
 Logging Messages from a Pintool</a></h2>
 ========================================================================================<p>
 Pin provides a mechanism to write messages from a Pintool to a logfile. To use this capability, call the LOG() API with your message. The default filename is pintool.log, and it is created in the currently working directory. Use the -logfile switch after the tool name to change the path and file name of the log file.<p>
-<div class="fragment"><pre class="fragment">LOG( <span class="stringliteral">"Replacing function in "</span> + <a class="code" href="group__IMG__BASIC__API.html#g9f68164bfac7c031b82549eba91681c3">IMG_Name</a>(img) + <span class="stringliteral">"\n"</span> );
+<div class="fragment"><pre class="fragment">LOG( <span class="stringliteral">"Replacing function in "</span> + <a class="code" href="group__IMG__BASIC__API.html#g491b26d161526b35498839f5cdf30a76">IMG_Name</a>(img) + <span class="stringliteral">"\n"</span> );
 LOG( <span class="stringliteral">"Address = "</span> + <a class="code" href="group__MISC__PRINT.html#g87f513d501545295d33610f0d81dac5f">hexstr</a>( <a class="code" href="group__RTN__BASIC__API.html#gb74b01b5b6feb47a1f52d9f8ea7ea154">RTN_Address</a>(rtn)) + <span class="stringliteral">"\n"</span> );
 LOG( <span class="stringliteral">"Image ID = "</span> + <a class="code" href="group__MISC__PRINT.html#gc6fa0ac95dc5a5baf1093baa1efc6b6c">decstr</a>( <a class="code" href="group__IMG__BASIC__API.html#g9440e63ee69888e8889a90912f605316">IMG_Id</a>(img) ) + <span class="stringliteral">"\n"</span> );
 </pre></div><p>
@@ -2611,7 +3221,7 @@ The code for docount() is very compact which provides performance advantages; it
 Now docount() can be inlined.<h3><a class="anchor" name="compiler_inlining">
 Compiler Considerations for Inlining</a></h3>
 The way that the tool is built affects inlining as well. If an analysis routine has a function call to another function, it would not be a candidate for inlining by Pin unless the function call was inlined by the compiler. If the function call is inlined by the compiler, the analysis routine would be a candidate for inlining by Pin. Therefore, it is advisable to write any subroutines called by the analysis routine in a way that allows the compiler to inline the subroutines.<p>
-On Linux IA-32 architectures, Pin tools are built non-PIC (Position Independent Code), which allows the compiler to inline both local and global functions. Tools for Linux Intel 64 architectures are built PIC, but the compiler will not inline any globally visible function due to function pre-emption. Therefore, it is advisable to declare the subroutines called by the analysis function as 'static' on Linux Intel 64 architectures.<h3><a class="anchor" name="let_pin_decide">
+On Linux IA-32 architectures, Pin tools are built non-PIC (Position Independent Code), which allows the compiler to inline both local and global functions. Tools for Linux Intel(R) 64 architectures are built PIC, but the compiler will not inline any globally visible function due to function pre-emption. Therefore, it is advisable to declare the subroutines called by the analysis function as 'static' on Linux Intel(R) 64 architectures.<h3><a class="anchor" name="let_pin_decide">
 Letting Pin Decide Where to Instrument</a></h3>
 At times we do not care about the exact point where calls to analysis code are being inserted as long as it is within a given basic block. In this case we can let Pin make the decission where to insert. This has the advantage that Pin can select am insertion point that requires minimal register saving and restoring. The following code from ManualExamples/inscount2.cpp shows how this is done for the instruction count example using IPOINT_ANYWHERE with <a class="el" href="group__BBL__BASIC__API.html#g5fba2db08badc1f77616c8f41ce31884">BBL_InsertCall()</a>.<p>
 <div class="fragment"><pre class="fragment"><span class="preprocessor">#include &lt;iostream&gt;</span>
@@ -2677,10 +3287,10 @@ INT32 Usage()
     OutFile.open(KnobOutputFile.Value().c_str());
 
     <span class="comment">// Register Instruction to be called to instrument instructions</span>
-    <a class="code" href="group__TRACE__BASIC__API.html#gb3762f773502ad865216ef941c38799e">TRACE_AddInstrumentFunction</a>(Trace, 0);
+    <a class="code" href="group__TRACE__BASIC__API.html#g0261da0abe384db4e2f97cd31cf986f7">TRACE_AddInstrumentFunction</a>(Trace, 0);
 
     <span class="comment">// Register Fini to be called when the application exits</span>
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
     
     <span class="comment">// Start the program, never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -2790,10 +3400,10 @@ INT32 Usage()
     <span class="keywordflow">if</span> (<a class="code" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init</a>(argc, argv)) <span class="keywordflow">return</span> Usage();
 
     <span class="comment">// Register Instruction to be called to instrument instructions</span>
-    <a class="code" href="group__INS__INST__API.html#ga80cd9a7905b82a86b9e31d9bf589dbe">INS_AddInstrumentFunction</a>(Instruction, 0);
+    <a class="code" href="group__INS__INST__API.html#gad5fd5cdd6c1cd37e57a1264e93b0435">INS_AddInstrumentFunction</a>(Instruction, 0);
 
     <span class="comment">// Register Fini to be called when the application exits</span>
-    <a class="code" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>(Fini, 0);
+    <a class="code" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>(Fini, 0);
     
     <span class="comment">// Start the program, never returns</span>
     <a class="code" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram</a>();
@@ -2803,7 +3413,7 @@ INT32 Usage()
 </pre></div><p>
 In the above example, the original analysis routine IpSample() has a conditional control-flow change. It is rewritten into two analysis routines: CountDown() and PrintIp(). CountDown() is the simpler one of the two, which doesn't have control-flow change. It also performs the original conditional test and returns the test result. We use the conditional instrumentaton APIs <a class="el" href="group__INS__INST__API.html#g4182ef22ec1351bb0ee998b023263349">INS_InsertIfCall()</a> and <a class="el" href="group__INS__INST__API.html#g0063b9298e92dfc50569d033fcaa4bee">INS_InsertThenCall()</a> to tell Pin that tbe analysis routine specified by an <a class="el" href="group__INS__INST__API.html#g0063b9298e92dfc50569d033fcaa4bee">INS_InsertThenCall()</a> (i.e. PrintIp() in this example) is executed only if the result of the analysis routine specified by the previous <a class="el" href="group__INS__INST__API.html#g4182ef22ec1351bb0ee998b023263349">INS_InsertIfCall()</a> (i.e. CountDown() in this example) is non-zero. Now CountDown(), the common case, can be inlined by Pin, and only once a while does Pin need to execute PrintIp(), the non-inlined case.<h3><a class="anchor" name="handling_reps">
 Optimizing Instrumentation of REP Prefixed Instructions</a></h3>
-The IA-32 and Intel 64 architectures include REP prefixed string instructions. These use a REP prefix on a string operation to repeat the execution of the inner operation. For some instructions the repeat count is determined solely by the value in the count register. For others (SCAS,CMPS), the count register provides an upper limit on the number of iterations, while the REP opcode provides a condition to be tested which can exit the REP loop before the full number of iterations has been executed.<p>
+The IA-32 and Intel(R) 64 architectures include REP prefixed string instructions. These use a REP prefix on a string operation to repeat the execution of the inner operation. For some instructions the repeat count is determined solely by the value in the count register. For others (SCAS,CMPS), the count register provides an upper limit on the number of iterations, while the REP opcode provides a condition to be tested which can exit the REP loop before the full number of iterations has been executed.<p>
 Pin treats REP prefixed instructions as an implicit loop around the inner instruction, so <a class="el" href="group__INST__ARGS.html#gga46cc1807fc61addd9afe69ee6736a21067f64649fede2cbd09ede8c118c6a0c">IPOINT_BEFORE</a> and <a class="el" href="group__INST__ARGS.html#gga46cc1807fc61addd9afe69ee6736a214b3338de54a3d5823a5b612fd4d2d846">IPOINT_AFTER</a> instrumentation is executed for that instruction once for each iteration of the (implicit) loop. Since each execution of the inner instruction is instrumented, IARG_MEMORY{READ,READ2,WRITE}_SIZE can be determined statically from the instruction (1,2,4,8 bytes), and IARG_MEMORY{OP,READ,READ2,WRITE}_EA can also be determined (even if DF==1, so the inner instructions are decrementing their arguments and moving backwards through store).<p>
 REP prefixed instructions are treated as predicated, where the predicate is that the count register is non-zero. Therefore canonical instrumentation for memory accesses such as<p>
 <div class="fragment"><pre class="fragment">    <span class="keywordflow">if</span> (<a class="code" href="group__INS__BASIC__API__GEN__IA32.html#g9200fcba361c9272ad963a5c5cb5c235">INS_MemoryOperandIsRead</a>(ins,memOp))
@@ -2981,8 +3591,23 @@ Here is an example which shows how to handle that. <div class="fragment"><pre cl
 </pre></div><p>
 Since there are real codes where a significant proportion of all instructions are REP prefixed, using <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56818827b05e8f598b702e7d089b3dd014d7">IARG_FIRST_REP_ITERATION</a> to collect information at the beginning of the REP "loop" while skipping it for the later iterations can be a significant optimization.<p>
 A tool which demonstrates all of these techniques can be found in source/tools/ManualExamples/countreps.cpp, from which these (slightly edited) code snippets were taken.<p>
+======================================================================================== <h2><a class="anchor" name="MEMORY">
+Memory management</a></h2>
+========================================================================================<h3><a class="anchor" name="">
+</a></h3>
+Pin allows the Pin tool to dynamically allocate memory (e.g. using malloc()) without interfering with the execution of the application that is run under Pin. In order to achieve this, Pin implements its own memory allocator which is separate from the application's memory allocator, and allocates memory in different memory regions.<h3><a class="anchor" name="Restrict">
+Pin's dynamic memory allocation regions</a></h3>
+By default, the memory address region used by Pin to dynamically allocate memory for both Pin usage and Pin tool usage is unrestricted. However, if Pin memory allocation should be restricted to specific memory regions, the -pin_memory-range knob can be used in Pin's command line to make Pin allocate memory only inside the specified regions. Note that restricting Pin memory allocation to specific regions doesn't mean that it will allocate/reserve the entire memory available those regions!<h3><a class="anchor" name="Limit">
+the maximum memory that Pin can allocate</a></h3>
+Pin can be forced to limit the amount of memory it can allocate (in bytes) by using the -pin_memory_size knob in Pin's command line. When a Pin tool cannot allocate more memory due to -pin_memory_size limitation, its out of memory callback is called (see <a class="el" href="group__PIN__CONTROL.html#gcae8a563efbe6d5f2eff743d718e5ce0">PIN_AddOutOfMemoryFunction()</a>). By default, the number of bytes that Pin can allocate is unlimited. We recommend that if a memory limitation is specified, it will be at least 30MB.<h3><a class="anchor" name="JIT">
+mode</a></h3>
+In JIT mode, Pin needs to manage memory for the code cache in addition to the dynamically allocated memory. This means that the memory regions specified by -pin_memory-range restricts both the dynamically allocated memory and the code cache blocks allocated by Pin.<p>
+In order to limit the code cache memory allocation, one can specify the -cc_memory_size knob in Pin's command line. Note that the specified limit must be a multiple of the code cache block size (specified with -cache_block_size).<h3><a class="anchor" name="Pin">
+Pin</a></h3>
+Another component that requires memory while running Pin on an application is the images of Pin, tool, and their shared libraries (aka dynamic link libraries). The shared libraries are usually built as position independent code and hence can be loaded anywhere in the memory space of the Pined process. On the other hand, the Pin executable is currently built as position independent code only on Linux. Note that Pin executable is injected to the Pined process memory space on the operating systems: OS X*, Android, and Linux. This means that on OS X* and Android Pin executable must be injected to a fixed address in the memory space and cannot be relocated.<p>
+In order to restrict the memory that Pin image loader will use (while considering the limitation stated above), one can use the -restrict_memory knob in Pin's command line to specify memory region where Pin loader should not use. Note that the logic of the -restrict_memory knob is reversed from all the other memory range knobs for Pin - as it specifies which memory regions the Pin loader should *NOT* use.<p>
 ======================================================================================== <h2><a class="anchor" name="RESTRICTIONS">
-Restrictions</a></h2>
+Pintool Information and Restrictions</a></h2>
 ========================================================================================<h3><a class="anchor" name="General">
 General</a></h3>
 There are several things that a Pintool writer must be aware of.<ul>
@@ -3008,78 +3633,25 @@ Pin uses some base types that conflict with Windows types. If you use "windows.h
 {
 <span class="preprocessor">#include &lt;windows.h&gt;</span>
 }
-</pre></div><h3><a class="anchor" name="building">
-Building tools for kit in different versions of Visual Studio</a></h3>
-In order to use pin kit VC8, you must have Visual studio 2005 installed on your computer. In order to use pin kit VC9, you must have Visual studio 2008 installed on your computer. In order to use pin kit VC10, you must have Visual studio 2010 installed on your computer.<p>
+</pre></div><p>
+======================================================================================== <h2><a class="anchor" name="WINDOWS_TOOLS">
+Building Tools on windows</a></h2>
+========================================================================================<h3><a class="anchor" name="building">
+Building Tools in Visual Studio</a></h3>
+<ul>
+<li>In order to use pin kit VC9, you must have Visual studio 2008 installed on your computer.</li><li>In order to use pin kit VC10, you must have Visual studio 2010 installed on your computer.</li><li>In order to use pin kit VC11, you must have Visual studio 2012 installed on your computer.</li></ul>
+<p>
 According to the Visual Studio version an example of visual studio project that builds pin tool in the Visual Studio IDE will be placed in the  directory. Enter this directory and open MyPinTool.vcproj project or MyPinTool.sln solution. To build the tool, select "Build Solution".<p>
 To run an application, instrumented by MyPinTool, select Tool-&gt;External Tools. In the "Menu contents" window choose "run pin". Add to the "Arguments" box the path of the required application that you want to run with pin. For example: -t MyPinTool.dll -count 1 -- "C:\Users\..\my_app.exe" and select "OK". A Popup window may appear on the screen with the following message: "The command is not a valid executable. Would you like to change the command?" select "No". To start running your application select Tool-&gt;pin run.<p>
 You can select another application and change tool's switches in the "MyPinTool Properties-&gt;Debugging" page.<p>
-You can use MyPinTool as a template for your own project. Please, look carefully at the compilation and linking switches in the MyPinTool property pages. Mandatory switches can be found in the ms.flags file in the kit's source/tools directory. Also note the library order, as this is important, too.<p>
-The mandatory compiler switches are:<p>
-<div class="fragment"><pre class="fragment">  /MT              link to static CRT library. Using
-                   CRT DLL could cause conflict with
-                   the application using the same DLL.
-  /EHs- /EHa-      disable exception handling in the tool,
-                   otherwise it could interfere in the
-                   application's exception handling.
-  /wd4530          turn off the warning about not having
-                   /EHsc turned on, while using STL.
-  /D_SECURE_SCL=0  STL containers shared between Pin and Pintools
-                   must be laid out the same way.
-
-######################################################################################
-#               MSVC 8.0 compiler options for PIN tools
-# PIN_COMMON_CXXFLAGS      mandatory compilation switches common to all platforms
-# PIN_IA32_CXXFLAGS        mandatory compilation switches for ia32 architecture
-# PIN_IA32E_CXXFLAGS       mandatory compilation switches for intel64 architecture
-######################################################################################
-
-PIN_COMMON_CXXFLAGS = \
-    /MT /EHs- /EHa- /wd4530 /DTARGET_WINDOWS /DBIGARRAY_MULTIPLIER=1 /DUSING_XED \
-    /D_CRT_SECURE_NO_DEPRECATE /D_SECURE_SCL=0
-
-PIN_IA32_CXXFLAGS           = /DTARGET_IA32 /DHOST_IA32
-PIN_IA32E_CXXFLAGS          = /DTARGET_IA32E /DHOST_IA32E
-
-</pre></div><p>
-The mandatory linking switches are:<p>
-<div class="fragment"><pre class="fragment">  /EXPORT:main   main function of the tool has to be exported
-  /ENTRY:....    tool DLL should be initialized by pin.lib
-  /NODEFAULTLIB  do not link and use any system library except
-                 for those listed explicitly to avoid conflicts
-                 with an application using the same library
-  /BASE:....     helps to avoid layout conflicts with DLLs linked
-                 to the application
-
-
-######################################################################################
-#               MS linker options for PIN tools
-# PIN_COMMON_LDFLAGS      mandatory linking switches common to all platforms
-# PIN_IA32_LDFLAGS        mandatory linking switches for ia32 architecture
-# PIN_IA32E_LDFLAGS       mandatory linking switches for intel64 architecture
-# PIN_COMMON_LIBS         libraries to be linked to the tool on all platforms
-# PIN_IA32_LIBS           libraries to be linked to the tool on ia32 machine
-# PIN_IA32E_LIBS          libraries to be linked to the tool on intel64 machine
-######################################################################################
-
-PIN_COMMON_LIBS         = pin.lib libxed.lib libcpmt.lib libcmt.lib pinvm.lib kernel32.lib
-PIN_IA32_LIBS           = ntdll-32.lib
-PIN_IA32E_LIBS          = ntdll-64.lib
-
-PIN_COMMON_LDFLAGS      = /DLL /EXPORT:main /NODEFAULTLIB
-PIN_IA32_LDFLAGS        = /MACHINE:x86 /ENTRY:Ptrace_DllMainCRTStartup@12 /BASE:0x55000000
-PIN_IA32E_LDFLAGS       = /MACHINE:x64 /ENTRY:Ptrace_DllMainCRTStartup /BASE:0xC5000000
-
-</pre></div><h3><a class="anchor" name="multi">
+You can use MyPinTool as a template for your own project. Please, look carefully at the compilation and linking switches in the MyPinTool property pages. Mandatory switches can be found in the win.vars file in the kit's source/tools/Config directory. Also note the library order, as this is important, too. See <a class="el" href="index.html#MAKEFILES">Pin's makefile Infrastructure</a> for further details.<h3><a class="anchor" name="multi">
 Constructing PinTools from multiple DLLs on Windows</a></h3>
 A Pin tool can be composed from multiple DLLs:<ul>
-<li>"main DLL", which is specified in the Pin command line after "-t" switch</li><li>a number of "secondary DLLs", linked to the "main DLL" statically or loaded dynamically.</li></ul>
+<li>"main DLL", which is specified in the Pin command line after "-t" switch</li><li>a number of "secondary DLLs", linked to the "main DLL" statically.</li></ul>
 <p>
 When considering this configuration, take into account that multi-DLL Pin tool may increase memory fragmentation and cause layout conflicts with application images. If there is no compelling reasons for using multiple DLLs, build your tool as a single DLL to reduce the risk of memory conflicts.<p>
 Limitations and instructions:<ul>
-<li>Don't use any Pin API in "secondary DLLs". Only "main DLL" can use Pin API!</li><li>Use one of the following methods to load "secondary DLLs":<ul>
-<li>statically link "secondary DLLs" to the "main DLL"</li><li>dynamically load "secondary DLLs" in the main() function of "main DLL". Do not load DLLs in instrumentation/analysis callbacks - it is unsafe!</li></ul>
-</li><li>If necessary, unload "secondary DLLs" in the main() function of "main DLL". Do not unload DLLs in instrumentation/analysis callbacks - it is unsafe!</li><li>IMPORTANT: Build each DLL with the recommended pin tool building flags (see <a class="el" href="index.html#building">Building tools for kit in different versions of Visual Studio</a>).</li><li>Remove /EXPORT:main link flag for "secondary DLLs".</li><li>Specify different base address for each DLL (/BASE link flag). When choosing base addresses, try to minimize memory fragmentation and layout conflicts.</li></ul>
+<li>Don't use any Pin API in "secondary DLLs". Only "main DLL" can use Pin API!</li><li>In order to run Pin tool put "main DLL" and its "secondary DLLs" in the same directory.</li><li>IMPORTANT: Build each DLL with the recommended pin tool building flags (see <a class="el" href="index.html#building">Building Tools in Visual Studio</a>).</li><li>Remove /EXPORT:main link flag for "secondary DLLs".</li><li>Specify different base address for each DLL (/BASE link flag). When choosing base addresses, try to minimize memory fragmentation and layout conflicts.</li></ul>
 <h3><a class="anchor" name="supported">
 Supported executables</a></h3>
 Pin can instrument Windows* subsystem executables.<br>
@@ -3092,32 +3664,33 @@ Pin on Windows uses dbghelp.dll by Microsoft* to provide symbolic information. d
 Libraries for Linux</a></h2>
 ========================================================================================<h3><a class="anchor" name="LIBRARIES_INTRO">
 Introduction</a></h3>
-The Linux version of pin requires the shared objects from glibc:<p>
+The Linux version of Pin requires the following shared objects from glibc:<p>
 <div class="fragment"><pre class="fragment">libc
 libm
 libdl
 ld-linux*
 </pre></div><p>
-and g++ libraries:<p>
+and compiler c++ runtime libraries:<p>
 <div class="fragment"><pre class="fragment">libstdc++
 libgcc_s
 </pre></div><p>
 and the following additional libraries:<p>
 <div class="fragment"><pre class="fragment">libelf
 libdwarf
-</pre></div> If your system does not have the runtime libraries required for gcc3.4 or later(/usr/lib/libstdc++.so.6), then we recommend that you install them. Installing the compiler will install the runtime libraries. If that is not possible, then we provide the libraries and a method to use them from a local directory. If you want to use a probe based tool, then you cannot use the default glibc that comes with recent linux distributions. We provide the libraries and a method to use them from a local directory.<h3><a class="anchor" name="COMPILERS_LINUX">
+</pre></div><p>
+Pin supplies all the above libraries for running in JIT mode. For running in probe mode, see <a class="el" href="index.html#LIBRARIES_PROBE">How To Install Libraries If You Use Probe-mode</a> below.<h3><a class="anchor" name="PIN_LAUNCHER">
+The "pin" Executable (Launcher)</a></h3>
+The kit's root directory contains a "pin" executable. This is a 32-bit launcher, used for launching Pin in 32 and 64 bit modes. The launcher sets up the environment to find the libraries supplied with the kit. The kit's runtime directories will be searched first, followed by directories that are on the LD_LIBRARY_PATH. The launcher will then invoke the actual Pin executable - "pinbin".<p>
+On 64-bit systems, the 32-bit glibc package must be installed in order to run the "pin" launcher. An alternative is to invoke the "pin.sh" script instead of the "pin" executable.<p>
+If you need to change the directory structure or copy pin to a different directory, then you should note the following. The "pin" launcher expects the binary "pinbin" to be in the architecture-specific "bin" subdirectory (e.g. ia32/bin). The launcher expects the libraries to be found in the architecture-specific "runtime" and subdirectory (i.e. ia32/runtime). If you need a different directory structure, you need to build your own launcher or find a different way to set up the environment to allow the pinbin executable to find the necessary runtime libraries. The pinbin binary itself makes no assumptions about the directory structure. The launcher's sources may be found in &lt;kit root&gt;=""&gt;/source/launcher.<h3><a class="anchor" name="COMPILERS_LINUX">
 Linux Compiler Requirements</a></h3>
-Pin tools on Linux are shared objects loaded by pin before the application starts. Pin and the tool share the runtime libraries therefore the tool must be compiled with a compiler compatible with Pin. Pin is compiled by GCC 4.4.7 and is tested regularly with tools compiled with various GCC versions ranging from version 3.4.6 to version 4.6.2.<h3><a class="anchor" name="LIBRARIES_NO_PROBE">
-How to Install Libraries If You Do Not Use Probe-mode</a></h3>
-If you do not use probe mode, no additional steps are required. The Pin kit comes with all the necessary runtime libraries built-in.<p>
-The file "pin" is a small c-based launcher executable that will set up the environment to find the libraries supplied with the kit. The kit's runtime directories will be searched first, followed by directories that are on the LD_LIBRARY_PATH. The launcher will then invoke the actual Pin executable called "pinbin".<p>
-If you need to change the directory structure or copy pin to a different directory, then you must understand the following. The file "pin" is a simple launcher that expects the binary "pinbin" to be in the architecture-specific "bin" subdirectory (e.g. ia32/bin). The launcher expects the libraries to be found in the architecture-specific "runtime" and subdirectory (i.e. ia32/runtime). If you need a different directory structure, you need to build your own launcher or find a different way to set up the environment to allow the pinbin executable to find the necessary runtime libraries. The pinbin binary itself makes no assumptions about the directory structure.<p>
-If your native system libraries are newer than the ones supplied with the kit, they will be used instead, so you can always use the latest version of gcc.<h3><a class="anchor" name="LIBRARIES_PROBE">
+Pin tools on Linux are shared objects loaded by pin before the application starts. Pin and the tool share the runtime libraries therefore the tool must be compiled with a compiler compatible with Pin. Pin is compiled by GCC 4.4.7 and is tested regularly with tools compiled with various GCC versions ranging from version 3.4.6 to version 4.7.2.<p>
+JIT-mode tools may be compiled with any version of GCC. Probe-mode tools may be compiled with versions up to 4.4.X inclusive.<h3><a class="anchor" name="LIBRARIES_PROBE">
 How To Install Libraries If You Use Probe-mode</a></h3>
-If you are using probe mode, you cannot use the standard glibc on your system. You need to install pin-probe-runtime.tar.gz. This file can be downloaded from <em><a href="http://www.pintool.org">http://www.pintool.org</a></em>.<p>
+If you are using probe mode, you cannot use the standard glibc on your system. You need to install pin-probe-runtime.tar.gz. This file can be downloaded from <em><a href="http://www.pintool.org">http://www.pintool.org</a></em>. Unpack the probe runtime tarball in the kit's root directory. The necessary files will be automatically extracted in the proper directory structure.<p>
 <div class="fragment"><pre class="fragment">tproj&gt; tar zxf pin-probe-runtime.tar.gz
 </pre></div><p>
-The pin launcher (described in the section above) expects to find glibc in the architecture-specific "runtime" subdirectory (i.e. ia32/runtime), so be careful about rearranging files and directories.<h3><a class="anchor" name="BUILD_PROBES_TOOLS_ON_LINUX">
+The pin launcher (described in the section above) expects to find glibc in the architecture-specific "runtime" subdirectory (e.g. ia32/runtime), so be careful about rearranging files and directories.<h3><a class="anchor" name="BUILD_PROBES_TOOLS_ON_LINUX">
 How to build tools for Probe-mode on Linux</a></h3>
 Backward compatibility in libraries in Linux is achieved by using version-symbols. New versions of glibc and the standard C++ runtime libraries have backward compatibility. The pin-probe-runtime includes glibc 2.3.4 and a version of C++ runtime libraries that can be used with this version of glibc.<p>
 The simplest way to be compatible with this version of glibc is to install red hat el4 or one of its clones (e.g. centos) and use the system compiler. It is also possible to build a tool on newer Linux OS releases, as long as the tool does not reference symbols that are not in glibc 2.3.4. If there is a problem, you will get an error message about not being able to find symbols when starting pin.<h3><a class="anchor" name="LIBRARIES_PACKAGING">
@@ -3130,20 +3703,51 @@ Installing Pin</a></h2>
 Each kit contains Pin and libraries for a specific architecture. Make sure the kit you download is for the right architecture. The Pin libraries use C++, and the compiler you use to build the tool must be compatible with the Pin library. This restriction only applies to building tools; you can instrument applications built by any compiler.<p>
 See the README file in the kit for specific information about compiler version and other limitations. If your compiler is not compatible with the kit, send mail to <a href="mailto:pinheads@yahoogroups.com">pinheads@yahoogroups.com</a>.<p>
 To install a kit, unpack a kit and change to the directory.<p>
-Linux / OSX / Android: <div class="fragment"><pre class="fragment">$ tar zxf pin-2.12-56759-gcc.4.4.7-linux.tar.gz
+Linux / OS X* / Android: <div class="fragment"><pre class="fragment">$ tar zxf pin-2.12-56759-gcc.4.4.7-linux.tar.gz
 $ cd pin-2.12-56759-gcc.4.4.7-linux
-</pre></div> Use the OSX / Android kit names respectively.<p>
+</pre></div> Use the OS X* / Android kit names respectively.<p>
 Windows: Unzip the installation files, extracting all files in the kit. <div class="fragment"><pre class="fragment">$ cd  pin-2.12-56759-msvc10-windows.zip
-</pre></div> Use the kit for the Visual Studio version you're using.<h3><a class="anchor" name="OSX_PERMISSIONS">
-How to run pin on OSX</a></h3>
-The pin executable is signed with an Intel code sign certificate, requiring the use of the "system.privilege.taskport" priviledge. The OS requires the user consent for pin to use this interface.<br>
- If you are working on the graphical environment of the OS, you will be prompt for your username and password.<br>
- If you are working from a terminal without access to the graphical environment, you can do one of the following:<br>
- 1. In the terminal type: security authorize -l -c system.privilege.taskport<br>
- 2. Edit the /etc/authorization file manually and set the "system.privilege.taskport" property value to allow.<br>
- 3. (2) can be achieved by entering the following line in the terminal: sudo security authorizationdb write system.privilege.taskport allow<br>
- NOTICE: (2) and (3) are permanent and will allow all users and processes to use the taskport privilege, which is considered a security risk.<br>
-<p>
+</pre></div> Use the kit for the Visual Studio version you're using.<p>
+======================================================================================== <h2><a class="anchor" name="XEONPHIUSAGE">
+Usage Instructions for Intel(R) Xeon Phi(TM)</a></h2>
+========================================================================================<p>
+Table of Contents<ul>
+<li><a class="el" href="index.html#InstallPinOnDevice">Installing Pin on the Device</a></li><li><a class="el" href="index.html#InstallEntireDirectory">Building and Installing an Entire Test Directory</a></li><li><a class="el" href="index.html#InstallSingleTool">Building and Installing a Single Tool</a></li><li><a class="el" href="index.html#RunningEntireDirectory">Running All the Tests in a Directory</a></li><li><a class="el" href="index.html#RunningSingleTestFromHost">Running a Single Test on the Device - Launched from the Host</a></li><li><a class="el" href="index.html#RunningTestNatively">Running a Single Test on the Device - Launched from the Device</a></li></ul>
+<h3><a class="anchor" name="InstallPinOnDevice">
+Installing Pin on the Device</a></h3>
+<ul>
+<li>Copy the mic-install.tar.gz tarball (located at the kit's root) to your preferred location on the device and unpack it. This will create a directory structure similar to that found on the host.</li><li>Make sure the following libraries are present on the device (copy manually if necessary):<br>
+ libimf.so libintlc.so libintlc.so.5 libirng.so libsvml.so</li></ul>
+<h3><a class="anchor" name="InstallEntireDirectory">
+Building and Installing an Entire Test Directory</a></h3>
+Perform the following on the host: <div class="fragment"><pre class="fragment">cd source/tools/ManualExamples
+make CC=icc CXX=icpc TARGET=mic REMOTE_DEVICE=mic0 REMOTE_ROOT=pin install
+</pre></div><p>
+Notes:<ul>
+<li>The above will build all the tools and test applications in the ManualExamples library and pack them in a tarball. Then, the tarball will be copied to the device and will be unpacked.</li><li>The device is identified by the REMOTE_DEVICE flag.</li><li>The install location on the device is specified by the REMOTE_ROOT flag. REMOTE_ROOT should be the same location where the mic-install.tar.gz tarball was unpacked.</li><li>The makefile will automatically add the "-mmic" directive to the compilation flags when TARGET=mic is specified.</li></ul>
+<h3><a class="anchor" name="InstallSingleTool">
+Building and Installing a Single Tool</a></h3>
+Compile the tool on the host as follows: <div class="fragment"><pre class="fragment">make CC=icc CXX=icpc TARGET=mic obj-mic/MyPinTool.so
+</pre></div> Copy the tool to your preferred location on the device.<p>
+Notes:<ul>
+<li>The makefile will automatically add the "-mmic" directive to the compilation flags when TARGET=mic is specified.</li></ul>
+<h3><a class="anchor" name="RunningEntireDirectory">
+Running All the Tests in a Directory</a></h3>
+Perform the following on the host: <div class="fragment"><pre class="fragment">cd source/tools/ManualExamples
+make TARGET=mic REMOTE_DEVICE=mic0 REMOTE_ROOT=pin test
+</pre></div><p>
+Notes:<ul>
+<li>The above will run all tests in the ManualExamples library.</li><li>The directory should be installed prior to running the tests (follow the directions in <a class="el" href="index.html#InstallEntireDirectory">Building and Installing an Entire Test Directory</a>).</li><li>See <a class="el" href="index.html#InstallEntireDirectory">Building and Installing an Entire Test Directory</a> for details of the flags used in the make command.</li></ul>
+<h3><a class="anchor" name="RunningSingleTestFromHost">
+Running a Single Test on the Device - Launched from the Host</a></h3>
+Copy the tool, application and any other dependencies of the test (as they appear in the makefile) to the device. Make sure to keep the same directory structure as on the host (this is expected by the makefile). Run the following: <div class="fragment"><pre class="fragment">cd source/tools/ManualExamples
+make REMOTE_DEVICE=mic0 REMOTE_ROOT=pin inscount0.wrap
+</pre></div><p>
+Notes:<ul>
+<li>The ".wrap" suffix should be used instead of the ".test" suffix. This will result in running the ".test" make target on the device. The ".wrap" make target is automatically generated by Pin's make configuration. It's purpose is to set the environment for launching the test on the device.</li><li>See <a class="el" href="index.html#InstallEntireDirectory">Building and Installing an Entire Test Directory</a> for details of the flags used in the make command.</li></ul>
+<h3><a class="anchor" name="RunningTestNatively">
+Running a Single Test on the Device - Launched from the Device</a></h3>
+Copy Pin, tool and application to the device. Then simply log in to the device and launch Pin regularly.<p>
 ======================================================================================== <h2><a class="anchor" name="BUILDINGTOOLS">
 Building Your Own Tool</a></h2>
 ========================================================================================<p>
@@ -3238,12 +3842,13 @@ The information in this manual is subject to change without notice and Intel Cor
 EXCEPT AS PROVIDED IN INTEL'S TERMS AND CONDITIONS OF SALE FOR SUCH PRODUCTS, INTEL ASSUMES NO LIABILITY WHATSOEVER, AND INTEL DISCLAIMS ANY EXPRESS OR IMPLIED WARRANTY, RELATING TO SALE AND/OR USE OF INTEL PRODUCTS INCLUDING LIABILITY OR WARRANTIES RELATING TO FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR INFRINGEMENT OF ANY PATENT, COPYRIGHT OR OTHER INTELLECTUAL PROPERTY RIGHT. Intel products are not intended for use in medical, life saving, life sustaining, critical control or safety systems, or in nuclear facility applications.<p>
 Designers must not rely on the absence or characteristics of any features or instructions marked "reserved" or "undefined." Intel reserves these for future definition and shall have no responsibility whatsoever for conflicts or incompatibilities arising from future changes to them.<p>
 The software described in this document may contain software defects which may cause the product to deviate from published specifications. Current characterized software defects are available on request.<p>
-Copyright 2004-2013, Intel Corporation. All rights reserved.<p>
+Copyright (c) 2004-2015, Intel Corporation. All rights reserved.<p>
+Intel, Xeon, and Intel Xeon Phi are trademarks of Intel Corporation in the U.S. and/or other countries.<p>
 Microsoft, Windows, and the Windows logo are trademarks, or registered trademarks of Microsoft Corporation in the United States and/or other countries.<p>
 Java is a registered trademark of Oracle and/or its affiliates.<p>
 Other names and brands may be claimed as the property of others.<p>
 Copyright Intel Corporation. All rights reserved. Intel Corporation, 2200 Mission College Blvd., Santa Clara, CA 95052-8119, USA.<p>
-======================================================================================== <hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+======================================================================================== <hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:16 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -70,10 +70,9 @@ VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v)
 {
     // When the thread exits, accumulate the thread's dynamic instruction
     // count into the total.
-    //
-    GetLock(&Lock, tid+1);
+    PIN_GetLock(&Lock, tid+1);
     TotalCount += PIN_GetContextReg(ctxt, ScratchReg);
-    ReleaseLock(&Lock);
+    PIN_ReleaseLock(&Lock);
 }
 
 VOID Trace(TRACE trace, VOID *v)
@@ -122,6 +121,8 @@ int main(int argc, char * argv[])
     if (PIN_Init(argc, argv)) return Usage();
 
     OutFile.open(KnobOutputFile.Value().c_str());
+     
+    PIN_InitLock(&Lock);
 
     ScratchReg = PIN_ClaimToolRegister();
     if (!REG_valid(ScratchReg))

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -43,14 +43,23 @@ END_LEGAL */
 
 using namespace std;
 
+#ifdef TARGET_MAC
+#define BAR_FN_NAME "_Bar2"
+#else
+#define BAR_FN_NAME "Bar2"
+#endif
+
 /* ===================================================================== */
 void Before( )
 {
+    PIN_WriteErrorMessage( "this is an error message containing 'quotes', \"double quotes\", <less && greater than>",
+                           1001, PIN_ERR_NONFATAL, 0);
+
     PIN_WriteErrorMessage( "this is a non-fatal user specified error message",
-                           1001, PIN_ERR_NONFATAL, 3,"arg0", "arg1","arg2" );
+                           1002, PIN_ERR_NONFATAL, 3,"toolarg0", "toolarg1","toolarg2" );
 
     PIN_WriteErrorMessage( "this is a fatal user specified error message",
-                           1002, PIN_ERR_FATAL, 3,"arg3", "arg4","arg5" );
+                           1003, PIN_ERR_FATAL, 3,"toolarg3", "toolarg4","toolarg5" );
 }
 
 
@@ -61,7 +70,7 @@ VOID ImageLoad(IMG img, VOID *v)
     {
         for (RTN rtn = SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn))
         {
-            if (RTN_Name(rtn) == "Bar2")
+            if (RTN_Name(rtn) == BAR_FN_NAME)
             {
                 RTN_Open(rtn);
                 RTN_InsertCall(rtn, IPOINT_BEFORE, AFUNPTR(Before), IARG_END);

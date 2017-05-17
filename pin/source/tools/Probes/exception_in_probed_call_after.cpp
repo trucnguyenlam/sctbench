@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -51,14 +51,17 @@ namespace WND
 static VOID foo_before(int a0, int a1, int a2, int a3, int a4, int a5, int a6)
 {
     printf("result=%d\n", a0 + a1 + a2 + a3 + a4 + a5 + a6);
+    fflush(stdout);
 }
 
 static VOID foo_after(ADDRINT returnIp)
 {
 	printf("foo after called\n");
+    fflush(stdout);
 
     // May not be executed if exception occurs in previous statement
     printf("Caller IP = %s\n", hexstr(returnIp).c_str());
+    fflush(stdout);
 }
 
 #ifdef TARGET_LINUX

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -46,7 +46,7 @@ using namespace std;
 
 ofstream out("soloadrange.out");
 
-BOOL CheckImage(const char *name, ADDRINT low, ADDRINT high)
+BOOL CheckImageContiguous(const char *name, ADDRINT low, ADDRINT high)
 {
     FILE *fp = fopen("/proc/self/maps", "r");
     char buff[1024];
@@ -78,6 +78,39 @@ BOOL CheckImage(const char *name, ADDRINT low, ADDRINT high)
     return TRUE;
 }
     
+BOOL CheckImageRegions(const char *name, IMG img)
+{
+    FILE *fp = fopen("/proc/self/maps", "r");
+    char buff[1024];
+    while(fgets(buff, 1024, fp) != NULL)
+    {
+        ADDRINT mapl, maph;
+        if (strstr(buff, name) != 0)
+        {
+            if(sscanf(buff, "%lx-%lx", (unsigned long *)&mapl, (unsigned long *)&maph) != 2)
+                continue;
+
+            // For every segment, check if it is contained in a region
+            // If not, we missed it...
+            // 
+            BOOL found_region = FALSE;
+            for (UINT i = 0; i < IMG_NumRegions(img); ++i)
+            {
+                found_region = (IMG_RegionLowAddress(img, i) <= mapl) &&
+                               (IMG_RegionHighAddress(img, i) >= maph);
+            }
+            if (!found_region)
+            {
+                fclose(fp);
+                return FALSE;
+            }
+        }    
+    }
+    fclose(fp);
+
+    return TRUE;
+}
+    
 
 VOID ImageLoad(IMG img, VOID * v)
 {
@@ -105,9 +138,19 @@ VOID ImageLoad(IMG img, VOID * v)
     ADDRINT low = IMG_LowAddress(img);
     ADDRINT high = IMG_HighAddress(img);
 
-    if (!CheckImage(realname, low, high))
+    if (IMG_NumRegions(img) == 1) 
     {
-        out << "IMG name: " << name <<  " Low: " << low << " High: " << high << " " << "FAILED" << endl;
+        if (!CheckImageContiguous(realname, low, high))
+        {
+            out << "IMG name: " << name <<  " Low: " << low << " High: " << high << " " << "FAILED" << endl;
+        }
+    }
+    else
+    {
+        if (!CheckImageRegions(realname, img))
+        {
+            out << "IMG name: " << name << " FAILED" << endl;
+        }
     }
 }
 

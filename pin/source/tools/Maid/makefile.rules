@@ -63,7 +63,8 @@ endif
 
 ###### Handle exceptions here ######
 
-# The Maid test is disabled on Mac until the syscall names are fixed.
+# The Maid test is disabled on OS X*.
+# See Mantis 3184
 ifeq ($(TARGET_OS),mac)
     TEST_TOOL_ROOTS :=
     TEST_ROOTS :=

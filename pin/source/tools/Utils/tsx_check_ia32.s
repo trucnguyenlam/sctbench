@@ -1,6 +1,13 @@
+.text
+.align 4
 
-.text; .align 4; .globl SupportsTsx; 
+#ifdef TARGET_MAC
+.global _SupportsTsx
+_SupportsTsx:
+#else
+.global SupportsTsx
 SupportsTsx:
+#endif
     push %ebp
     mov  %esp, %ebp
     

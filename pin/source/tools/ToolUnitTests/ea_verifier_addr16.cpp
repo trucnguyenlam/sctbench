@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -189,6 +189,7 @@ VOID AnalyzeSegmentedMemAccessDispl(VOID * ip, VOID * addr, UINT32 accessType, U
         {// memoryEA is the TEB of the thread + displacement that is in the segmented operand
             fprintf (trace, "TRACED_INST_ERROR %p: R %p (tid %x) (teb %p displacement %x  expectedEA %p)\n", 
                 ip, addr, tid, reinterpret_cast<VOID *>(threadTeb), displacement, reinterpret_cast<VOID *>(threadTeb+displacement));
+            fflush(trace);
             hadError = TRUE;
         }
         /*
@@ -217,6 +218,7 @@ VOID AnalyzeSegmentedMemAccessBaseIndexDispl(VOID * ip, VOID * addr, UINT32 acce
             fprintf (trace, "TRACED_INST_ERROR %p: R %p (tid %x) (teb %p displacement %x  baseRegVal %x indexRegVal %x scale %d expectedEA %p)\n", 
                 ip, addr, tid, reinterpret_cast<VOID *>(threadTeb), displacement, 
                 baseRegVal, indexRegVal, scale, reinterpret_cast<VOID *>(threadTeb+displacement));
+            fflush(trace);
             hadError = TRUE;
         }
         /*
@@ -244,10 +246,11 @@ VOID AnalyzeSegmentedMemAccessBaseDispl(VOID * ip, VOID * addr, UINT32 accessTyp
                
         if ((threadTeb + displacement + baseRegVal) != memoryEA)
         {// memoryEA is the TEB of the thread + displacement that is in the segmented operand
-           fprintf (trace, "TRACED_INST_ERROR %p: R %p (tid %x) (teb %p displacement %x  baseRegVal %x expectedEA %p)\n", 
+            fprintf (trace, "TRACED_INST_ERROR %p: R %p (tid %x) (teb %p displacement %x  baseRegVal %x expectedEA %p)\n", 
                 ip, addr, tid, reinterpret_cast<VOID *>(threadTeb), displacement, 
                 baseRegVal,  reinterpret_cast<VOID *>(threadTeb+displacement));
-           hadError = TRUE;
+            fflush(trace);
+            hadError = TRUE;
                 
         }
         /*
@@ -279,6 +282,7 @@ VOID AnalyzeSegmentedMemAccessIndexDispl(VOID * ip, VOID * addr,  UINT32 accessT
             fprintf (trace, "TRACED_INST_ERROR %p: R %p (tid %x) (teb %p displacement %x indexRegVal %x scale %d expectedEA %p)\n", 
                 ip, addr, tid, reinterpret_cast<VOID *>(threadTeb), displacement, 
                 indexRegVal, scale, reinterpret_cast<VOID *>(threadTeb+displacement));
+            fflush(trace);
             hadError = TRUE;
         }
         /*
@@ -306,6 +310,7 @@ VOID AnalyzeMemAccessDispl(VOID * ip, VOID * addr, UINT32 accessType, UINT32 dis
         {
             fprintf (trace, "TRACED_INST_ERROR %p: R %p (tid %x) ( displacement %x  expectedEA %p)\n", 
                 ip, addr, tid, displacement, reinterpret_cast<VOID *>(displacement));
+            fflush(trace);
             hadError = TRUE;
         }
         /*
@@ -334,6 +339,7 @@ VOID AnalyzeMemAccessBaseIndexDispl(VOID * ip, VOID * addr, UINT32 accessType, A
             fprintf (trace, "TRACED_INST_ERROR %p: R %p (tid %x) (displacement %x  baseRegVal %x indexRegVal %x scale %d expectedEA %p)\n", 
                 ip, addr, tid,  displacement, 
                 baseRegVal, indexRegVal, scale, reinterpret_cast<VOID *>(displacement));
+            fflush(trace);
             hadError = TRUE;
         }
         /*
@@ -359,11 +365,11 @@ VOID AnalyzeMemAccessBaseDispl(VOID * ip, VOID * addr, UINT32 accessType, ADDRIN
                
         if ((displacement + baseRegVal) != memoryEA)
         {// memoryEA is the TEB of the thread + displacement that is in the segmented operand
-           fprintf (trace, "TRACED_INST_ERROR %p: R %p (tid %x) (displacement %x  baseRegVal %x expectedEA %p)\n", 
+            fprintf (trace, "TRACED_INST_ERROR %p: R %p (tid %x) (displacement %x  baseRegVal %x expectedEA %p)\n", 
                 ip, addr, tid,  displacement, 
                 baseRegVal,  reinterpret_cast<VOID *>(displacement));
-           hadError = TRUE;
-                
+            fflush(trace);
+            hadError = TRUE;
         }
         /*
         else
@@ -391,6 +397,7 @@ VOID AnalyzeMemAccessIndexDispl(VOID * ip, VOID * addr,  UINT32 accessType, ADDR
             fprintf (trace, "TRACED_INST_ERROR %p: R %p (tid %x) (displacement %x indexRegVal %x scale %d expectedEA %p)\n", 
                 ip, addr, tid, displacement, 
                 indexRegVal, scale, reinterpret_cast<VOID *>(displacement));
+            fflush(trace);
             hadError = TRUE;
         }
         /*
@@ -686,6 +693,7 @@ VOID Instruction(INS ins, VOID *v)
                 fprintf (trace, "Instrumented ins: %x   %s\n", 
                          INS_Address(ins), INS_Disassemble(ins).c_str());
             }
+            fflush(trace);
         }
         else if (INS_IsMemoryRead(ins) || INS_IsMemoryWrite(ins))
         {
@@ -695,7 +703,6 @@ VOID Instruction(INS ins, VOID *v)
             HandleAccess (ins, INS_IsMemoryRead(ins)) ;
         }
     }
-    
 
 #ifndef TARGET_LINUX
     UINT32 operandCount = INS_OperandCount (ins);
@@ -706,6 +713,7 @@ VOID Instruction(INS ins, VOID *v)
         if (INS_OperandIsReg (ins, i) && REG_is_seg(INS_OperandReg (ins, i)) && INS_OperandWritten(ins, i))
         {
             fprintf(trace, "**ERROR SegOperand-WRITE, not supported  %p %s\n", INS_Address(ins), INS_Disassemble(ins).c_str());
+            fflush(trace);
             hadError = TRUE;
         }
     }
@@ -742,7 +750,6 @@ VOID Fini(INT32 code, VOID *v)
                     fprintf(trace, "Thread %x: verified %d non-segmented[%s] accesses\n", i, threadData[i].numNonSegEffectiveAddressesAnalyzed[j], GetMemoryAccessTypeString(j));
                 }
             }
-
         }
         fprintf(trace, "\n");
     }
@@ -754,12 +761,14 @@ VOID Fini(INT32 code, VOID *v)
     {
         printf ("Had ERRORS - search above for string ERROR\n");
     }
+    fflush(trace);
 }
 
 PIN_LOCK lock;
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_InitLock(&lock);
+    PIN_GetLock(&lock, threadid+1);
     fprintf(trace, "thread begin %x %x\n",threadid, numThreads);
     numThreads++;
     if (threadid < MAX_THREADS)
@@ -773,7 +782,7 @@ VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
         fprintf (trace, "ERROR - maximum #threads exceeded\n");
     }
     fflush(trace);
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 

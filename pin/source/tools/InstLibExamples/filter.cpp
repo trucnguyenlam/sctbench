@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -39,7 +39,9 @@ using namespace INSTLIB;
 // Contains knobs to filter out things to instrument
 FILTER filter;
 
-ofstream out("filter.out");
+ofstream out;
+KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool",
+    "o", "filter.out", "specify output file name");
 
 INT32 Usage()
 {
@@ -65,12 +67,20 @@ VOID Trace(TRACE trace, VOID * val)
             RTN rtn = TRACE_Rtn(trace);
             if (RTN_Valid(rtn))
             {
-                out << IMG_Name(SEC_Img(RTN_Sec(rtn))) << ":" << RTN_Name(rtn) << " " ;
+                IMG img = SEC_Img(RTN_Sec(rtn));
+                if (IMG_Valid(img)) {
+                    out << IMG_Name(img) << ":" << RTN_Name(rtn) << " " ;
+                }
             }
     
             out << INS_Disassemble(ins) << endl;
         }
     }
+}
+
+VOID Fini(INT32 code, VOID * junk)
+{
+    out.close();
 }
 
 // argc, argv are the entire command line, including pin -t <toolname> -- ...
@@ -81,13 +91,16 @@ int main(int argc, char * argv[])
         return Usage();
     }
 
+    out.open(KnobOutputFile.Value().c_str());
+
     TRACE_AddInstrumentFunction(Trace, 0);
     
     filter.Activate();
+
+    PIN_AddFiniFunction(Fini, NULL);
     
     // Start the program, never returns
     PIN_StartProgram();
-    
     return 0;
 }
 

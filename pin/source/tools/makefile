@@ -5,10 +5,12 @@
 # All directories which contain tests should be placed here.
 # Please maintain alphabetical order.
 
-ALL_TEST_DIRS := AVX AVX2 AlignChk AttachDetach Buffer CacheClient ChildProcess CrossIa32Intel64 DebugTrace Debugger \
-                 GracefulExit I18N ImageTests Insmix InstLibExamples InstrumentationOrderAndVersion MacTests Maid \
-                 ManualExamples Memory MemTrace Mix Mmx MyPinTool PinPoints Probes Regvalue Replay SegTrace \
-                 SegmentsVirtualization SignalTests SimpleExamples SyncTests SyscallsEmulation Tests ToolUnitTests Tsx
+ALL_TEST_DIRS := AVX AVX2 AlignChk AndroidTests AttachDetach Buffer CacheClient ChildProcess Cpp11Tests CrossIa32Intel64 \
+                 Debugger DebugInfo DebugTrace GracefulExit I18N IArg ImageTests InlinedFuncsOpt Insmix InstLibExamples \
+                 InstructionTests InstrumentationOrderAndVersion JitProfilingApiTests MacTests ManualExamples           \
+                 MaskVector Memory MemTrace MemTranslate Mix Mmx MyPinTool Probes Regvalue Replay RtnTests SegTrace     \
+                 SegmentsVirtualization SignalTests SimpleExamples SyncTests SyscallsEmulation Tests ToolUnitTests Tsx  \
+                 XyzzyKnobs
 
 # Some of these targets are referenced in the User Guide and/or are commonly used by Pin users.
 # Others are used by the nightly system and/or remote-builder.py.
@@ -17,6 +19,7 @@ all: build
 
 utils:
 	$(MAKE) -C Utils
+	$(MAKE) -C InstLib
 
 build: utils
 	-$(MAKE) -k $(ALL_TEST_DIRS:%=%.build)
@@ -41,14 +44,18 @@ $(ALL_TEST_DIRS:%=%.build):
 $(ALL_TEST_DIRS:%=%.install):
 	-$(MAKE) -k -C $(@:%.install=%) install
 
+# The InstLib directory only needs to be built, not installed.
 Utils.install:
-	$(MAKE) -k -C $(@:%.install=%) install
+	$(MAKE) -C $(@:%.install=%) install
+	$(MAKE) -C InstLib
 
 $(ALL_TEST_DIRS:%=%.test):
 	-$(MAKE) -k -C $(@:%.test=%) test
 
 $(ALL_TEST_DIRS:%=%.sanity):
+	-$(MAKE) -k -C $(@:%.sanity=%) install
 	-$(MAKE) -k -C $(@:%.sanity=%) sanity
+	-$(MAKE) -k -C $(@:%.sanity=%) clean-remote
 
 $(ALL_TEST_DIRS:%=%.clean):
 	-$(MAKE) -k -C $(@:%.clean=%) clean

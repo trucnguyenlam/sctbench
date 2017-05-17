@@ -1,7 +1,13 @@
 #!/bin/bash
 
+cmd_prefix=""
+if [ ! -z "$3" ]
+then
+    cmd_prefix=$3
+fi
+
 tool_val=`cat $1`
-pin_val=`tr -d ',' < $2 | awk '/client_regular_chnks/ { split($4,a,"/") ; print a[1] }'`
+pin_val=` $cmd_prefix tr -d ',' < $2 | $cmd_prefix awk '/client_regular_chunks/ { split($4,a,"/") ; print a[1] }'`
 
 if [ $tool_val -eq $pin_val ]
 then

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -45,7 +45,7 @@ static VOID MySyscallInCallback(CONTEXT * ctxt, AFUNPTR pf)
 {
     cout << "[win_callback] Calling SyscallInCallback() at " << hex << (VOID *)pf << endl;
 
-    PIN_CallApplicationFunction(ctxt, PIN_ThreadId(), CALLINGSTD_DEFAULT, pf, PIN_PARG_END());
+    PIN_CallApplicationFunction(ctxt, PIN_ThreadId(), CALLINGSTD_DEFAULT, pf, NULL, PIN_PARG_END());
 
     cout << "Returned from SyscallInCallback()" << endl;
 }

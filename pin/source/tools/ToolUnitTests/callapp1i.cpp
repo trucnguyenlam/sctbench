@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -52,7 +52,7 @@ VOID Boo(  CONTEXT * ctxt, AFUNPTR pf_Bar, int one )
     cout << "Jitting Bar1() with one arguments" << endl;
 
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, pf_Bar,
+                                 CALLINGSTD_DEFAULT, pf_Bar, NULL,
                                  PIN_PARG(void),
                                  PIN_PARG(int), one,
                                  PIN_PARG_END() );

@@ -143,8 +143,8 @@ class PredictorNew : public Analyzer {
     typedef std::pair<AccSum *, AccSum *> Pair;
     typedef std::pair<VectorClock, ThdClkInfo> TimeInfoEntry;
     typedef std::vector<TimeInfoEntry> TimeInfo;
-    typedef std::tr1::unordered_map<size_t, Vec> HashIndex;
-    typedef std::tr1::unordered_map<AccSum *, Vec> PairIndex;
+    typedef std::unordered_map<size_t, Vec> HashIndex;
+    typedef std::unordered_map<AccSum *, Vec> PairIndex;
 
     AccSum()
         : meta(NULL),
@@ -214,7 +214,7 @@ class PredictorNew : public Analyzer {
       Meta *meta;
     };
     typedef std::map<thread_id_t, RecentInfo> Table;
-    typedef std::tr1::unordered_map<Meta *, size_t> RawEntryIndex;
+    typedef std::unordered_map<Meta *, size_t> RawEntryIndex;
 
     RecentInfo() {}
     ~RecentInfo() {}
@@ -228,8 +228,8 @@ class PredictorNew : public Analyzer {
    public:
     typedef std::vector<LocalPair> Vec;
     typedef std::map<thread_id_t, Vec> Table;
-    typedef std::tr1::unordered_map<AccSum *, Vec> Index;
-    typedef std::tr1::unordered_map<AccSum *, Index> PairIndex;
+    typedef std::unordered_map<AccSum *, Vec> Index;
+    typedef std::unordered_map<AccSum *, Index> PairIndex;
 
     LocalPair()
         : prev_entry(NULL),
@@ -253,8 +253,8 @@ class PredictorNew : public Analyzer {
       TYPE_MEM,
       TYPE_MUTEX,
     } Type;
-    typedef std::tr1::unordered_set<Meta *> HashSet;
-    typedef std::tr1::unordered_map<address_t, Meta *> Table;
+    typedef std::unordered_set<Meta *> HashSet;
+    typedef std::unordered_map<address_t, Meta *> Table;
 
     explicit Meta(Type t) : type(t) { acc_histo = new AccHisto; }
     ~Meta() { if (acc_histo) delete acc_histo; }
@@ -275,7 +275,7 @@ class PredictorNew : public Analyzer {
       SignalMap signal_map;
     } WaitInfo;
     typedef std::map<thread_id_t, WaitInfo> WaitMap;
-    typedef std::tr1::unordered_map<address_t, CondMeta *> Table;
+    typedef std::unordered_map<address_t, CondMeta *> Table;
 
     CondMeta() : curr_signal_id(0) {}
     ~CondMeta() {}
@@ -288,7 +288,7 @@ class PredictorNew : public Analyzer {
   class BarrierMeta {
    public:
     typedef std::map<thread_id_t, std::pair<VectorClock, bool> > VectorClockMap;
-    typedef std::tr1::unordered_map<address_t, BarrierMeta *> Table;
+    typedef std::unordered_map<address_t, BarrierMeta *> Table;
 
     BarrierMeta()
         : pre_using_table1(true),
@@ -305,7 +305,7 @@ class PredictorNew : public Analyzer {
   // the meta data for shared memory accesses
   class SharedMeta {
    public:
-    typedef std::tr1::unordered_map<address_t, SharedMeta> Table;
+    typedef std::unordered_map<address_t, SharedMeta> Table;
 
     SharedMeta()
         : shared(false),

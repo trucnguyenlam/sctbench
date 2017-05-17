@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -328,6 +328,7 @@ BOOL APP_THREAD_REPRESENTITVE::AllBuffersProcessed()
 
 BUFFER_LIST_MANAGER::BUFFER_LIST_MANAGER()
 {
+     PIN_InitLock(&_bufferListLock);
     _bufferSem = WIND::CreateSemaphore (NULL, 0, 0x7fffffff, NULL);
 }
 
@@ -345,9 +346,9 @@ VOID   BUFFER_LIST_MANAGER::PutBufferOnList(VOID *buf, UINT64 numElements,
     bufferListElement.numElements = numElements;
     bufferListElement.appThreadRepresentitive = appThreadRepresentitive;
 
-    GetLock(&_bufferListLock, tid+1);
+    PIN_GetLock(&_bufferListLock, tid+1);
     _bufferList.push_back(bufferListElement);
-    ReleaseLock(&_bufferListLock);
+    PIN_ReleaseLock(&_bufferListLock);
     BOOL success = WIND::ReleaseSemaphore(_bufferSem, 1, NULL);
 }
 
@@ -373,13 +374,16 @@ VOID  BUFFER_LIST_MANAGER::GetBufferFromList(VOID **buf, UINT64 *numElements,
         _bufferListStatistics.UpdateCyclesWaitingForBuffer();
     }
 
-    GetLock(&_bufferListLock, tid+1);
-    BUFFER_LIST_ELEMENT &bufferListElement = (_bufferList.front());
-    *buf = bufferListElement.buf;
-    *numElements = bufferListElement.numElements;
-    *appThreadRepresentitive = bufferListElement.appThreadRepresentitive;
-    _bufferList.pop_front();
-    ReleaseLock(&_bufferListLock);
+    if (_bufferList.size() > 0)
+    {
+        PIN_GetLock(&_bufferListLock, tid+1);
+        BUFFER_LIST_ELEMENT &bufferListElement = (_bufferList.front());
+        *buf = bufferListElement.buf;
+        *numElements = bufferListElement.numElements;
+        *appThreadRepresentitive = bufferListElement.appThreadRepresentitive;
+        _bufferList.pop_front();
+        PIN_ReleaseLock(&_bufferListLock);
+    }
 }
 
 VOID BUFFER_LIST_MANAGER::SignalBufferSem()
@@ -582,6 +586,7 @@ static VOID BufferProcessingThread(VOID * arg)
         //fflush (stdout);
         appThreadRepresentitive->FreeBufferListManager()
             ->PutBufferOnList(buf, 0, appThreadRepresentitive, myThreadId);
+        buf = NULL;
         //printf ("BufferProcessingThread tid %d appThreadRepresentitive %x now has %d buffers on it free list\n",
         //        myThreadId, appThreadRepresentitive, appThreadRepresentitive->FreeBufferListManager()->NumBuffersOnList());
     }
@@ -621,7 +626,7 @@ int main(int argc, char *argv[])
     {
         return Usage();
     }
-    
+
     // Define the buffer type to be used
     // The first buffer of this definition is implicitly allocated to each application thread
     // by Pin when the application thread starts. The rest of the buffers are explicitly

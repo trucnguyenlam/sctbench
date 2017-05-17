@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -45,6 +45,7 @@ END_LEGAL */
 #include <linux/unistd.h>
 #include <signal.h>
 
+BOOL changeSigmask = FALSE;
 
 using namespace std;
 
@@ -58,12 +59,18 @@ INT32 Usage()
     return -1;
 }
 
+// Notify the application when the sigmask has changed.
+BOOL Replacement_waitChangeSigmask()
+{
+    while(changeSigmask == 0) sched_yield();
+    return TRUE;
+}
 
 
 VOID AttachedThreadStart(void *sigmask, VOID * v)
 {
     sigset_t * sigset = (sigset_t *)sigmask;
-    
+
     /* 
      *    change the sigmask of the thread whose sigmask contains SIGUSR2 and doen't contain SIGUSR1
      */  
@@ -72,7 +79,25 @@ VOID AttachedThreadStart(void *sigmask, VOID * v)
         sigdelset(sigset, SIGUSR2);
         sigaddset(sigset, SIGUSR1);
     }
- 
+
+    changeSigmask = TRUE;
+}
+
+
+// Image load callback for the first Pin session
+VOID ImageLoad(IMG img,  VOID *v)
+{
+    if ( IMG_IsMainExecutable(img))
+    {
+        RTN rtn = RTN_FindByName(img, "WaitChangeSigmask");
+
+        // Relevant only in the attach scenario.
+        if (RTN_Valid(rtn))
+        {
+            if(RTN_IsSafeForProbedReplacement(rtn))
+               RTN_ReplaceProbed(rtn, AFUNPTR(Replacement_waitChangeSigmask));
+        }
+    }
 }
 
 
@@ -85,7 +110,7 @@ int main(int argc, CHAR *argv[])
     {
         return Usage();
     }
-     
+    IMG_AddInstrumentFunction(ImageLoad, 0);
     PIN_AddThreadAttachProbedFunction(AttachedThreadStart, 0);
     PIN_StartProgramProbed();
     

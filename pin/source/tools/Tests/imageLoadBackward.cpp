@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -106,15 +106,19 @@ VOID Trace(TRACE trace, VOID *v)
 
     RTN rtn = RTN_FindByAddress(INS_Address(head));
 
-    if (RTN_Valid(rtn))
-        *out << IMG_Name(SEC_Img(RTN_Sec(rtn)))
-             << ":"
-             << RTN_Name(rtn)
-             << "+"
-             << INS_Address(head) - RTN_Address(rtn)
-             << " "
-             << INS_Disassemble(head)
-             << endl;
+    if (RTN_Valid(rtn)) {
+        IMG img = SEC_Img(RTN_Sec(rtn));
+        if (IMG_Valid(img)){
+            *out << IMG_Name(img)
+                 << ":"
+                 << RTN_Name(rtn)
+                 << "+"
+                 << INS_Address(head) - RTN_Address(rtn)
+                 << " "
+                 << INS_Disassemble(head)
+                 << endl;
+        }
+    }
 }
 
 int main(INT32 argc, CHAR **argv)

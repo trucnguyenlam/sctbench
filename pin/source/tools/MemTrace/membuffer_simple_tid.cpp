@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -134,13 +134,13 @@ VOID APP_THREAD_REPRESENTITVE::ProcessBuffer(VOID *buf, UINT64 numElements, THRE
 {
     _numBuffersFilled++;
 
-    GetLock(&lock1, tid+1);
+    PIN_GetLock(&lock1, tid+1);
     numThreadsSimultaneosulyInProcessBuffer++;
     if (numThreadsSimultaneosulyInProcessBuffer > maxThreadsSimultaneosulyInProcessBuffer)
     {
         maxThreadsSimultaneosulyInProcessBuffer = numThreadsSimultaneosulyInProcessBuffer;
     }
-    ReleaseLock(&lock1);
+    PIN_ReleaseLock(&lock1);
 
 
 
@@ -158,9 +158,9 @@ VOID APP_THREAD_REPRESENTITVE::ProcessBuffer(VOID *buf, UINT64 numElements, THRE
     
     if (!KnobProcessBuffer )
     {
-        GetLock(&lock1, tid+1);
+        PIN_GetLock(&lock1, tid+1);
         numThreadsSimultaneosulyInProcessBuffer--;
-        ReleaseLock(&lock1);
+        PIN_ReleaseLock(&lock1);
         return;
     }
     
@@ -182,9 +182,9 @@ VOID APP_THREAD_REPRESENTITVE::ProcessBuffer(VOID *buf, UINT64 numElements, THRE
     }
 
     _numElementsProcessed += (UINT32)until;
-    GetLock(&lock1, tid+1);
+    PIN_GetLock(&lock1, tid+1);
     numThreadsSimultaneosulyInProcessBuffer--;
-    ReleaseLock(&lock1);
+    PIN_ReleaseLock(&lock1);
      //printf ("numElements processed %d\n", (UINT32)numElements);
 }
 
@@ -221,9 +221,9 @@ VOID Trace(TRACE trace, VOID *v)
 PIN_LOCK lock2;
 void CalledWaitForAllThreadsStarted(THREADID tid)
 {
-    GetLock(&lock2, tid+1);
+    PIN_GetLock(&lock2, tid+1);
     numThreadsCalledWaitForAllThreadsStarted++;
-    ReleaseLock(&lock2);
+    PIN_ReleaseLock(&lock2);
 }
 
 static void InstrumentRtn(RTN rtn, VOID *)
@@ -345,6 +345,8 @@ int main(int argc, char *argv[])
         return Usage();
     }
     
+    PIN_InitLock(&lock1);
+    PIN_InitLock(&lock2);
     // Initialize the memory reference buffer
     //printf ("buffer size in bytes 0x%x\n", KnobNumPagesInBuffer.Value()*4096);
     //	fflush (stdout);

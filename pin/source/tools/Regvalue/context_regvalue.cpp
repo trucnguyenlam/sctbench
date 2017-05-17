@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
 #include <fstream>
 #include <cstring>
+#include <cassert>
 #include "context_utils.h"
 
 using std::ofstream;
@@ -60,7 +61,7 @@ ofstream OutFile;
 
 static void PrintsBefore(CONTEXT * ctxt)
 {
-    OutFile << "Context values before ChangeRegs functions" << endl;
+    OutFile << "Context values before ChangeRegs functions" << endl << flush;
     StoreContext(ctxt);
     PrintStoredRegisters(OutFile);
 }
@@ -77,8 +78,9 @@ static void ChecksAfter(CONTEXT * ctxt)
     }
 }
 
+
 /////////////////////
-// INSTRUMENTATION FUNCTIONS
+// CALLBACKS
 /////////////////////
 
 static VOID ImageLoad(IMG img, VOID * v)

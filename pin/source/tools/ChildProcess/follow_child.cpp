@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -30,20 +30,40 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
 #include "pin.H"
 #include <iostream>
+#include <fstream>
 using namespace std;
 
+KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "inscount.out",
+        "specify output file name");
+
+ofstream OutFile;
+
+/* ===================================================================== */
+/* Print Help Message                                                    */
+/* ===================================================================== */
+
+INT32 Usage()
+{
+    cout << endl << KNOB_BASE::StringKnobSummary() << endl;
+    return -1;
+}
 
 /* ===================================================================== */
 VOID Fini(INT32 code, VOID *v)
 {
-    cout << "In follow_child PinTool" << endl;
+    OutFile << "In follow_child PinTool" << endl;
+    OutFile.close();
 }
 
 /* ===================================================================== */
 
 int main(INT32 argc, CHAR **argv)
 {
-    PIN_Init(argc, argv);
+    if (PIN_Init(argc, argv)) return Usage();
+
+    // If the file is not appended to, every instance of the pintool will overwrite it with its own output.
+    OutFile.open(KnobOutputFile.Value().c_str(), ofstream::app);
+
     PIN_AddFiniFunction(Fini, 0);
 
     // Never returns

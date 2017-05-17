@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -58,7 +58,7 @@ ofstream TraceFile;
 INT32 Usage()
 {
     cerr <<
-        "This pin tool tests attach to single-threades application JIT mode.\n"
+        "This pin tool tests attach to single-threaded application JIT mode.\n"
         "\n";
     cerr << KNOB_BASE::StringKnobSummary();
     cerr << endl;

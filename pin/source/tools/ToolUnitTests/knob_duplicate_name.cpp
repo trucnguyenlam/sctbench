@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -52,7 +52,7 @@ int main(int argc, char * argv[])
     if (PIN_Init(argc, argv))
         return 1;
 
-    PIN_StartProgramProbed();  //shorter run times
+    PIN_StartProgram();
     return 0;
 }
 

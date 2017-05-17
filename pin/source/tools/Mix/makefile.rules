@@ -54,6 +54,12 @@ LIB_ROOTS :=
 
 ###### Place OS-specific definitions here ######
 
+# Android
+ifeq ($(TARGET_OS),android)
+    TEST_ROOTS += test-mt
+    APP_ROOTS += test-mt
+endif
+
 # Linux
 ifeq ($(TARGET_OS),linux)
     TEST_ROOTS += test-mt
@@ -66,11 +72,6 @@ endif
 # Windows
 ifeq ($(TARGET_OS),windows)
     OBJECT_ROOTS += assy-support-$(TARGET)
-endif
-
-# TODO: These tests fail on Mac - fix and remove the following:
-ifeq ($(TARGET_OS),mac)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:mix-mt=)
 endif
 
 
@@ -90,15 +91,15 @@ SANITY_SUBSET := $(TEST_TOOL_ROOTS) $(TEST_ROOTS)
 
 mix-mt.test: $(OBJDIR)mix-mt$(PINTOOL_SUFFIX) $(OBJDIR)marker-example$(EXE_SUFFIX)
 	$(PIN) -t $(OBJDIR)mix-mt$(PINTOOL_SUFFIX) -category -start_address marker_start_counting:repeat \
-	  -stop_address marker_stop_counting:repeat -zero_stats_address marker_zero_stats:repeat \
-	  -emit_stats_address marker_emit_stats:repeat -o $(OBJDIR)mix-mt.out -- $(OBJDIR)marker-example$(EXE_SUFFIX)
+	  -stop_address marker_stop_counting:repeat -control stats-reset:address:marker_zero_stats:repeat \
+	  -control stats-emit:address:marker_emit_stats:repeat -o $(OBJDIR)mix-mt.out -- $(OBJDIR)marker-example$(EXE_SUFFIX)
 	$(RM) $(OBJDIR)mix-mt.out
 
 # MULTITHREADED TEST: mix-mt handles a variable number of threads 
 test-mt.test: $(OBJDIR)mix-mt$(PINTOOL_SUFFIX) $(OBJDIR)test-mt$(EXE_SUFFIX)
 	$(PIN) -t $(OBJDIR)mix-mt$(PINTOOL_SUFFIX) -start_address marker_start_counting:repeat \
-	  -stop_address marker_stop_counting:repeat -zero_stats_address marker_zero_stats:repeat \
-	  -emit_stats_address marker_emit_stats:repeat -o $(OBJDIR)test-mt.out -- $(OBJDIR)test-mt$(EXE_SUFFIX)
+	  -stop_address marker_stop_counting:repeat -control stats-reset:address:marker_zero_stats:repeat \
+	  -control stats-emit:address:marker_emit_stats:repeat -o $(OBJDIR)test-mt.out -- $(OBJDIR)test-mt$(EXE_SUFFIX)
 	$(RM) $(OBJDIR)test-mt.out
 
 # I allow some fuzz in the expected length because sometime we see ~960 and 
@@ -124,7 +125,9 @@ mix-length.test: $(OBJDIR)mix-mt$(PINTOOL_SUFFIX)
 
 ifeq ($(TARGET_OS),windows)
 # On Windows, the mix-mt tool needs to be linked with the assy-support object file.
-# On all other platforms, simply use the defult build rule.
-$(OBJDIR)mix-mt$(PINTOOL_SUFFIX): $(OBJDIR)mix-mt$(OBJ_SUFFIX) $(OBJDIR)assy-support-$(TARGET)$(OBJ_SUFFIX)
+$(OBJDIR)mix-mt$(PINTOOL_SUFFIX): $(OBJDIR)mix-mt$(OBJ_SUFFIX) $(OBJDIR)assy-support-$(TARGET)$(OBJ_SUFFIX) $(CONTROLLERLIB)
+	$(LINKER) $(TOOL_LDFLAGS) $(LINK_EXE)$@ $^ $(TOOL_LPATHS) $(TOOL_LIBS)
+else
+$(OBJDIR)mix-mt$(PINTOOL_SUFFIX): $(OBJDIR)mix-mt$(OBJ_SUFFIX) $(CONTROLLERLIB)
 	$(LINKER) $(TOOL_LDFLAGS) $(LINK_EXE)$@ $^ $(TOOL_LPATHS) $(TOOL_LIBS)
 endif

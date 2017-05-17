@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -173,8 +173,11 @@ static VOID ImageLoadCallback(IMG img, VOID *v)
     {
         if (KnobVerbose)
             cerr << "Looking for doNothing in " << IMG_Name(img) << "\n";
-
+#ifndef TARGET_MAC
         RTN rtn = RTN_FindByName (img, "doNothing");
+#else
+        RTN rtn = RTN_FindByName (img, "_doNothing");
+#endif
 
         if (RTN_Valid(rtn))
         {
@@ -188,13 +191,13 @@ static VOID ImageLoadCallback(IMG img, VOID *v)
 int 
 main(int argc, char *argv[])
 {
-    PIN_InitSymbols();
-
     if(PIN_Init(argc,argv))
     {
         cerr << "Bad arguments\n";
         return -1;
     }
+
+    PIN_InitSymbols();
 
     IMG_AddInstrumentFunction(ImageLoadCallback, 0);
     PIN_AddThreadStartFunction(ThreadCreateCallback, 0);

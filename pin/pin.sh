@@ -11,12 +11,12 @@ origin=`dirname "$origin"`
 # Libraries are found relative to origin
 lib_base="$origin"
 elf_libs="$lib_base/ia32/runtime:$lib_base/intel64/runtime"
-#if [ `$origin/source/tools/testGccVersion /usr/bin/gcc` -eq 1 ]
-#then
-#    cpp_libs="$lib_base/ia32/runtime/cpplibs:$lib_base/intel64/runtime/cpplibs"
-#else
+if [ `$origin/source/tools/Utils/testGccVersion /usr/bin/gcc` -eq 1 ]
+then
+    cpp_libs="$lib_base/ia32/runtime/cpplibs:$lib_base/intel64/runtime/cpplibs"
+else
     cpp_libs=
-#fi
+fi
 glibc_libs="$lib_base/ia32/runtime/glibc:$lib_base/intel64/runtime/glibc"
 # vm/tool need elf, cpp and glibc libs
 export PIN_VM_LD_LIBRARY_PATH=$elf_libs:$cpp_libs:$glibc_libs:$LD_LIBRARY_PATH
@@ -49,4 +49,9 @@ unset LD_PRELOAD
 # injector just needs elf and cpp libs, it cannot use glibc libs
 export LD_LIBRARY_PATH=$elf_libs:$cpp_libs:$LD_LIBRARY_PATH
 
-exec "$origin"/intel64/bin/pinbin "${@}"
+if [ $(arch) == "x86_64" ]
+then
+    exec "$origin"/intel64/bin/pinbin -p32 "$origin"/ia32/bin/pinbin "${@}"
+else
+    exec "$origin"/ia32/bin/pinbin -p64 "$origin"/intel64/bin/pinbin "${@}"
+fi

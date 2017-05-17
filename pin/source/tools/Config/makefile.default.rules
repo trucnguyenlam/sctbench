@@ -92,12 +92,27 @@ summary:
 
 # Remove any files that were created by the make process.
 clean:
-	-rm -rf $(OBJDIR) *.out* *.log* *.xml *.makefile.copy *.core
+	-rm -rf $(OBJDIR) *.out* *.log* *.xml *.makefile.copy *.core core.*
+
+clean-remote:
+	-$(INSTALLER) $(INSTALL_FLAGS) --clean
 
 ###### Build the common components - for internal use ###### 
 
 $(TESTAPP):
 	$(MAKE) -C $(TOOLS_ROOT)/Utils dir $(OBJDIR)cp-pin$(EXE_SUFFIX)
+
+$(HELLO_APP):
+	$(MAKE) -C $(TOOLS_ROOT)/Utils dir $(OBJDIR)hello$(EXE_SUFFIX)
+
+$(HELLO_APP_DWARF4):
+	$(MAKE) -C $(TOOLS_ROOT)/Utils dir $(OBJDIR)hello_dwarf4$(EXE_SUFFIX)
+
+$(DISABLE_ASLR):
+	$(MAKE) -C $(TOOLS_ROOT)/Utils dir $(OBJDIR)disable-aslr$(EXE_SUFFIX)
+
+$(ATTACH_LAUNCHER):
+	$(MAKE) -C $(TOOLS_ROOT)/Utils dir $(OBJDIR)attachLauncher$(EXE_SUFFIX)
 
 $(CHECKAVX):
 	$(MAKE) -C $(TOOLS_ROOT)/Utils dir $(OBJDIR)avx_check$(EXE_SUFFIX)
@@ -110,6 +125,12 @@ $(CHECKTSX):
 
 $(THREADLIB):
 	$(MAKE) -C $(TOOLS_ROOT)/Utils dir $(OBJDIR)threadlib$(OBJ_SUFFIX)
+
+$(REGVALLIB):
+	$(MAKE) -C $(TOOLS_ROOT)/Utils dir $(OBJDIR)regvallib$(LIB_SUFFIX)
+
+$(CONTROLLERLIB):
+	$(MAKE) -C $(TOOLS_ROOT)/InstLib dir $(OBJDIR)controller$(LIB_SUFFIX)
 
 $(SUPPORTS_AVX_OBJ):
 	$(MAKE) -C $(TOOLS_ROOT)/Utils dir $(OBJDIR)supports_avx$(OBJ_SUFFIX)
@@ -129,8 +150,9 @@ $(OBJDIR)%.failed:
 .PRECIOUS: $(OBJDIR)%.tested $(OBJDIR)%.failed
 
 # Don't delete the files generated in the Utils directory.
-.PRECIOUS: $(TESTAPP) $(CHECKAVX) $(CHECKAVX2) $(CHECKTSX) $(THREADLIB)
-.PRECIOUS: $(SUPPORTS_AVX_OBJ) $(SUPPORTS_AVX2_OBJ)
+.PRECIOUS: $(TESTAPP) $(HELLO_APP) $(HELLO_APP_DWARF4) $(DISABLE_ASLR) $(ATTACH_LAUNCHER)
+.PRECIOUS: $(CHECKAVX) $(CHECKAVX2) $(CHECKTSX)
+.PRECIOUS: $(THREADLIB) $(SUPPORTS_AVX_OBJ) $(SUPPORTS_AVX2_OBJ)
 
 # Accelerate the make process and prevent errors.
 .PHONY: tools apps objects dlls libs avxcheck tsxcheck install test sanity summary clean %.test %.wrap
@@ -218,10 +240,11 @@ $(OBJDIR)%$(EXE_SUFFIX): %.c
 	$(MAKE) $(@:.wrap=.test) $(MAKE_TESTFLAGS)
 	rm $(OBJDIR)$(@:.wrap=.failed)
 
+# Not all tools produce output so the .out file might not be created. We don't want the test to fail in this case,
+# so we ignore possible failures of the final rm command.
 %.test: $(OBJDIR) $(OBJDIR)%$(PINTOOL_SUFFIX) $(TESTAPP)
 	$(PIN) -t $(OBJDIR)$(@:.test=)$(PINTOOL_SUFFIX) -- $(TESTAPP) makefile $(OBJDIR)$(@:.test=.makefile.copy) \
 	  > $(OBJDIR)$(@:.test=.out) 2>&1
 	$(CMP) makefile $(OBJDIR)$(@:.test=.makefile.copy)
 	$(RM) $(OBJDIR)$(@:.test=.makefile.copy)
-	# Not all tools produce output so the .out file might not be created, in which case the test shouldn't.
 	-$(RM) $(OBJDIR)$(@:.test=.out)

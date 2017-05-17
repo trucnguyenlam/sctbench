@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -28,15 +28,21 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
-#include <iostream>
+#include <fstream>
 #include "pin.H"
 
 static void OnExit(INT32, VOID *);
 
+KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "exittool.out",
+        "specify output file name");
+
+ofstream OutFile;
 
 int main(int argc, char * argv[])
 {
     PIN_Init(argc, argv);
+
+    OutFile.open(KnobOutputFile.Value().c_str());
 
     PIN_AddFiniFunction(OnExit, 0);
 
@@ -47,5 +53,5 @@ int main(int argc, char * argv[])
 
 static void OnExit(INT32 code, VOID *v)
 {
-    cout << "Tool sees exit" << endl;
+    OutFile << "Tool sees exit" << endl;
 }

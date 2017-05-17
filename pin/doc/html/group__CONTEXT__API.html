@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -23,6 +24,9 @@
   </ul></div>
 <h1>Context manipulation API</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
+<tr><td colspan="2"><br><h2>Classes</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">union &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionPIN__REGISTER.html">PIN_REGISTER</a></td></tr>
+
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a></td></tr>
 
@@ -43,13 +47,17 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CONTEXT__API.html#g17de91853734e5b9ebc49677d5ef34ad">LEVEL_PINCLIENT::PIN_ContextContainsState</a> (<a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <a class="el" href="group__CONTEXT__API.html#g8c2bf0dcc650f916f07bfacf67d1d281">PROCESSOR_STATE</a> state)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CONTEXT__API.html#gdc379ecda837972d76557734cf03200b">LEVEL_PINCLIENT::PIN_SetContextRegval</a> (<a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <a class="el" href="group__REG__CPU__IA32.html#g3b77029a2a445f70f0206dbad1e4e641">REG</a> reg, const <a class="el" href="group__REGVAL__API.html#g3a4a1a612f8eebed9e7392a1c0f63421">REGVAL</a> *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CONTEXT__API.html#g4e6408c641479c22918a888d95ca1930">LEVEL_PINCLIENT::PIN_SetContextRegval</a> (<a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <a class="el" href="group__REG__CPU__IA32.html#g3b77029a2a445f70f0206dbad1e4e641">REG</a> reg, const UINT8 *val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CONTEXT__API.html#gf5c5296fea479c5d9d5d9c6f19b3546d">LEVEL_PINCLIENT::PIN_GetContextRegval</a> (const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <a class="el" href="group__REG__CPU__IA32.html#g3b77029a2a445f70f0206dbad1e4e641">REG</a> reg, <a class="el" href="group__REGVAL__API.html#g3a4a1a612f8eebed9e7392a1c0f63421">REGVAL</a> *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CONTEXT__API.html#gd74a7cdb671067c21d184374c453e760">LEVEL_PINCLIENT::PIN_GetContextRegval</a> (const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <a class="el" href="group__REG__CPU__IA32.html#g3b77029a2a445f70f0206dbad1e4e641">REG</a> reg, UINT8 *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CONTEXT__API.html#ga3f8746ccdac1c1fbcb2e2f3f3cd7bcb">LEVEL_PINCLIENT::PIN_SetContextReg</a> (<a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <a class="el" href="group__REG__CPU__IA32.html#g3b77029a2a445f70f0206dbad1e4e641">REG</a> reg, ADDRINT val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">ADDRINT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CONTEXT__API.html#gdc986c9a416cd32de1f18e0ffbf5b898">LEVEL_PINCLIENT::PIN_GetContextReg</a> (const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <a class="el" href="group__REG__CPU__IA32.html#g3b77029a2a445f70f0206dbad1e4e641">REG</a> reg)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CONTEXT__API.html#g1ecb72b47dc52ed2f5f440d134ce5c33">LEVEL_PINCLIENT::PIN_SetContextFPState</a> (<a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, const FPSTATE *fpstate)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CONTEXT__API.html#g614266cd822667f28d9365a40de601be">LEVEL_PINCLIENT::PIN_GetContextFPState</a> (const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, FPSTATE *fpstate)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__CONTEXT__API.html#g5eaae6fe4719308c1024a27d37b81be6">LEVEL_PINCLIENT::PIN_SaveContext</a> (const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxtFrom, <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxtTo)</td></tr>
 
@@ -58,7 +66,7 @@
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 This API allows the user to read and modify the architectural register state of the processor, as seen in the application that runs under Pin.<p>
-Usually, the tool receives context in the instrumentation callback like THREAD_START_CALLBACK, CONTEXT_CHANGE_CALLBACK, or when it specifies IARG_CONTEXT argument to the instrumentation routine. At this time, the tool can read the individual register values or save the entire context using the PIN_GetContextReg, PIN_GetContextRegVal, and PIN_SaveContext functions. The PIN_ExecuteAt function can be called from an analysis routine to change the control flow of the thread and start execution from the specified context. The PIN_SetContextReg and PIN_SetContextRegVal functions can be used from callbacks to change the thread's register state. <hr><h2>Typedef Documentation</h2>
+Usually, the tool receives context in the instrumentation callback like THREAD_START_CALLBACK, CONTEXT_CHANGE_CALLBACK, or when it specifies IARG_CONTEXT argument to the instrumentation routine. At this time, the tool can read the individual register values or save the entire context using the PIN_GetContextReg, PIN_GetContextRegval, and PIN_SaveContext functions. The PIN_ExecuteAt function can be called from an analysis routine to change the control flow of the thread and start execution from the specified context. The PIN_SetContextReg and PIN_SetContextRegval functions can be used from callbacks to change the thread's register state. <hr><h2>Typedef Documentation</h2>
 <a class="anchor" name="g70a3022fd8834c783509c028ffcd07cb"></a><!-- doxytag: member="types_vmapi.H::CONTEXT" ref="g70a3022fd8834c783509c028ffcd07cb" args="" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
@@ -210,6 +218,54 @@ This API can be called from an analysis function or a replacement routine, but n
     </td>
   </tr>
 </table>
+<a class="anchor" name="g614266cd822667f28d9365a40de601be"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_GetContextFPState" ref="g614266cd822667f28d9365a40de601be" args="(const CONTEXT *ctxt, FPSTATE *fpstate)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_GetContextFPState           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *&nbsp;</td>
+          <td class="mdname" nowrap> <em>ctxt</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>FPSTATE *&nbsp;</td>
+          <td class="mdname" nowrap> <em>fpstate</em></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get the floating point state of the specified context.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>ctxt</em>&nbsp;</td><td>context whose floating point state is retrieved </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>fpstate</em>&nbsp;</td><td>pointer to the buffer that receives floating point state of the context. the FPSTATE type is exposed by Pin.</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
+ <b>O/S</b>: Linux, Windows &amp; MacOS<br>
+ <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
 <a class="anchor" name="gdc986c9a416cd32de1f18e0ffbf5b898"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_GetContextReg" ref="gdc986c9a416cd32de1f18e0ffbf5b898" args="(const CONTEXT *ctxt, REG reg)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
@@ -244,7 +300,7 @@ This API can be called from an analysis function or a replacement routine, but n
     <td>
 
 <p>
-Get the value of the integer register or fp status/control register in the specified context. Note that fp registers such as fp-stack regs, xmm regs, ymm regs (when running with AVX support), can only be read using <a class="el" href="group__CONTEXT__API.html#gf5c5296fea479c5d9d5d9c6f19b3546d">PIN_GetContextRegval</a>.<p>
+Get the value of the integer register or fp status/control register in the specified context. Note that fp registers such as fp-stack regs, xmm regs, ymm regs (when running with Intel(R) AVX support), can only be read using <a class="el" href="group__CONTEXT__API.html#gd74a7cdb671067c21d184374c453e760">PIN_GetContextRegval</a>.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>ctxt</em>&nbsp;</td><td>context whose register value is requested </td></tr>
@@ -259,7 +315,7 @@ Get the value of the integer register or fp status/control register in the speci
     </td>
   </tr>
 </table>
-<a class="anchor" name="gf5c5296fea479c5d9d5d9c6f19b3546d"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_GetContextRegval" ref="gf5c5296fea479c5d9d5d9c6f19b3546d" args="(const CONTEXT *ctxt, REG reg, REGVAL *val)" --><p>
+<a class="anchor" name="gd74a7cdb671067c21d184374c453e760"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_GetContextRegval" ref="gd74a7cdb671067c21d184374c453e760" args="(const CONTEXT *ctxt, REG reg, UINT8 *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -279,7 +335,7 @@ Get the value of the integer register or fp status/control register in the speci
         <tr>
           <td class="md" nowrap align="right"></td>
           <td class="md"></td>
-          <td class="md" nowrap><a class="el" href="group__REGVAL__API.html#g3a4a1a612f8eebed9e7392a1c0f63421">REGVAL</a> *&nbsp;</td>
+          <td class="md" nowrap>UINT8 *&nbsp;</td>
           <td class="mdname" nowrap> <em>val</em></td>
         </tr>
         <tr>
@@ -299,14 +355,16 @@ Get the value of the integer register or fp status/control register in the speci
     <td>
 
 <p>
-Get the value of the requested register from the context. This function is applicable for all context registers (integer, fp etc). See <a class="el" href="group__REGVAL__API.html#g3d8483e39628a0d201f1277d2fb2b544">PIN_ReadRegvalQWord</a> for accessing the REGVAL object.<p>
+Get the value of the requested register from the context. This function is applicable for all context registers (integer, fp etc).<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>ctxt</em>&nbsp;</td><td>context whose register value is requested </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>reg</em>&nbsp;</td><td>register whose value is requested </td></tr>
-    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>the requested value will be stored here</td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>an empty buffer which will hold the register value, see note below</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Note:</b></dt><dd>It is the user's responsibility to allocate and free the val buffer. The buffer size should be at least as wide as the register. The register size can be obtained using <a class="el" href="group__REG__CPU__IA32.html#g0e2e9124a228ab6600523330d9cb3ca9">REG_Size</a>.<br>
+ It is recommended to use a <a class="el" href="unionPIN__REGISTER.html">PIN_REGISTER</a> object as the buffer (and pass a pointer to it). This will ensure that the buffer is large enough for any architectural register.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
@@ -363,6 +421,54 @@ Copy the CONTEXT structure.<br>
     </td>
   </tr>
 </table>
+<a class="anchor" name="g1ecb72b47dc52ed2f5f440d134ce5c33"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_SetContextFPState" ref="g1ecb72b47dc52ed2f5f440d134ce5c33" args="(CONTEXT *ctxt, const FPSTATE *fpstate)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_SetContextFPState           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *&nbsp;</td>
+          <td class="mdname" nowrap> <em>ctxt</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>const FPSTATE *&nbsp;</td>
+          <td class="mdname" nowrap> <em>fpstate</em></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Set the given floating point state in the specified context.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in,out]</tt>&nbsp;</td><td valign="top"><em>ctxt</em>&nbsp;</td><td>context whose floating point state is to be set </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>fpstate</em>&nbsp;</td><td>new floating point state of the context. the FPSTATE type is exposed by Pin. </td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
+ <b>O/S</b>: Linux, Windows &amp; MacOS<br>
+ <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
 <a class="anchor" name="ga3f8746ccdac1c1fbcb2e2f3f3cd7bcb"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_SetContextReg" ref="ga3f8746ccdac1c1fbcb2e2f3f3cd7bcb" args="(CONTEXT *ctxt, REG reg, ADDRINT val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
@@ -403,7 +509,7 @@ Copy the CONTEXT structure.<br>
     <td>
 
 <p>
-Set the given value for the integer register or fp status/control register in the specified context. Note that fp registers such as fp-stack regs, xmm regs, ymm regs (when running with AVX support), can only be set using <a class="el" href="group__CONTEXT__API.html#gdc379ecda837972d76557734cf03200b">PIN_SetContextRegval</a>.<p>
+Set the given value for the integer register or fp status/control register in the specified context. Note that fp registers such as fp-stack regs, xmm regs, ymm regs (when running with Intel(R) AVX support), can only be set using <a class="el" href="group__CONTEXT__API.html#g4e6408c641479c22918a888d95ca1930">PIN_SetContextRegval</a>.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in,out]</tt>&nbsp;</td><td valign="top"><em>ctxt</em>&nbsp;</td><td>context whose register value is to be set </td></tr>
@@ -418,7 +524,7 @@ Set the given value for the integer register or fp status/control register in th
     </td>
   </tr>
 </table>
-<a class="anchor" name="gdc379ecda837972d76557734cf03200b"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_SetContextRegval" ref="gdc379ecda837972d76557734cf03200b" args="(CONTEXT *ctxt, REG reg, const REGVAL *val)" --><p>
+<a class="anchor" name="g4e6408c641479c22918a888d95ca1930"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_SetContextRegval" ref="g4e6408c641479c22918a888d95ca1930" args="(CONTEXT *ctxt, REG reg, const UINT8 *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -438,7 +544,7 @@ Set the given value for the integer register or fp status/control register in th
         <tr>
           <td class="md" nowrap align="right"></td>
           <td class="md"></td>
-          <td class="md" nowrap>const <a class="el" href="group__REGVAL__API.html#g3a4a1a612f8eebed9e7392a1c0f63421">REGVAL</a> *&nbsp;</td>
+          <td class="md" nowrap>const UINT8 *&nbsp;</td>
           <td class="mdname" nowrap> <em>val</em></td>
         </tr>
         <tr>
@@ -458,14 +564,16 @@ Set the given value for the integer register or fp status/control register in th
     <td>
 
 <p>
-Set the given value for the requested register in the context. This function is applicable for all context registers (integer, fp etc). See <a class="el" href="group__REGVAL__API.html#g41fa71379cb23056d1ecffbf18a79c61">PIN_AssignRegval</a> for manipulating the REGVAL object. When this function is used from wihthin a callback, e.g. THREAD_START_CALLBACK, the new context will take effect when the application continues. If this function is called from within an analysis routine, in order for the new context to take effect when the application continues one must do one of the following: Either use IARG_PARTIAL_CONTEXT and specifiy the registers which should be modified in the "out" REGSET. Or, use the IARG_CONTEXT and call <a class="el" href="group__CONTEXT__API.html#gc12dbb3ebd227f71a9644733f6faa116">PIN_ExecuteAt</a> (don't forget to set REG_INST_PTR approriately).<p>
+Set the given value for the requested register in the context. This function is applicable for all context registers (integer, fp etc.). When this function is used from within a callback, e.g. THREAD_START_CALLBACK, the new context will take effect when the application continues. If this function is called from within an analysis routine, in order for the new context to take effect when the application continues one must do one of the following: Either use IARG_PARTIAL_CONTEXT and specify the registers which should be modified in the "out" REGSET. Or, use the IARG_CONTEXT and call <a class="el" href="group__CONTEXT__API.html#gc12dbb3ebd227f71a9644733f6faa116">PIN_ExecuteAt</a> (don't forget to set REG_INST_PTR appropriately).<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in,out]</tt>&nbsp;</td><td valign="top"><em>ctxt</em>&nbsp;</td><td>context whose register value is to be set </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>reg</em>&nbsp;</td><td>register whose value is to be set </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>new value of the register</td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>buffer holding the new value of the register, see note below</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Note:</b></dt><dd>It is the user's responsibility to allocate and free the val buffer. The buffer size should be at least as wide as the register. The register size can be obtained using <a class="el" href="group__REG__CPU__IA32.html#g0e2e9124a228ab6600523330d9cb3ca9">REG_Size</a>.<br>
+ It is recommended to use a <a class="el" href="unionPIN__REGISTER.html">PIN_REGISTER</a> object as the buffer (and pass a pointer to it). This will ensure that the buffer is large enough for any architectural register.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
@@ -512,7 +620,7 @@ Query if Pin supports the specified PROCESSOR_STATE.<p>
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

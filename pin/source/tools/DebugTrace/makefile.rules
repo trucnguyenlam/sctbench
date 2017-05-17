@@ -87,3 +87,7 @@ debugtrace.test: $(OBJDIR)debugtrace$(PINTOOL_SUFFIX) $(TESTAPP)
 # This section contains the build rules for all binaries that have special build rules.
 # See makefile.default.rules for the default build rules.
 
+###### Special tool's build rules ######
+
+$(OBJDIR)debugtrace$(PINTOOL_SUFFIX): $(OBJDIR)debugtrace$(OBJ_SUFFIX) $(CONTROLLERLIB)
+	$(LINKER) $(TOOL_LDFLAGS) $(LINK_EXE)$@ $^ $(TOOL_LPATHS) $(TOOL_LIBS)

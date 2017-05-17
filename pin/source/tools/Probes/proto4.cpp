@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -59,8 +59,6 @@ VOID ReplaceProbed( RTN rtn, PROTO proto_malloc );
 VOID ReplaceJitted( RTN rtn, PROTO proto_malloc );
 VOID * Probe_Malloc_IA32( FUNCPTR_MALLOC orgFuncptr, size_t arg0);
 VOID * Jit_Malloc_IA32( CONTEXT * context, AFUNPTR orgFuncptr, size_t arg0);
-VOID * Probe_Malloc_IPF( FUNCPTR_MALLOC orgFuncptr, size_t arg0, ADDRINT appTP );
-VOID * Jit_Malloc_IPF( FUNCPTR_MALLOC orgFuncptr, size_t arg0, ADDRINT appTP );
 VOID PrintContext( CONTEXT * ctxt);
 
 
@@ -132,24 +130,12 @@ VOID Sanity(IMG img, RTN rtn)
 
 VOID ReplaceProbed( RTN rtn, PROTO proto_malloc)
 {
-#if defined ( TARGET_IA32 ) || defined ( TARGET_IA32E )
-
     RTN_ReplaceSignatureProbed(
         rtn, AFUNPTR( Probe_Malloc_IA32 ),
         IARG_PROTOTYPE, proto_malloc,
         IARG_ORIG_FUNCPTR,
         IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
         IARG_END);
-#else
-
-    RTN_ReplaceSignatureProbed(
-        rtn, AFUNPTR( Probe_Malloc_IPF ),
-        IARG_PROTOTYPE, proto_malloc,
-        IARG_ORIG_FUNCPTR,
-        IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
-        IARG_REG_VALUE, REG_TP,
-        IARG_END);
-#endif
 }
 
 
@@ -157,8 +143,6 @@ VOID ReplaceProbed( RTN rtn, PROTO proto_malloc)
 
 VOID ReplaceJitted( RTN rtn, PROTO proto_malloc)
 {
-#if defined ( TARGET_IA32 ) || defined ( TARGET_IA32E )
-
     RTN_ReplaceSignature(
         rtn, AFUNPTR( Jit_Malloc_IA32 ),
         IARG_PROTOTYPE, proto_malloc,
@@ -166,16 +150,6 @@ VOID ReplaceJitted( RTN rtn, PROTO proto_malloc)
         IARG_ORIG_FUNCPTR,
         IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
         IARG_END);
-#else
-
-    RTN_ReplaceSignature(
-        rtn, AFUNPTR( Jit_Malloc_IPF ),
-        IARG_PROTOTYPE, proto_malloc,
-        IARG_ORIG_FUNCPTR,
-        IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
-        IARG_REG_VALUE, REG_TP,
-        IARG_END);
-#endif
 }
 
 /* ===================================================================== */
@@ -194,7 +168,7 @@ VOID * Jit_Malloc_IA32( CONTEXT * context, AFUNPTR orgFuncptr, size_t arg0)
     VOID * ret;
 
     PIN_CallApplicationFunction( context, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, orgFuncptr,
+                                 CALLINGSTD_DEFAULT, orgFuncptr, NULL,
                                  PIN_PARG(void *), &ret,
                                  PIN_PARG(size_t), arg0,
                                  PIN_PARG_END() );
@@ -202,31 +176,6 @@ VOID * Jit_Malloc_IA32( CONTEXT * context, AFUNPTR orgFuncptr, size_t arg0)
     return ret;
 }
 
-/* ===================================================================== */
-
-VOID * Probe_Malloc_IPF( FUNCPTR_MALLOC orgFuncptr, size_t arg0, ADDRINT appTP )
-{
-    
-#if defined (TARGET_IPF)
-    IPF_SetTP( appTP );
-#endif
-    
-    VOID * v = orgFuncptr(arg0);
-    return v;
-}
-
-/* ===================================================================== */
-
-VOID * Jit_Malloc_IPF( FUNCPTR_MALLOC orgFuncptr, size_t arg0, ADDRINT appTP )
-{
-    
-#if defined (TARGET_IPF)
-    IPF_SetTP( appTP );
-#endif
-    
-    VOID * v = orgFuncptr(arg0);
-    return v;
-}
 
 
 /* ===================================================================== */

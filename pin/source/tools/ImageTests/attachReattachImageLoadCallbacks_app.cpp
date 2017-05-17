@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -28,12 +28,14 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
-#include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/syscall.h>
+#include <signal.h>
+#include <stdio.h>
+#include <string.h>
 
 #define EXPORT_SYM extern "C"
 
@@ -65,6 +67,19 @@ bool AfterAttach2()
 }
 
 /*
+ * block only the signals in the list: "signalsListToBlock"
+ */
+void BlockSignals(int signalsListToBlock[] , int len, sigset_t * sigmask)
+{
+    sigemptyset(sigmask);
+    int i;
+    for(i=0; i< len; ++i) 
+        sigaddset(sigmask, signalsListToBlock[i]);
+    pthread_sigmask(SIG_SETMASK, sigmask, NULL);
+}
+
+
+/*
     Expected argv arguments:
     [1] first image to load
     [2] second image to load
@@ -73,17 +88,27 @@ bool AfterAttach2()
     [5] "-probe"
     [6] tool
     [7] output file
+    [8] represent if SIGTRAP should be blocked by the application
+    argv[8]=0 - SIGTRAP shouldn't be blocked
+    argv[8]=1 - SIGTRAP should be blocked
 */
 
 int main(int argc, char** argv)
 {
-    if(argc!=8)
+    if(argc!=9)
     {
         fprintf(stderr, "No enough arguments\n" );
         fflush(stderr);
         exit(RES_RES_INVALID_ARGS);
     }
 
+    if (strcmp(argv[1], "1") == 0) // Need to block the SIGTRAP signal
+    {
+        int sigList[1] = {SIGTRAP};
+        sigset_t sigmask;
+        BlockSignals(sigList, 1, &sigmask);
+    }
+   
     pid_t parentPid = getpid();
     pid_t child = fork();
     if (child < 0)

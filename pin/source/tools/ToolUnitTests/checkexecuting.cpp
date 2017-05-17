@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -43,6 +43,7 @@ LOCALVAR ofstream out;
 KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE,         "pintool",
                             "o", "checkexecuting.out", "Output file");
 KNOB<BOOL> KnobVerbose(KNOB_MODE_WRITEONCE, "pintool", "v", "0", "Verbose");
+
 
 UINT64 executed = 0;
 UINT64 total    = 0;
@@ -242,6 +243,11 @@ VOID InstructionTrace(TRACE trace, INS ins)
 
 VOID Trace(TRACE trace, VOID * val)
 {
+    // Images besides the executable may have extra cmovs/other insts that disrupt the reference so ignore them.
+    if (!RTN_Valid(TRACE_Rtn(trace)) ||
+           (IMG_Valid(SEC_Img(RTN_Sec(TRACE_Rtn(trace)))) && !IMG_IsMainExecutable(SEC_Img(RTN_Sec(TRACE_Rtn(trace))))))
+        return;
+
     for (BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl))
     {
         for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))

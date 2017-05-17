@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -66,29 +66,29 @@ class PENDING_SYSCALLS
   public:
     PENDING_SYSCALLS()
     {
-        InitLock(&_lock);
+        PIN_InitLock(&_lock);
     }
 
     VOID Add(THREADID tid, const PENDING_SYSCALL &pend)
     {
-        GetLock(&_lock, 1);
+        PIN_GetLock(&_lock, 1);
         _map[tid] = pend;
-        ReleaseLock(&_lock);
+        PIN_ReleaseLock(&_lock);
     }
 
     BOOL Remove(THREADID tid, PENDING_SYSCALL *pend)
     {
-        GetLock(&_lock, 1);
+        PIN_GetLock(&_lock, 1);
         MAP::iterator it = _map.find(tid);
         if (it == _map.end())
         {
-            ReleaseLock(&_lock);
+            PIN_ReleaseLock(&_lock);
             return FALSE;
         }
 
         *pend = (*it).second;
         _map.erase(it);
-        ReleaseLock(&_lock);
+        PIN_ReleaseLock(&_lock);
         return TRUE;
     }
 

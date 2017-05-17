@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -238,7 +238,7 @@ class footprint_t
                        IARG_END);
 
         // instrument the load(s)
-        if (INS_IsMemoryRead(ins)) {
+        if (INS_IsMemoryRead(ins) && INS_IsStandardMemop(ins)) {
             INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR) load,
                            IARG_PTR, this,
                            IARG_THREAD_ID,
@@ -247,7 +247,7 @@ class footprint_t
                            IARG_END);
 
         }
-        if (INS_HasMemoryRead2(ins)) {
+        if (INS_HasMemoryRead2(ins) && INS_IsStandardMemop(ins)) {
             INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR) load,
                            IARG_PTR, this,
                            IARG_THREAD_ID,
@@ -257,7 +257,7 @@ class footprint_t
 
         }
         // instrument the store
-        if (INS_IsMemoryWrite(ins)) {
+        if (INS_IsMemoryWrite(ins) && INS_IsStandardMemop(ins)) {
             INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR) store,
                            IARG_PTR, this,
                            IARG_THREAD_ID,
@@ -275,6 +275,8 @@ class footprint_t
             const INS head = BBL_InsHead(bbl);
             if (! INS_Valid(head)) continue;
             for (INS ins = head; INS_Valid(ins); ins = INS_Next(ins)) {
+                if (!INS_IsStandardMemop(ins))
+                    continue;
                 unsigned int instruction_size = INS_Size(ins);
                 xthis->instrument_instruction(ins, pc, instruction_size);
                 pc = pc + instruction_size;

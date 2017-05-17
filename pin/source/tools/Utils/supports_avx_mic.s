@@ -1,6 +1,13 @@
+.text
+.align 4
 
-.text; .align 4; .globl ProcessorSupportsAvx; 
+#ifdef TARGET_MAC
+.globl _ProcessorSupportsAvx;
+_ProcessorSupportsAvx:
+#else
+.globl ProcessorSupportsAvx;
 ProcessorSupportsAvx:
+#endif
     push %rbp
     mov  %rsp, %rbp
     push %rax

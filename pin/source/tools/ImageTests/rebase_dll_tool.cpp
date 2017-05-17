@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -37,7 +37,10 @@ END_LEGAL */
 
 using namespace std;
 
-FILE * trace;
+KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool",
+    "o", "rebase_dll.out", "specify file name");
+    
+ofstream TraceFile;
 
 // Pin calls this function every time a new img is loaded
 VOID ImageLoad(IMG img, VOID *v)
@@ -48,19 +51,16 @@ VOID ImageLoad(IMG img, VOID *v)
     if ( string::npos == IMG_Name(img).find( "dummy_dll" ) ) 
         return;
 
-    fprintf(trace, "library: %s\n", IMG_Name(img).c_str() );
+    TraceFile << "library:" << IMG_Name(img).c_str() << endl;
 
     for ( sec = IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec) ) 
         for ( rtn = SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn) )
-            fprintf(trace, "rtn: %s\n", RTN_Name(rtn).c_str() );
-
-    fflush(trace);
+            TraceFile << "rtn:" << RTN_Name(rtn).c_str() << endl;
 }
 
 // argc, argv are the entire command line, including pin -t <toolname> -- ...
 int main(int argc, char * argv[])
 {
-    trace = fopen("imageload.out", "w");
 
     // Initialize symbol processing
     PIN_InitSymbols();
@@ -70,6 +70,8 @@ int main(int argc, char * argv[])
     {
         return 1;
     }
+
+    TraceFile.open(KnobOutputFile.Value().c_str());
 
     // Register ImageLoad to be called when an image is loaded
     IMG_AddInstrumentFunction(ImageLoad, 0);

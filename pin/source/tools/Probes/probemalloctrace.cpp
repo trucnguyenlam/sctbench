@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -52,9 +52,6 @@ typedef VOID (*FUNCPTR_EXIT)(int);
 VOID * Probe_Malloc_IA32( FUNCPTR_MALLOC orgFuncptr, size_t arg0 );
 VOID   Probe_Free_IA32( FUNCPTR_FREE orgFuncptr, void * arg0 );
 VOID   Probe_Exit_IA32( FUNCPTR_EXIT orgFuncptr, int code );
-VOID * Probe_Malloc_IPF( FUNCPTR_MALLOC orgFuncptr, size_t arg0, ADDRINT appTP );
-VOID   Probe_Free_IPF( FUNCPTR_FREE orgFuncptr, void * arg0, ADDRINT appTP );
-VOID   Probe_Exit_IPF( FUNCPTR_EXIT orgFuncptr, int code, ADDRINT appTP );
 
 ofstream TraceFile;
 
@@ -90,24 +87,12 @@ VOID ImageLoad(IMG img, VOID *v)
         PROTO proto_malloc = PROTO_Allocate( PIN_PARG(void *), CALLINGSTD_DEFAULT,
                                              "malloc", PIN_PARG(size_t), PIN_PARG_END() );
         
-#if defined ( TARGET_IA32 ) || defined ( TARGET_IA32E )
-        
         RTN_ReplaceSignatureProbed(
             mallocRtn, AFUNPTR( Probe_Malloc_IA32 ),
             IARG_PROTOTYPE, proto_malloc,
             IARG_ORIG_FUNCPTR,
             IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
             IARG_END);
-#else
-
-        RTN_ReplaceSignatureProbed(
-            mallocRtn, AFUNPTR( Probe_Malloc_IPF ),
-            IARG_PROTOTYPE, proto_malloc,
-            IARG_ORIG_FUNCPTR,
-            IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
-            IARG_REG_VALUE, REG_TP,
-            IARG_END);
-#endif
         TraceFile << "Replaced malloc() in:"  << IMG_Name(img) << endl;
     }
  
@@ -118,24 +103,12 @@ VOID ImageLoad(IMG img, VOID *v)
         PROTO proto_free = PROTO_Allocate( PIN_PARG(void), CALLINGSTD_DEFAULT,
                                            "free", PIN_PARG(void *), PIN_PARG_END() );
         
-#if defined ( TARGET_IA32 ) || defined ( TARGET_IA32E )
-        
         RTN_ReplaceSignatureProbed(
             freeRtn, AFUNPTR( Probe_Free_IA32 ),
             IARG_PROTOTYPE, proto_free,
             IARG_ORIG_FUNCPTR,
             IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
             IARG_END);
-#else
-
-        RTN_ReplaceSignatureProbed(
-            freeRtn, AFUNPTR( Probe_Free_IPF ),
-            IARG_PROTOTYPE, proto_free,
-            IARG_ORIG_FUNCPTR,
-            IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
-            IARG_REG_VALUE, REG_TP,
-            IARG_END);
-#endif
         TraceFile << "Replaced free() in:"  << IMG_Name(img) << endl;
     }
 
@@ -147,24 +120,12 @@ VOID ImageLoad(IMG img, VOID *v)
         PROTO proto_exit = PROTO_Allocate( PIN_PARG(void), CALLINGSTD_DEFAULT,
                                            "exit", PIN_PARG(int), PIN_PARG_END() );
 
-#if defined ( TARGET_IA32 ) || defined ( TARGET_IA32E )
-        
         RTN_ReplaceSignatureProbed(
             exitRtn, AFUNPTR( Probe_Exit_IA32 ),
             IARG_PROTOTYPE, proto_exit,
             IARG_ORIG_FUNCPTR,
             IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
             IARG_END);
-#else
-
-        RTN_ReplaceSignatureProbed(
-            exitRtn, AFUNPTR( Probe_Exit_IPF ),
-            IARG_PROTOTYPE, proto_exit,
-            IARG_ORIG_FUNCPTR,
-            IARG_FUNCARG_ENTRYPOINT_VALUE, 0,
-            IARG_REG_VALUE, REG_TP,
-            IARG_END);
-#endif
         TraceFile << "Replaced exit() in:"  << IMG_Name(img) << endl;
     }
 }
@@ -228,50 +189,6 @@ VOID Probe_Exit_IA32( FUNCPTR_EXIT orgFuncptr, int code)
     orgFuncptr(code);
 }
 
-/* ===================================================================== */
-
-VOID * Probe_Malloc_IPF( FUNCPTR_MALLOC orgFuncptr, size_t size, ADDRINT appTP )
-{
-    
-#if defined (TARGET_IPF)
-    IPF_SetTP( appTP );
-#endif
-    
-    VOID * v = orgFuncptr(size);
-    TraceFile << "malloc(" << size << ") returns " << v << endl;
-    return v;
-}
-
-/* ===================================================================== */
-
-VOID Probe_Free_IPF( FUNCPTR_FREE orgFuncptr, void * ptr, ADDRINT appTP )
-{
-    
-#if defined (TARGET_IPF)
-    IPF_SetTP( appTP );
-#endif
-    
-    orgFuncptr(ptr);
-
-    TraceFile << "free(" << ptr << ")" << endl;
-}
-
-/* ===================================================================== */
-
-VOID Probe_Exit_IPF( FUNCPTR_EXIT orgFuncptr, int code, ADDRINT appTP )
-{
-    if (TraceFile.is_open())
-    {
-        TraceFile << "## eof" << endl << flush;
-        TraceFile.close();
-    }
-    
-#if defined (TARGET_IPF)
-    IPF_SetTP( appTP );
-#endif
-    
-    orgFuncptr(code);
-}
 
 
 

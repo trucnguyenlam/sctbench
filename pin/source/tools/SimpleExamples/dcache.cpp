@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -195,7 +195,7 @@ VOID StoreSingleFast(ADDRINT addr)
 
 VOID Instruction(INS ins, void * v)
 {
-    if (INS_IsMemoryRead(ins))
+    if (INS_IsMemoryRead(ins) && INS_IsStandardMemop(ins))
     {
         // map sparse INS addresses to dense IDs
         const ADDRINT iaddr = INS_Address(ins);
@@ -246,7 +246,7 @@ VOID Instruction(INS ins, void * v)
         }
     }
         
-    if ( INS_IsMemoryWrite(ins) )
+    if ( INS_IsMemoryWrite(ins) && INS_IsStandardMemop(ins))
     {
         // map sparse INS addresses to dense IDs
         const ADDRINT iaddr = INS_Address(ins);

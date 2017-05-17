@@ -2169,7 +2169,7 @@ void Predictor::UpdateLocalInfo(thread_id_t curr_thd_id,
       = local_info_.access_map_[curr_thd_id];
 
   // iterate recent events, calculate distance
-  std::tr1::unordered_set<address_t> touched_addr_set;
+  std::unordered_set<address_t> touched_addr_set;
   for (PredictorLocalInfo::EntryList::reverse_iterator it
           = access_list.rbegin(); it != access_list.rend(); ++it) {
     if (TIME_DISTANCE((*it).clk, curr_thd_clk) < vw_) {

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -53,7 +53,7 @@ int main(int argc, char * argv[])
 {
     PIN_Init(argc, argv);
     PIN_InitSymbols();
-    InitLock(&ToolLock);
+    PIN_InitLock(&ToolLock);
 
     IMG_AddInstrumentFunction(OnImage, 0);
     PIN_AddSyscallEntryFunction(OnSyscall, 0);
@@ -75,15 +75,15 @@ static VOID OnImage(IMG img, VOID *)
 
 static VOID OnSyscall(THREADID tid, CONTEXT *, SYSCALL_STANDARD, VOID *)
 {
-    GetLock(&ToolLock, tid+1);
-    ReleaseLock(&ToolLock);
+    PIN_GetLock(&ToolLock, tid+1);
+    PIN_ReleaseLock(&ToolLock);
 }
 
 static VOID GetToolLock(THREADID tid)
 {
-    GetLock(&ToolLock, tid+1);
+    PIN_GetLock(&ToolLock, tid+1);
 
     // The loop opens the timing hole, making the deadlock more likely.
     for(int i=0;i<10000000;i++);
-    ReleaseLock(&ToolLock);
+    PIN_ReleaseLock(&ToolLock);
 }

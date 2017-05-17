@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -48,12 +48,7 @@ UINT64 numInstrumentation1Calls = 0;
 UINT64 numInstrumentation2Calls = 0;
 UINT64 numRemovals1 = 0;
 UINT64 numRemovals2 = 0;
-#ifdef TARGET_ANDROID
-// In Android, less than 1M instructions are executed, so we need a smaller number.
 const UINT64 NUM_CALLS_TO_FLUSH_AT = 1024 * 256;
-#else
-const UINT64 NUM_CALLS_TO_FLUSH_AT = 1024 * 1024;
-#endif
 BOOL doInstrumentation1 = TRUE;
 
 ADDRINT TimeForSwitchFrom1To2()

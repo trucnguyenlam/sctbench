@@ -21,7 +21,7 @@
 #define RACE_RACE_H_
 
 #include <vector>
-#include <tr1/unordered_set>
+#include <unordered_set>
 
 #include "core/basictypes.h"
 #include "core/static_info.h"
@@ -37,8 +37,8 @@ class StaticRaceEvent {
  public:
   typedef uint32 id_t;
   typedef std::vector<StaticRaceEvent *> Vec;
-  typedef std::tr1::unordered_map<id_t, StaticRaceEvent *> Map;
-  typedef std::tr1::unordered_map<size_t, Vec> HashIndex;
+  typedef std::unordered_map<id_t, StaticRaceEvent *> Map;
+  typedef std::unordered_map<size_t, Vec> HashIndex;
 
   size_t Hash();
   bool Match(StaticRaceEvent *e);
@@ -66,8 +66,8 @@ class StaticRace {
  public:
   typedef uint32 id_t;
   typedef std::vector<StaticRace *> Vec;
-  typedef std::tr1::unordered_map<id_t, StaticRace *> Map;
-  typedef std::tr1::unordered_map<size_t, Vec> HashIndex;
+  typedef std::unordered_map<id_t, StaticRace *> Map;
+  typedef std::unordered_map<size_t, Vec> HashIndex;
 
   size_t Hash();
   bool Match(StaticRace *r);
@@ -146,7 +146,7 @@ class RaceDB {
   void Save(const std::string &db_name, StaticInfo *sinfo);
 
  protected:
-  typedef std::tr1::unordered_set<Inst *> RacyInstSet;
+  typedef std::unordered_set<Inst *> RacyInstSet;
 
   StaticRaceEvent *CreateStaticRaceEvent(Inst *inst,
                                          RaceEventType type,

@@ -1,12 +1,12 @@
-
-
-Pin 2.12 Release Notes
+Pin 2.14 Release Notes
 =====================
  
-Pin is a tool for the instrumentation of programs. It supports Linux*
-and Windows* executables for IA-32 and Intel(R) 64 architectures.
+Pin is a tool for the instrumentation of programs. It supports the Android*, Linux*, OS X*
+and Windows* operating systems and executables for the IA-32, Intel(R) 64 and 
+Intel(R) Many Integrated Core Architecture (Intel(R) MIC Architecture).
 
-For license information, see LICENSE and <arch>/lib-ext/EXTLICENSE
+For license information, see LICENSE, <arch>/lib-ext/EXTLICENSE. In Android, see also
+<arch>/stl and <arch>/runtime.
 
 For information on how to use Pin, read the manual in
 doc/html/index.html.
@@ -19,7 +19,7 @@ Example usage
 =============
 
 This example applies to the Intel(R) 64 architecture.  For the IA-32 architecture, 
-use "obj-ia32" instead of "obj-intel64".
+use "obj-ia32" instead of "obj-intel64", for the Intel(R) MIC Architecture, use obj-mic.
 
 To build and run a sample tool on Linux*:
 
@@ -44,16 +44,20 @@ Refer to the Examples section in the Pin User Guide for more usage examples.
 Restrictions
 ============
    
+   o Added support for Intel(R) Xeon Phi(TM). 
+     See the "Additional Information for Using Pin on Intel(R) Xeon Phi(TM)" section for more
+     information.
+
    o Added support for Android. 
-     See the "Additional Information for Using Pin on Android" section for more 
+     See the "Additional Information for Using Pin on Android" section for more
      information.
  
-   o Added preliminary support for Mac OSX.
-     See the "Additional Information for Using Pin on OSX*" section for more 
+   o Added preliminary support for OS X*.
+     See the "Additional Information for Using Pin on OS X*" section for more
      information.
 
    o Pin is no longer supported on Linux distributions with old kernel version.
-     See the "Additional Information for Using Pin on Linux*" section for more 
+     See the "Additional Information for Using Pin on Linux*" section for more
      information.
 
    o The version of the compiler you use to build a tool must be compatible
@@ -86,8 +90,9 @@ Restrictions
    o Pin performs memory allocations in the application's address space.  
      As a result, memory allocations performed by the application can fail. 
      For example, some applications use the SmartHeap utility which could 
-     perform huge memory allocations. Using the "-separate_memory 1" switch 
-     may be helpful in some of these cases.  On Windows*, using Microsoft* 
+     perform huge memory allocations. Using the "-pin_memory_range" and/or 
+     "-cc_memory_range" switches may be helpful in some of these cases.
+     On Windows*, using Microsoft* 
      Visual C++ compiler* "editbin"* utility to rebase pinvm.dll and the
      pintool preferred loading addresses might be helpful as well, for
      example:
@@ -101,7 +106,7 @@ Restrictions
      A possible workaround is to launch Chrome with the "--no-sandbox" command 
      line switch.
 
-   o Pin will run on all Intel 64 architectures. An Intel IA-32 architecture needs the
+   o Pin will run on all Intel(R) 64 architectures. An IA-32 architecture needs the
      following features:
          C8 - CMPXCHG8B 
          SSE2
@@ -173,7 +178,7 @@ General issues
 Supported configurations
         
         Windows XP*, Windows Server* 2003, Windows Vista*, Windows Server* 2008
-        and Windows 7* (except for UMS applications),   on Intel(R) IA-32 and
+        and Windows 7* (except for UMS applications),   on IA-32 and
         Intel(R) 64 architecture.
 
 
@@ -208,77 +213,173 @@ Linux tested configurations:
         | Red Hat Enterprise Linux 4      | +  |   +   |
         | Red Hat Enterprise Linux 5      | +  |   +   |
         | Red Hat Enterprise Linux 6      |    |   +   |
-        | Red Hat Fedora 14               |    |   +   |
-        | Red Hat Fedora 15               |    |   +   |
-        | Red Hat Fedora 16               | +  |   +   |
-        | Red Hat Fedora 17               |    |   +   |
+        | Red Hat Enterprise Linux 7      |    |   +   |
+        | Red Hat Fedora 19               | +  |   +   |
+        | Red Hat Fedora 20               |    |   +   |
         | SuSE Linux Enterprise Server 10 |    |   +   |
         | SuSE Linux Enterprise Server 11 | +  |   +   |
-        | openSUSE 12.1                   | +  |       |
-        | Ubuntu 10.04                    |    |   +   |
-        | Ubuntu 12.04                    | +  |   +   |
+        | openSUSE 12.3                   | +  |       |
+        | Ubuntu 12.04                    |    |   +   |
+        | Ubuntu 13.10                    | +  |   +   |
+        | Ubuntu 14.04                    |    |   +   |
         +---------------------------------+----+-------+
         
 
-Additional information for using Pin on OSX*
+Additional information for using Pin on OS X*
 ===============================================
-
-	THIS IS A TECH PREVIEW RELEASE
 
 General issues
 
-        o Probe mode is not yet supported on OSX.
-        o There are known issues with the XPC mechanism added in OSX Lion.
-        o Pin require the privileged task_for_pid system API, and is signed by
-          an official Intel(R) certificate. When using pin through the system
-          terminal, a security popup may appear asking for user confirmation. If
-          the user is not logged in through the system GUI (SSH for example), the
-          user must execute the following command prior to using Pin:
-                   security authorize -l -c system.privilege.taskport
-        o Pin documentation is not yet updated with the OSX support information.
+        o Probe mode is not yet supported on OS X*.
+        o Attach/Detach is not yet supported on OS X*.
+        o Pin documentation is not yet updated with the OS X* support information.
 
 Supported configurations:
 
-        o Snow Leopard
         o Lion(*)
         o Mountain Lion(*)
+        o Mavericks(*)
+        o Yosemite(*)
         
         *   Some known XPC limitations, mainly in child process creation.
 
-OSX tested configurations:
+OS X* tested configurations:
 
         +---------------------------------+----+-------+
         | OS                              |IA32|Intel64|
         +---------------------------------+----+-------+
-        | Snow Leopard                    | +  |   +   |
         | Lion                            | +  |   +   |
+        | Mountain Lion                   | +  |   +   |
+        | Mavericks                       | +  |   +   |
         +---------------------------------+----+-------+
 
 
 Additional information for using Pin on Android*
 ===============================================
 
-	THIS IS A TECH PREVIEW RELEASE
+General issues:
 
-General issues
-
-        o Attach/Detach is not supported yet. 
-        o LEVEL_PINCLIENT::PIN_GetSourceLocation is not supported. 
 
 Supported configurations:
 
-        o ICS (Android 4.0)
-        o Honeycomb (Android 3)
+        o Lollipop (Android 5.0)
+        o KitKat (Android 4.4)
+        o Jelly Bean (Android 4.1-4.3)
         
 More information: 
         
-        o The recommended ndk version for building the Pin tools is: ndk r7.
-        o  **ANDROID TUTORIAL** is avaliable at: <android-kit-root>/AndroidTutorial. 
+        o The recommended ndk version for building the Pin tools for KitKat and Jelly Bean is: ndk r9.
+        o The recommended ndk version for building Pin tools for Lollipop is ndk 10.
+        o Support for Lollipop includes running on 64 bit processes.
+        o  Android tutorial is avaliable at: <android-kit-root>/AndroidTutorial. 
            It includes a step-by-step tutorial for installing Pin,
            compiling the Pin tools and running Pin with a tool on android. 
+        o The PIN_SpawnInternalThread() API is supported only on Lollipop.
+        o Pin ADX API is currently not available for Lollipop.
+
+Additional Information for Using Pin on Intel(R) Xeon Phi(TM)
+=============================================================
+
+    THIS IS A TECH PREVIEW RELEASE
+
+General issues
+
+    o The offload model is not yet supported, you may only launch Pin natively on the device.
+    o Pin probe mode is not yet supported.
+    o PIN_GetSourceLocation is not yet supported.
+    o Availability of Pin APIs for Intel(R) Xeon Phi(TM) is not yet updated in the user guide.
+
+Installation and Usage
+
+    o General usage model:
+        o Compile your tool on the host.
+        o Copy Pin and the tool to the device.
+        o Log in to the device and launch Pin regularly.
+    o Please refer to the user guide, section "Usage Instructions for Intel(R) Xeon Phi(TM)", for a complete
+      installation and usage guide.
 
 
 ******************************* Recent Changes *******************************
+
+Changes added _After_ Pin 2.14 / 67254
+===========================================
+   o Added support for debug information placed in a separate file.
+     See example "get_source_location_gnu_debug.test" under SimpleExamples.
+   o RTN_Id now returns UINT32 instead int. PinTools have been updated accordingly.
+   o When using INS_InsertCall() on non-standard memory instructions (e.g. XSAVE) with inappropriate
+     memory operands related IARGs PIN will generate an error.
+     Note that some IARGs (e.g. IARG_MULTI_MEMORYACCESS) will still work on specific non-standard memory
+     instructions with vector arguments (VGATHER/VSCATTER in the case of IARG_MULTI_MEMORYACCESS).
+   o Added INS_IsStandardMemop(INS) which returns FALSE for non-standard memop instructions.
+   o Added PIN_IsThreadStoppedInDebugger(THREADID) which returns TRUE if the thread denoted by the
+     THREADID is currently stopped inside the debugger (when using PIN ADX).
+   o PIN_CallApplicationFunction() now accepts additional argument which
+     specifies how PIN should behave when invoking the application function.
+     Using this argument allows the user to specify that he wants to invoke
+     the application function without instrumenting it.
+   o The following APIs were removed: SYM_OriginatedFromIFunc, SYM_IFunc. 
+   o The following APIs were added: RTN_IFuncResolver, RTN_IFuncImplementation, SYM_IFuncImplementation, SYM_IFuncResolver, SYM_GeneratedByPin
+   o When RTN_FindByName is called on an IFunc (such as gettimeofday, memcpy) the returned RTN is that of the ifunc implementation.
+     One may obtain the resolver RTN (and instrument it as well) by calling RTN_IFuncResolver(). 
+     Note that the ifunc implementation may not reside in the same IMG as originally searched.
+
+Changes added _After_ Pin 2.13 / 65163
+===========================================
+   o Added a new command line option, -appdebug_server_port, for requesting a specific port for gdb to listen on
+     when debugging the application (using the Pin advanced debugging extensions).
+   o Added a new IARG, IARG_EXPLICIT_MEMORY_EA, for getting the effective address of an explicit memory operand.
+     For example, this can be used for getting the address of an LEA instruction.
+   o All callback registration functions (e.g. PIN_AddThreadStartFunction()) are now returning a PIN_CALLBACK
+     instance that can later be used with CALLBACK_SetExecutionPriority() to control the order of execution
+     between all registered callbacks of the same kind.
+   o Added a new knob "-cc_memory_range". This knob enables the user to specify the memory address range(s) where
+     PIN should allocate its code cache regions. Note that this doesn't mean that PIN will allocate all of the
+     specified ranges but instead this knob just ensures that if PIN will allocate a code cache region then it
+     will be allocated in one of the specified regions.
+     If "-cc_memory_range" knob wasn't specified but "-pin_memory_range" was, then code cache regions will be
+     allocated inside the regions specified in the "-pin_memory_range" knob.
+   o Added a new knob "-restrict_memory". This knob enables the user to restrict several memory regions
+     from PIN's image loader. This means that PIN will not load any image in the address ranges specified by
+     this knob.
+   o Added a new knob "-pin_memory_size". This knob enbales the user to specify a hard limit of dynamic memory
+     that can be allocated by PIN and PIN tool (in bytes). When this limit exceeds, an out of memory condition
+     occurs.
+   o The knob "-limit_code_cache" was renamed to "-cc_memory_size" to align with the naming convention
+     introduced by the newly added knob "-pin_memory_size".
+
+Changes added _After_ Pin 2.13 / 62732
+===========================================
+   o Support for Android Ice Cream Sandwich (4.0) has been deprecated.
+   o Support for Android Kit Kat (4.4) has been added.
+   o Added support for split images i.e. the image segments are loaded in non-consecutive memory regions.
+     The IMG_LowAddress and IMG_HighAddress were updated and three new APIs were added: IMG_NumRegions,
+     IMG_RegionLowAddress and IMG_RegionHighAddress. See the user guide for further details.
+   o Added a new API, PIN_GetInitialThreadCount, for obtaining the number of threads during attach.
+
+Changes added _After_ Pin 2.13 / 61206
+===========================================
+   o Ifunc support for Linux has been added.
+   o A new API, SYM_OriginatedFromIFunc, has been added, which indicates if a SYM originated from an ifunc symbol.
+   o Removed the REGVAL struct and matching APIs. PIN_GetContextRegval and PIN_SetContextRegval accept UINT8* as the
+     value argument. The user must ensure that the UINT8* pointer points to a valid buffer which is large enough to
+     contain the requested register value. See SimpleExamples/regval.cpp for a typical usage example.
+   o Two deprecated APIs were re-enabled: PIN_SetContextFPState and PIN_GetContextFPState. These APIs provide access
+     to the entire floating point state via the FPSTATE type.
+   o Support for QEmu Android devices has been added.
+   o Support for PIN_GetSourceLocation has been added on Android and OS X*. 
+   o Added support for VS2012 - Added a kit for VS2012, tools can now be compiled with VS2012 when using the new kit. 
+
+Changes added _After_ Pin 2.13 / 59453
+===========================================
+   o Two new APIs, PIN_CheckReadAccess and PIN_CheckWriteAccess, have been added.
+     These APIs give the tool information about the read and write access protection of a memory page respectively. 
+     Please refer to the user guide for additional information.
+   o Support for Android Jelly Bean (Android 4.1) has been added.
+   o Support for Android Honeycomb (Android 3.0) has been deprecated.
+
+Changes added _After_ Pin 2.12 / 58423
+===========================================
+   o Lock APIs (InitLock, GetLock, ReleaseLock) were renamed, with a PIN_ prefix added to each function name.
 
 Changes added _After_ Pin 2.12 / 56759
 ===========================================
@@ -593,9 +694,12 @@ which may cause the product to deviate from published
 specifications. Current characterized software defects are available
 on request.
 
-Intel, Itanium, and Pentium are trademarks or registered trademarks of
+Intel and Pentium are trademarks or registered trademarks of
 Intel Corporation or its subsidiaries in the United States and other
 countries.
+
+Intel, Xeon, and Intel Xeon Phi are trademarks of Intel Corporation in
+the U.S. and/or other countries.
 
 Microsoft, Windows, and the Windows logo are trademarks, or registered trademarks
 of Microsoft Corporation in the United States and/or other countries.
@@ -605,7 +709,7 @@ of Sun Microsystems, Inc. in the U.S. and other countries.
 
 *Other names and brands may be claimed as the property of others.
 
-Copyright(c) 2004-2013, Intel Corporation. All rights reserved. 
+Copyright(c) 2004-2015, Intel Corporation. All rights reserved. 
 
 Intel Corporation, 2200 Mission College Blvd., 
 Santa Clara, CA 95052-8119, USA.

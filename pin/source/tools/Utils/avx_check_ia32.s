@@ -1,8 +1,14 @@
+#ifdef TARGET_MAC
+.global _SupportsAvx
+_SupportsAvx:
+#else
 .type SupportsAvx, @function
 .global SupportsAvx
 SupportsAvx:
+#endif
     push    %ebp
     mov     %esp, %ebp
+    push %ebx          # CPUID clobbers ebx, which may be used as the PIC register
     push %ecx
     push %edx
     mov $1, %eax
@@ -21,6 +27,7 @@ SupportsAvx:
 done:
     pop %edx
     pop %ecx
+    pop %ebx
     leave
     ret
 

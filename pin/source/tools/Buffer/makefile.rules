@@ -17,7 +17,8 @@
 # This defines tests which run tools of the same name.  This is simply for convenience to avoid
 # defining the test name twice (once in TOOL_ROOTS and again in TEST_ROOTS).
 # Tests defined here should not be defined in TOOL_ROOTS and TEST_ROOTS.
-TEST_TOOL_ROOTS := bufferaddr two_buffers allocate mlog_buffer buffer-then buffer-predicate buffererror buffer-lengths
+TEST_TOOL_ROOTS := bufferaddr two_buffers allocate mlog_buffer buffer-then buffer-predicate buffererror buffer-lengths \
+                   buffer_invalid_reg
 
 # This defines the tests to be run that were not already defined in TEST_TOOL_ROOTS.
 TEST_ROOTS :=
@@ -52,14 +53,6 @@ DLL_ROOTS :=
 # This defines any static libraries (archives), that need to be built.
 LIB_ROOTS :=
 
-###### Handle exceptions here ######
-
-# TODO: These tests fail - fix and remove the following:
-# See mantis 2963
-ifeq ($(TARGET),mic)
-    TEST_TOOL_ROOTS := $(filter-out buffer-then mlog_buffer allocate two_buffers, $(TEST_TOOL_ROOTS))
-endif
-
 
 ##############################################################
 #
@@ -89,10 +82,10 @@ two_buffers.test: $(OBJDIR)two_buffers$(PINTOOL_SUFFIX) $(TESTAPP)
 	$(RM) $(OBJDIR)two_buffers.log $(OBJDIR)two_buffers.makefile.copy
 
 allocate.test: $(OBJDIR)allocate$(PINTOOL_SUFFIX) $(TESTAPP)
-	$(PIN) -xyzzy -mesgon log_buffer -logfile $(OBJDIR)allocate.log -t $(OBJDIR)allocate$(PINTOOL_SUFFIX) \
-	  -- $(TESTAPP) makefile $(OBJDIR)allocate.makefile.copy
+	$(PIN) -xyzzy -mesgon log_buffer -logfile $(OBJDIR)allocate.log \
+	  -t $(OBJDIR)allocate$(PINTOOL_SUFFIX) -o $(OBJDIR)allocate.out -- $(TESTAPP) makefile $(OBJDIR)allocate.makefile.copy
 	$(QGREP) -e "found buffer" $(OBJDIR)allocate.log
-	$(RM) $(OBJDIR)allocate.log $(OBJDIR)allocate.makefile.copy
+	$(RM) $(OBJDIR)allocate.log $(OBJDIR)allocate.makefile.copy $(OBJDIR)allocate.out
 
 buffer-then.test: $(OBJDIR)buffer-then$(PINTOOL_SUFFIX) $(TESTAPP)
 	$(PIN) -t $(OBJDIR)buffer-then$(PINTOOL_SUFFIX) -- $(TESTAPP) makefile $(OBJDIR)buffer-then.makefile.copy \
@@ -117,6 +110,19 @@ buffererror.test: $(OBJDIR)buffererror$(PINTOOL_SUFFIX) $(TESTAPP)
 	echo "buffererror is a negative test.  Ignore the failure."
 	$(QGREP) "IARG_REG_REFERENCE" $(OBJDIR)buffererror.log
 	$(RM) $(OBJDIR)buffererror.log
+
+buffer_invalid_reg.test: $(OBJDIR)buffer_invalid_reg$(PINTOOL_SUFFIX) $(TESTAPP)
+	$(RM) -f $(OBJDIR)buffer_invalid_reg.makefile.copy $(OBJDIR)buffer_invalid_reg.err
+	! ( $(PIN) -error_file $(OBJDIR)buffer_invalid_reg.err -t $(OBJDIR)buffer_invalid_reg$(PINTOOL_SUFFIX) -r pin_ebx \
+	  -- $(TESTAPP) makefile $(OBJDIR)buffer_invalid_reg.makefile.copy )
+	$(QGREP) "Invalid REG for IARG_REG_.* pin_ebx" $(OBJDIR)buffer_invalid_reg.err
+	$(RM) $(OBJDIR)buffer_invalid_reg.err
+	! ( $(PIN) -error_file $(OBJDIR)buffer_invalid_reg.err -t $(OBJDIR)buffer_invalid_reg$(PINTOOL_SUFFIX) -r xmm0 \
+	  -- $(TESTAPP) makefile $(OBJDIR)buffer_invalid_reg.makefile.copy )
+	$(QGREP) "Invalid REG for IARG_REG_.* xmm0" $(OBJDIR)buffer_invalid_reg.err
+	$(PIN) -t $(OBJDIR)buffer_invalid_reg$(PINTOOL_SUFFIX) -r cs \
+	  -- $(TESTAPP) makefile $(OBJDIR)buffer_invalid_reg.makefile.copy
+	$(RM) -f $(OBJDIR)buffer_invalid_reg.makefile.copy $(OBJDIR)buffer_invalid_reg.err
 
 
 ##############################################################

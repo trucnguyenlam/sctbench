@@ -12,17 +12,14 @@
 #else
 #define LEVEL_CORE_H
 #if defined(TARGET_IA32) || defined(TARGET_IA32E) || defined(TARGET_MIC)
-# if defined(USING_XED)
 
 // This forward declaration allows the INS_XedDec() 
 extern "C" {
 #include "xed-types.h"
 struct xed_decoded_inst_s;
 typedef struct xed_decoded_inst_s xed_decoded_inst_t;
-typedef xed_uint16_t xed_operand_values_t;
 }
 
-# endif
 #endif
 
 namespace LEVEL_CORE
@@ -51,10 +48,8 @@ using namespace LEVEL_BASE;
 #  error "No target os"
 # endif
 
-# if defined(USING_XED)
-#  include "ins_api_xed_ia32.PH"
-#  include "ins_xed_ia32.PH"
-# endif
+# include "ins_api_xed_ia32.PH"
+# include "ins_xed_ia32.PH"
 # include "operand_ia32.PH"
 
 #else

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -54,7 +54,7 @@ VOID Boo(  CONTEXT * ctxt, AFUNPTR pf_Blue )
         (unsigned long)pf_Blue << dec << endl;
 
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(), CALLINGSTD_DEFAULT,
-                                 pf_Blue, PIN_PARG_END() );
+                                 pf_Blue, NULL, PIN_PARG_END() );
     
     cout << "Returned from Blue(); Native execution. " << endl;
 }

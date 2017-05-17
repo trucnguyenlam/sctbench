@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -83,7 +83,7 @@ int main(int argc, char** argv)
 {
     if(argc < 9)
     {
-        fprintf(stderr, "l_imageLoad_app received too few arguments\n" );
+        fprintf(stderr, "l_imageLoad_app received too few arguments. If you are running this test outside a kit test, you may need to add -slow-asserts right after the pin argument.\n" );
         exit(RES_RES_INVALID_ARGS);
     }
     if(argc > 9)

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -120,7 +120,6 @@ template<typename ELEMENT, unsigned int LowBits,
         FUND::PTRINT oldHead;
         FUND::PTRINT newHead;
         EXPONENTIAL_BACKOFF<STATS> backoff(1, _stats);
-
         do
         {
             backoff.Delay();
@@ -200,7 +199,6 @@ template<typename ELEMENT, unsigned int LowBits,
         FUND::PTRINT newHead;
         ELEMENT *oldHeadPtr;
         EXPONENTIAL_BACKOFF<STATS> backoff(1, _stats);
-
         do
         {
             FUND::PTRINT oldHeadBare;
@@ -210,7 +208,6 @@ template<typename ELEMENT, unsigned int LowBits,
             do
             {
                 backoff.Delay();
-
                 oldHead = OPS::Load(&_head);
                 if (!oldHead)
                 {

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -58,7 +58,7 @@ int main(int argc, char * argv[])
 {
     PIN_Init(argc, argv);
     PIN_InitSymbols();
-    InitLock(&Lock);
+    PIN_InitLock(&Lock);
 
     INS_AddInstrumentFunction(InstrumentIns, 0);
     RTN_AddInstrumentFunction(InstrumentRtn, 0);
@@ -115,9 +115,9 @@ static void UseLocksWorker()
     // encourage the kernel to switch the thread off the CPU while it holds
     // the lock.  This would be possible even without the sched_yield(), though.
     //
-    GetLock(&Lock, 1);
+    PIN_GetLock(&Lock, 1);
     sched_yield();
-    ReleaseLock(&Lock);
+    PIN_ReleaseLock(&Lock);
 }
 
 static void UseLocksScheduler()
@@ -128,8 +128,8 @@ static void UseLocksScheduler()
     // the worker thread.  The hope is that we will try to acquire the lock while
     // the worker already has it.
     //
-    GetLock(&Lock, 2);
-    ReleaseLock(&Lock);
+    PIN_GetLock(&Lock, 2);
+    PIN_ReleaseLock(&Lock);
 }
 
 static void CannotRunTest()

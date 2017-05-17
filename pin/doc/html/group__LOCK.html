@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -31,11 +32,11 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef PINVM::PINSYNC_POD_SEMAPHORE&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LOCK.html#gf1e23b6bb7770ab5334cb30ff88f23fd">LEVEL_BASE::PIN_SEMAPHORE</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LOCK.html#g7b98e356ed047ffd72a7a8f7b63620af">LEVEL_BASE::InitLock</a> (PIN_LOCK *lock)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LOCK.html#ga07949dcd22a1c5d8fe209767b4dd490">LEVEL_BASE::PIN_InitLock</a> (PIN_LOCK *lock)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LOCK.html#g36070bd375e4defc52ecfc38f9c46732">LEVEL_BASE::GetLock</a> (PIN_LOCK *lock, INT32 val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LOCK.html#gc7b6e6ed4fb7e14452b85b96d5c42c10">LEVEL_BASE::PIN_GetLock</a> (PIN_LOCK *lock, INT32 val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">INT32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LOCK.html#ge1f816bf92874cea96639dac6af37849">LEVEL_BASE::ReleaseLock</a> (PIN_LOCK *lock)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">INT32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LOCK.html#g85d4faf75e968d46ca52986058ebd8c7">LEVEL_BASE::PIN_ReleaseLock</a> (PIN_LOCK *lock)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__LOCK.html#g0b5ba62ecc8ec961e2aa4b294952e6c5">LEVEL_BASE::PIN_MutexInit</a> (<a class="el" href="group__LOCK.html#g65ccb8ac23b14d93f426e19020f2f932">PIN_MUTEX</a> *lock)</td></tr>
 
@@ -156,13 +157,13 @@ The dangers listed above do not exist if you wait on a PIN_SEMAPHORE from a Pin 
   </tr>
 </table>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="g36070bd375e4defc52ecfc38f9c46732"></a><!-- doxytag: member="LEVEL_BASE::GetLock" ref="g36070bd375e4defc52ecfc38f9c46732" args="(PIN_LOCK *lock, INT32 val)" --><p>
+<a class="anchor" name="gc7b6e6ed4fb7e14452b85b96d5c42c10"></a><!-- doxytag: member="LEVEL_BASE::PIN_GetLock" ref="gc7b6e6ed4fb7e14452b85b96d5c42c10" args="(PIN_LOCK *lock, INT32 val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_BASE::GetLock           </td>
+          <td class="md" nowrap valign="top">VOID LEVEL_BASE::PIN_GetLock           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top">PIN_LOCK *&nbsp;</td>
           <td class="mdname" nowrap> <em>lock</em>, </td>
@@ -200,13 +201,13 @@ Acquire the lock.<p>
     </td>
   </tr>
 </table>
-<a class="anchor" name="g7b98e356ed047ffd72a7a8f7b63620af"></a><!-- doxytag: member="LEVEL_BASE::InitLock" ref="g7b98e356ed047ffd72a7a8f7b63620af" args="(PIN_LOCK *lock)" --><p>
+<a class="anchor" name="ga07949dcd22a1c5d8fe209767b4dd490"></a><!-- doxytag: member="LEVEL_BASE::PIN_InitLock" ref="ga07949dcd22a1c5d8fe209767b4dd490" args="(PIN_LOCK *lock)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_BASE::InitLock           </td>
+          <td class="md" nowrap valign="top">VOID LEVEL_BASE::PIN_InitLock           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top">PIN_LOCK *&nbsp;</td>
           <td class="mdname1" valign="top" nowrap> <em>lock</em>          </td>
@@ -403,6 +404,41 @@ Release the lock.<p>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>lock</em>&nbsp;</td><td>The lock variable. </td></tr>
   </table>
 </dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="g85d4faf75e968d46ca52986058ebd8c7"></a><!-- doxytag: member="LEVEL_BASE::PIN_ReleaseLock" ref="g85d4faf75e968d46ca52986058ebd8c7" args="(PIN_LOCK *lock)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">INT32 LEVEL_BASE::PIN_ReleaseLock           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">PIN_LOCK *&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>lock</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Release the lock.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>lock</em>&nbsp;</td><td>The lock variable.</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>The <em>val</em> parameter that was passed to <a class="el" href="group__LOCK.html#gc7b6e6ed4fb7e14452b85b96d5c42c10">PIN_GetLock()</a> when the lock was acquired. Typically, this is the ID of the thread that owned the lock. </dd></dl>
     </td>
   </tr>
 </table>
@@ -898,42 +934,7 @@ Block the calling thread until the semaphore's state is "set". The calling threa
     </td>
   </tr>
 </table>
-<a class="anchor" name="ge1f816bf92874cea96639dac6af37849"></a><!-- doxytag: member="LEVEL_BASE::ReleaseLock" ref="ge1f816bf92874cea96639dac6af37849" args="(PIN_LOCK *lock)" --><p>
-<table class="mdTable" cellpadding="2" cellspacing="0">
-  <tr>
-    <td class="mdRow">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top">INT32 LEVEL_BASE::ReleaseLock           </td>
-          <td class="md" valign="top">(&nbsp;</td>
-          <td class="md" nowrap valign="top">PIN_LOCK *&nbsp;</td>
-          <td class="mdname1" valign="top" nowrap> <em>lock</em>          </td>
-          <td class="md" valign="top">&nbsp;)&nbsp;</td>
-          <td class="md" nowrap></td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing="5" cellpadding="0" border="0">
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-Release the lock.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>lock</em>&nbsp;</td><td>The lock variable.</td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>The <em>val</em> parameter that was passed to <a class="el" href="group__LOCK.html#g36070bd375e4defc52ecfc38f9c46732">GetLock()</a> when the lock was acquired. Typically, this is the ID of the thread that owned the lock. </dd></dl>
-    </td>
-  </tr>
-</table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

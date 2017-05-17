@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -71,7 +71,7 @@ typedef unsigned int  uint_t;
 #endif
 
 #if defined(__GNUC__)
-// NOTE: MAC XCODE2.4.1 gcc and Cgywin gcc 3.4.x only allow for 16b
+// NOTE: OS X* XCODE2.4.1 gcc and Cgywin gcc 3.4.x only allow for 16b
 // alignment!
 # define SSE_ALIGN __attribute__ ((aligned(16)))
 #else

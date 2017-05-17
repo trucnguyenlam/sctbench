@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -90,6 +90,23 @@ void WaitForThread(TidType tid) {
         ErrorExit(RES_JOIN_FAILED);
     }
 }
+
+void TimeoutThreadFunc(void* info){
+    DoSleep(TIMEOUT);
+
+    // Should never get here, only if timeout occurred
+    Print("Got timeout, exiting test with an error");
+    ErrorExit(RES_EXIT_TIMEOUT);
+}
+
+void SetTimeout(){
+   TidType tid;
+   if (!CreateNewThread(&tid, (void *)TimeoutThreadFunc, NULL)) {
+       Print("Could not open a timeout thread");
+       ErrorExit(RES_CREATE_FAILED);
+   }
+}
+
 
 void ThreadExit() {
     ExitThread(0);

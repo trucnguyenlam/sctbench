@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -45,28 +45,28 @@ class DISASM_CONTAINER
   public:
     DISASM_CONTAINER()
     {
-        InitLock(&_lock);
+        PIN_InitLock(&_lock);
     }
 
     VOID Add(ADDRINT addr, const std::string &dis)
     {
-        GetLock(&_lock, 1);
+        PIN_GetLock(&_lock, 1);
         _map[addr] = dis;
-        ReleaseLock(&_lock);
+        PIN_ReleaseLock(&_lock);
     }
 
     std::string Get(ADDRINT addr)
     {
-        GetLock(&_lock, 1);
+        PIN_GetLock(&_lock, 1);
         MAP::iterator it = _map.find(addr);
         if (it == _map.end())
         {
-            ReleaseLock(&_lock);
+            PIN_ReleaseLock(&_lock);
             return "";
         }
 
         std::string dis = (*it).second;
-        ReleaseLock(&_lock);
+        PIN_ReleaseLock(&_lock);
         return dis;
     }
 

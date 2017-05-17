@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -59,7 +59,7 @@ long PreOriginalReplacement(  CONTEXT * ctxt, AFUNPTR origFunc, long one, long t
     
     numTimesPreOriginalReplaced++;
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, origFunc,
+                                 CALLINGSTD_DEFAULT, origFunc, NULL,
                                  PIN_PARG(long), &res,
                                  PIN_PARG(long), one,
                                  PIN_PARG(long), two,
@@ -77,7 +77,7 @@ long OriginalReplacement(  CONTEXT * ctxt, AFUNPTR origFunc, long one, long two 
     
     numTimesOriginalReplaced++;
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, origFunc,
+                                 CALLINGSTD_DEFAULT, origFunc, NULL,
                                  PIN_PARG(long), &res,
                                  PIN_PARG(long), one,
                                  PIN_PARG(long), two,
@@ -93,12 +93,19 @@ VOID ImageLoad(IMG img, VOID *v)
 {
     if ( IMG_IsMainExecutable( img ))
     {
+#if !defined(TARGET_MAC)
+        const char* origName = "Original";
+        const char* preOrigName = "PreOriginal";
+#else
+        const char* origName = "_Original";
+        const char* preOrigName = "_PreOriginal";
+#endif
         PROTO proto = PROTO_Allocate( PIN_PARG(long), CALLINGSTD_DEFAULT,
                                       "OriginalProto", PIN_PARG(long), PIN_PARG(long),
                                       PIN_PARG_END() );
         
         VOID * pf_Original;
-        RTN rtn = RTN_FindByName(img, "Original");
+        RTN rtn = RTN_FindByName(img, origName);
         if (RTN_Valid(rtn))
         {
             pf_Original = reinterpret_cast<VOID *>(RTN_Address(rtn));
@@ -127,7 +134,7 @@ VOID ImageLoad(IMG img, VOID *v)
                                       PIN_PARG_END() );
         
 
-        rtn = RTN_FindByName(img, "PreOriginal");
+        rtn = RTN_FindByName(img, preOrigName);
         if (RTN_Valid(rtn))
         {
             pf_Original = reinterpret_cast<VOID *>(RTN_Address(rtn));

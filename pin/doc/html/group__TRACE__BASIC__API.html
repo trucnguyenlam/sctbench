@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -29,7 +30,7 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef VOID(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__TRACE__BASIC__API.html#g927e6010210856a2b60b757460e53f15">LEVEL_PINCLIENT::TRACE_INSTRUMENT_CALLBACK</a> )(<a class="el" href="group__TRACE__BASIC__API.html#g72dbbb83ae9ca6278053a75123c920cc">TRACE</a> trace, VOID *v)</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__TRACE__BASIC__API.html#gb3762f773502ad865216ef941c38799e">LEVEL_PINCLIENT::TRACE_AddInstrumentFunction</a> (<a class="el" href="group__TRACE__BASIC__API.html#g927e6010210856a2b60b757460e53f15">TRACE_INSTRUMENT_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__TRACE__BASIC__API.html#g0261da0abe384db4e2f97cd31cf986f7">LEVEL_PINCLIENT::TRACE_AddInstrumentFunction</a> (<a class="el" href="group__TRACE__BASIC__API.html#g927e6010210856a2b60b757460e53f15">TRACE_INSTRUMENT_CALLBACK</a> fun, VOID *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__TRACE__BASIC__API.html#g3c4f1f8d29623597e900c140e37d05ac">LEVEL_PINCLIENT::TRACE_InsertCall</a> (<a class="el" href="group__TRACE__BASIC__API.html#g72dbbb83ae9ca6278053a75123c920cc">TRACE</a> trace, <a class="el" href="group__INST__ARGS.html#ga46cc1807fc61addd9afe69ee6736a21">IPOINT</a> action, AFUNPTR funptr,...)</td></tr>
 
@@ -111,13 +112,13 @@ Call back function used to instrument traces     </td>
   </tr>
 </table>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="gb3762f773502ad865216ef941c38799e"></a><!-- doxytag: member="LEVEL_PINCLIENT::TRACE_AddInstrumentFunction" ref="gb3762f773502ad865216ef941c38799e" args="(TRACE_INSTRUMENT_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g0261da0abe384db4e2f97cd31cf986f7"></a><!-- doxytag: member="LEVEL_PINCLIENT::TRACE_AddInstrumentFunction" ref="g0261da0abe384db4e2f97cd31cf986f7" args="(TRACE_INSTRUMENT_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::TRACE_AddInstrumentFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::TRACE_AddInstrumentFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__TRACE__BASIC__API.html#g927e6010210856a2b60b757460e53f15">TRACE_INSTRUMENT_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -151,6 +152,7 @@ Add a function used to instrument at trace granularity <dl compact><dt><b>Parame
     <tr><td valign="top"></td><td valign="top"><em>val</em>&nbsp;</td><td>passed as the second argument to the instrumentation function</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
@@ -412,7 +414,7 @@ Insert one or more analysis calls in a trace.<p>
     <td>
 
 <p>
-Insert one or more analysis calls in a trace. If <em>funptr</em> returns a non-zero ADDRINT, then the immediately following "then" analysis call is executed.<p>
+Insert one or more analysis calls in a trace. If <em>funptr</em> returns a non-zero ADDRINT, then the immediately following "then" analysis call is executed. Note that if <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a> is used, Both "if" and "then" analysis calls must have the same order.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>trace</em>&nbsp;</td><td>The trace to instrument. </td></tr>
@@ -475,7 +477,7 @@ Insert one or more analysis calls in a trace. If <em>funptr</em> returns a non-z
     <td>
 
 <p>
-Insert one or more analysis calls in a trace. The functions are called only if the immediately preceding "if" analysis call returns a non-zero value.<p>
+Insert one or more analysis calls in a trace. The functions are called only if the immediately preceding "if" analysis call returns a non-zero value. Note that if <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a> is used, Both "if" and "then" analysis calls must have the same order.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>trace</em>&nbsp;</td><td>The trace to instrument. </td></tr>
@@ -690,7 +692,7 @@ Traces represent contiguous segments of the original code. This function returns
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

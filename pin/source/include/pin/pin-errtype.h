@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -120,6 +120,7 @@ typedef enum
     PIN_ERR_UNSUPPORTED_SYSCALL,    /*!< 1 arg: string. System call is not supported by Pin */
     PIN_ERR_ACCESS_DENIED,          /*!< 0 args. File access denied due to bad permissions */
     PIN_ERR_INVALID_SUSPEND_REQUEST,/*!< 0 args. Attempting to suspend an internal thread */
+    PIN_ERR_DEBUGGER,               /*!< 0 args. Error related to debugger */
     PIN_ERR_LAST                    // end sentinel
 } PIN_ERRTYPE;
 

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -114,9 +114,9 @@ static void AbortProcess(const string & msg)
 {
     THREADID myTid = PIN_ThreadId();
 
-    GetLock(&lock, myTid + 1);
+    PIN_GetLock(&lock, myTid + 1);
     cerr << "mt_tool test aborted: "<< msg << "." << endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
     PIN_WriteErrorMessage(msg.c_str(), 1002, PIN_ERR_FATAL, 0);
 }
 
@@ -128,9 +128,9 @@ static void AbortThread(const string & msg, const string & threadName)
 {
     THREADID myTid = PIN_ThreadId();
 
-    GetLock(&lock, myTid + 1);
+    PIN_GetLock(&lock, myTid + 1);
     cerr << "mt_tool thread aborted: "<< msg << ". Thread name = " << threadName << ", tid = " << myTid << endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
     NotifyToolThreadExit(threadName);
     PIN_ExitThread(-1);
 }
@@ -142,7 +142,7 @@ static void NotifyToolThreadCreated(THREADID threadId, PIN_THREAD_UID threadUid,
 {
     THREADID myTid = PIN_ThreadId();
 
-    GetLock(&lock, myTid + 1);
+    PIN_GetLock(&lock, myTid + 1);
 
     ++toolThreadsCreated;
     cerr << "Tool spawned a private thread. Thread name = " << threadName << ", tid = " << threadId << endl;
@@ -153,7 +153,7 @@ static void NotifyToolThreadCreated(THREADID threadId, PIN_THREAD_UID threadUid,
         insertStatus =  (uidSet.insert(threadUid)).second;
     }
 
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 
     if (!insertStatus)
     {
@@ -173,10 +173,10 @@ static void NotifyToolThreadStart(const string & threadName)
 
     THREADID myTid = PIN_ThreadId();
 
-    GetLock(&lock, myTid + 1);
+    PIN_GetLock(&lock, myTid + 1);
     ++toolThreadsStarted;
     cerr << "Tool's thread started running, name = " << threadName << ", tid = " << myTid << endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 /*!
@@ -186,10 +186,10 @@ static void NotifyToolThreadExit(const string & threadName)
 {
     THREADID myTid = PIN_ThreadId();
 
-    GetLock(&lock, myTid + 1);
+    PIN_GetLock(&lock, myTid + 1);
     ++toolThreadsFinished;
     cerr << "Tool's thread finished, name = " << threadName << ", tid = " << myTid << endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 /*!
@@ -321,9 +321,9 @@ static VOID ThreadRtn(VOID * arg)
     {
         PIN_Yield();
     }
-    GetLock(&lock, myTid + 1);
+    PIN_GetLock(&lock, myTid + 1);
     addr = addrDoFlush;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 
     if (addr == ADDRINT(-1))
     {
@@ -381,9 +381,9 @@ static VOID ThreadCodeCache(VOID * arg)
     {
         PIN_Yield();
     }
-    GetLock(&lock, myTid + 1);
+    PIN_GetLock(&lock, myTid + 1);
     addr = addrDoFlush;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 
     if (addr == ADDRINT(-1))
     {
@@ -548,9 +548,9 @@ VOID ImageLoad(IMG img, VOID *v)
         }
 
         THREADID myTid = PIN_ThreadId();
-        GetLock(&lock, myTid + 1);
+        PIN_GetLock(&lock, myTid + 1);
         addrDoFlush = addr;
-        ReleaseLock(&lock);
+        PIN_ReleaseLock(&lock);
     }
 }
 
@@ -569,18 +569,18 @@ static VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
         AbortProcess("PIN_IsApplicationThread() returns FALSE for an application's thread");
     }
 
-    GetLock(&lock, threadid + 1);
+    PIN_GetLock(&lock, threadid + 1);
     appThreadsStarted++;
     cerr << "Application's thread started running, tid = " << threadid << endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 static VOID ThreadFini(THREADID threadid, const CONTEXT *ctxt, INT32 code, VOID *v)
 {
-    GetLock(&lock, threadid + 1);
+    PIN_GetLock(&lock, threadid + 1);
     appThreadsFinished++;
     cerr << "Application's thread finished, tid = " << threadid << endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 /*!
@@ -621,9 +621,9 @@ static VOID FiniUnlocked(INT32 code, VOID *v)
 
     THREADID myTid = PIN_ThreadId();
 
-    GetLock(&lock, myTid + 1);
-    cerr << "mt_tool test: All tool's threads finished succssfully." << endl;
-    ReleaseLock(&lock);
+    PIN_GetLock(&lock, myTid + 1);
+    cerr << "mt_tool test: All tool's threads finished successfully." << endl;
+    PIN_ReleaseLock(&lock);
 
 }
 
@@ -663,7 +663,7 @@ int main(int argc, char *argv[])
     PIN_InitSymbols();
 
     PIN_Init(argc, argv);
-    InitLock(&lock);
+    PIN_InitLock(&lock);
 
     PIN_AddThreadStartFunction(ThreadStart, 0);
     PIN_AddThreadFiniFunction(ThreadFini, 0);

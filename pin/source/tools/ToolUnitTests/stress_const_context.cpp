@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -36,6 +36,12 @@ END_LEGAL */
 Test to assure no stack leak in IARG_CONST_CONTEXT. Must be run with the stress_const_context_app
 */
 
+#ifdef TARGET_MAC
+#define STRESSTEST_FN_NAME "_StressTestConstContextAppFunc"
+#else
+#define STRESSTEST_FN_NAME "StressTestConstContextAppFunc"
+#endif
+
 UINT32 numCallsToStressTestConstContextToolFunc = 0;
 VOID StressTestConstContextToolFunc (ADDRINT *fer0, ADDRINT *fer1, ADDRINT *fer2, ADDRINT *fer3, ADDRINT *fer4, ADDRINT *fer5,
                                      ADDRINT returnIP, ADDRINT stackPointer, ADDRINT threadID, CONTEXT* ctxt)
@@ -61,7 +67,7 @@ VOID Image(IMG img, VOID *v)
         {
             //fprintf(stderr, "    rtn %s\n", RTN_Name(rtn).c_str());
             
-            if (RTN_Name(rtn) == "StressTestConstContextAppFunc")    
+            if (RTN_Name(rtn) == STRESSTEST_FN_NAME)
             {
                 RTN_Open(rtn);
 
@@ -75,7 +81,7 @@ VOID Image(IMG img, VOID *v)
                     IARG_FUNCARG_ENTRYPOINT_REFERENCE, 5,
                     IARG_RETURN_IP, // address of inst after caller
                     IARG_REG_VALUE, REG_STACK_PTR,
-                    IARG_REG_VALUE, REG_THREAD_ID,
+                    IARG_THREAD_ID,
                     IARG_CONST_CONTEXT,
                     IARG_END);
 

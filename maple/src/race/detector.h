@@ -111,7 +111,7 @@ class Detector : public Analyzer {
   // the abstract meta data for the memory access
   class Meta {
    public:
-    typedef std::tr1::unordered_map<address_t, Meta *> Table;
+    typedef std::unordered_map<address_t, Meta *> Table;
 
     explicit Meta(address_t a) : addr(a) {}
     virtual ~Meta() {}
@@ -122,7 +122,7 @@ class Detector : public Analyzer {
   // the meta data for mutex variables to track vector clock
   class MutexMeta {
    public:
-    typedef std::tr1::unordered_map<address_t, MutexMeta *> Table;
+    typedef std::unordered_map<address_t, MutexMeta *> Table;
 
     MutexMeta() {}
     ~MutexMeta() {}
@@ -134,7 +134,7 @@ class Detector : public Analyzer {
   class CondMeta {
    public:
     typedef std::map<thread_id_t, VectorClock> VectorClockMap;
-    typedef std::tr1::unordered_map<address_t, CondMeta *> Table;
+    typedef std::unordered_map<address_t, CondMeta *> Table;
 
     CondMeta() {}
     ~CondMeta() {}
@@ -147,7 +147,7 @@ class Detector : public Analyzer {
   class BarrierMeta {
    public:
     typedef std::map<thread_id_t, std::pair<VectorClock, bool> > VectorClockMap;
-    typedef std::tr1::unordered_map<address_t, BarrierMeta *> Table;
+    typedef std::unordered_map<address_t, BarrierMeta *> Table;
 
     BarrierMeta()
         : pre_using_table1(true),
@@ -192,7 +192,7 @@ class Detector : public Analyzer {
   // common databases
   Mutex *internal_lock_;
   RaceDB *race_db_;
-  
+
   ExecutionControl* exe_;
 
   // settings and flasg

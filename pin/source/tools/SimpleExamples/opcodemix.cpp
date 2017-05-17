@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -39,14 +39,14 @@ END_LEGAL */
  */
 
 #include "pin.H"
-#include "instlib.H"
+#include "control_manager.H"
 #include "portability.H"
 #include <vector>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 
-using namespace INSTLIB;
+using namespace CONTROLLER;
 
 /* ===================================================================== */
 /* Commandline Switches */
@@ -91,7 +91,7 @@ INT32 Usage()
 /* INDEX HELPERS */
 /* ===================================================================== */
 
-const UINT32 MAX_INDEX = 4096;       // enough even for the IA-64 architecture
+const UINT32 MAX_INDEX = 4096;
 const UINT32 INDEX_SPECIAL =  3000;
 const UINT32 MAX_MEM_SIZE = 512;
 
@@ -268,15 +268,15 @@ LOCALVAR vector<const BBLSTATS*> statsList;
 
 LOCALVAR UINT32 enabled = 0;
 
-LOCALFUN VOID Handler(CONTROL_EVENT ev, VOID *val, CONTEXT * ctxt, VOID *ip, THREADID tid)
+LOCALFUN VOID Handler(EVENT_TYPE ev, VOID *val, CONTEXT * ctxt, VOID *ip, THREADID tid, bool bcast)
 {
     switch(ev)
     {
-      case CONTROL_START:
+      case EVENT_START:
         enabled = 1;
         break;
 
-      case CONTROL_STOP:
+      case EVENT_STOP:
         enabled = 0;
         break;
 
@@ -286,7 +286,7 @@ LOCALFUN VOID Handler(CONTROL_EVENT ev, VOID *val, CONTEXT * ctxt, VOID *ip, THR
 }
 
 
-LOCALVAR CONTROL control;
+LOCALVAR CONTROL_MANAGER control;
 
 /* ===================================================================== */
 
@@ -475,7 +475,8 @@ int main(int argc, CHAR *argv[])
         return Usage();
     }
     
-    control.CheckKnobs(Handler, 0);
+    control.RegisterHandler(Handler, 0, FALSE);
+    control.Activate();
 
     string filename =  KnobOutputFile.Value();
 

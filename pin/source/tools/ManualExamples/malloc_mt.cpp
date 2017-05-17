@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -37,7 +37,7 @@ KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool",
 //==============================================================
 //  Analysis Routines
 //==============================================================
-// Note:  threadid+1 is used as an argument to the GetLock()
+// Note:  threadid+1 is used as an argument to the PIN_GetLock()
 //        routine as a debugging aid.  This is the value that
 //        the lock is set to, so it must be non-zero.
 
@@ -51,28 +51,28 @@ PIN_LOCK lock;
 // This routine is executed every time a thread is created.
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     fprintf(out, "thread begin %d\n",threadid);
     fflush(out);
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 // This routine is executed every time a thread is destroyed.
 VOID ThreadFini(THREADID threadid, const CONTEXT *ctxt, INT32 code, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     fprintf(out, "thread end %d code %d\n",threadid, code);
     fflush(out);
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 // This routine is executed each time malloc is called.
 VOID BeforeMalloc( int size, THREADID threadid )
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     fprintf(out, "thread %d entered malloc(%d)\n", threadid, size);
     fflush(out);
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 
@@ -121,7 +121,7 @@ INT32 Usage()
 int main(INT32 argc, CHAR **argv)
 {
     // Initialize the pin lock
-    InitLock(&lock);
+    PIN_InitLock(&lock);
     
     // Initialize pin
     if (PIN_Init(argc, argv)) return Usage();

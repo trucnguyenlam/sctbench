@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -85,7 +85,7 @@ VOID xmm_arg(PIN_REGISTER* r, UINT32 opnd_indx, UINT32 regno)
     {
         r->dword[0] ++;
     }
-    icount++; 
+    icount++;
 }
 
 CONTEXT *gctxtx;
@@ -105,73 +105,86 @@ VOID BeforeTestConstContext()
    }
    dummy += dummy;
 }
-    
-VOID Instruction(INS ins, VOID *v)
-{
-    xed_iclass_enum_t iclass = static_cast<xed_iclass_enum_t>(INS_Opcode(ins));
-    if (iclass == XED_ICLASS_MOVQ || iclass == XED_ICLASS_MOVDQU)
-    {
-    	// const unsigned int opnd_count =  INS_OperandCount(ins);
-        unsigned int i=0;
-        // for(unsigned int i=0; i < opnd_count;i++)
-        {
-            if (INS_OperandIsReg(ins,i))
-            {
-                REG r = INS_OperandReg(ins,i);
-                if (REG_is_mm(r))
-                {
-                    // BeforeTestConstContext causes X87 state to be spilled
-                    // before the instruction that accesses the mmx reg
-                    INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)BeforeTestConstContext, 
-                                   IARG_END);
-                    // TestConstContext requests the X87 context in order to verify
-                    // the Pin can find it after the instruction that accesses the mmx reg
-                    // when the X87 state is spilled
-                    INS_InsertCall(ins, IPOINT_AFTER, (AFUNPTR)TestConstContext, 
-                                   IARG_CONST_CONTEXT,
-                                   IARG_END);
-                    
-                    INS_InsertCall(ins, IPOINT_AFTER, (AFUNPTR)mmx_arg, 
-                                   IARG_REG_REFERENCE,
-                                   r,
-                                   IARG_UINT32,
-                                   i,
-                                   IARG_UINT32, 
-                                   (r-REG_MM_BASE),
 
-                                   IARG_END);
-                }
-                if (REG_is_xmm(r))
+VOID Img(IMG img, VOID *v)
+{
+    if (IMG_IsMainExecutable(img))
+    {
+        for (SEC sec = IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec))
+        {
+            for (RTN rtn = SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn))
+            {
+                RTN_Open(rtn);
+                for (INS ins = RTN_InsHead(rtn); INS_Valid(ins); ins = INS_Next(ins))
                 {
-                    INS_InsertCall(ins, IPOINT_AFTER, (AFUNPTR)xmm_arg, 
-                                   IARG_REG_REFERENCE,
-                                   r,
-                                   IARG_UINT32,
-                                   i,
-                                   IARG_UINT32, 
-                                   (r-REG_XMM_BASE),
-                                   IARG_END);
+                    xed_iclass_enum_t iclass = static_cast<xed_iclass_enum_t>(INS_Opcode(ins));
+                    if (iclass == XED_ICLASS_MOVQ || iclass == XED_ICLASS_MOVDQU)
+                    {
+                        // const unsigned int opnd_count =  INS_OperandCount(ins);
+                        unsigned int i=0;
+                        // for(unsigned int i=0; i < opnd_count;i++)
+                        {
+                            if (INS_OperandIsReg(ins,i))
+                            {
+                                REG r = INS_OperandReg(ins,i);
+                                if (REG_is_mm(r))
+                                {
+                                    // BeforeTestConstContext causes X87 state to be spilled
+                                    // before the instruction that accesses the mmx reg
+                                    INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)BeforeTestConstContext,
+                                                   IARG_END);
+                                    // TestConstContext requests the X87 context in order to verify
+                                    // the Pin can find it after the instruction that accesses the mmx reg
+                                    // when the X87 state is spilled
+                                    INS_InsertCall(ins, IPOINT_AFTER, (AFUNPTR)TestConstContext,
+                                                   IARG_CONST_CONTEXT,
+                                                   IARG_END);
+
+                                    INS_InsertCall(ins, IPOINT_AFTER, (AFUNPTR)mmx_arg,
+                                                   IARG_REG_REFERENCE,
+                                                   r,
+                                                   IARG_UINT32,
+                                                   i,
+                                                   IARG_UINT32,
+                                                   (r-REG_MM_BASE),
+
+                                                   IARG_END);
+                                }
+                                if (REG_is_xmm(r))
+                                {
+                                    INS_InsertCall(ins, IPOINT_AFTER, (AFUNPTR)xmm_arg,
+                                                   IARG_REG_REFERENCE,
+                                                   r,
+                                                   IARG_UINT32,
+                                                   i,
+                                                   IARG_UINT32,
+                                                   (r-REG_XMM_BASE),
+                                                   IARG_END);
+                                }
+                            }
+                        }
+                    }
                 }
-                
+                RTN_Close(rtn);
             }
         }
     }
-
 }
-
+    
 VOID Fini(INT32 code, VOID *v)
 {
     // Don't output icount as part of the reference output
     // because the dynamic loader may also use xmm insts.
     
-    //std::cerr << "Count: " << icount << endl;
+    //std::cout << "Count: " << icount << endl;
 }
 
 int main(int argc, char * argv[])
 {
     PIN_Init(argc, argv);
+    PIN_InitSymbols();
 
-    INS_AddInstrumentFunction(Instruction, 0);
+    IMG_AddInstrumentFunction(Img, 0);
     PIN_AddFiniFunction(Fini, 0);
     
     // Never returns

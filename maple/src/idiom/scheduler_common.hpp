@@ -289,7 +289,7 @@ class Idiom4SchedStatus {
   }
 
  private:
-  typedef std::tr1::unordered_set<address_t> RecordedAddrSet;
+  typedef std::unordered_set<address_t> RecordedAddrSet;
 
   unsigned long state_;
   thread_id_t thd_id_[4];
@@ -387,7 +387,7 @@ class Idiom5SchedStatus {
   }
 
  private:
-  typedef std::tr1::unordered_set<address_t> RecordedAddrSet;
+  typedef std::unordered_set<address_t> RecordedAddrSet;
 
   unsigned long state_;
   thread_id_t thd_id_[4];

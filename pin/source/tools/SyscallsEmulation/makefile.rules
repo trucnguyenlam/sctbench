@@ -38,7 +38,7 @@ TOOL_ROOTS :=
 # Note: Static analysis tools are in fact executables linked with the Pin Static Analysis Library.
 # This library provides a subset of the Pin APIs which allows the tool to perform static analysis
 # of an application or dll. Pin itself is not used when this tool runs.
-SA_TOOL_ROOTS :=
+SA_TOOL_ROOTS := 
 
 # This defines all the applications that will be run during the tests.
 APP_ROOTS :=
@@ -51,6 +51,15 @@ DLL_ROOTS :=
 
 # This defines any static libraries (archives), that need to be built.
 LIB_ROOTS :=
+
+###### Place probe mode tests here ######
+
+ifeq ($(PROBE),1)
+    TEST_ROOTS += system_syscall_client_lock  popen_syscall_client_lock \
+                  clone_syscall_different_process_client_lock clone_syscall_same_process_client_lock        
+    TOOL_ROOTS += syscalls_and_locks_tool
+    APP_ROOTS += syscalls_and_locks_app
+endif
 
 ###### Place OS-specific definitions here ######
 
@@ -80,6 +89,15 @@ ifeq ($(TARGET_OS),linux)
     endif
 endif
 
+# These tests only relevant for windows for now since they test the additions
+# to the lock acquirement algorithm, that are only implemented for Linux and Mac
+ifeq ($(TARGET),windows)
+    TEST_ROOTS := $(filter-out  system_syscall_client_lock  popen_syscall_client_lock \
+                  clone_syscall_different_process_client_lock clone_syscall_same_process_pin_client_lock, $(TEST_ROOTS))
+    TOOL_ROOTS := $(filter-out syscalls_and_locks_tool, $(TOOL_ROOTS))
+    APP_ROOTS := $(filter-out syscalls_and_locks_app, $(APP_ROOTS)
+endif
+
 
 ##############################################################
 #
@@ -103,11 +121,28 @@ ppollEmulationSignalInterrupt.test: $(OBJDIR)ppollEmulation_app$(EXE_SUFFIX)
 	$(QGREP) "sigalarm interrupted the ppoll system call" $(OBJDIR)ppollEmulationSignalInterrupt.out
 	$(RM) $(OBJDIR)ppollEmulationSignalInterrupt.out
 
+
 ppollEmulationTimeOut.test: $(OBJDIR)ppollEmulation_app$(EXE_SUFFIX)
 	$(PIN) -- $(OBJDIR)ppollEmulation_app$(EXE_SUFFIX) 3 $(OBJDIR)ppollEmulationTimeOut.out \
 	$(OBJDIR)ppollEmulationTimeOutPipe
 	$(QGREP) "The call timed out and no file descriptors were ready" $(OBJDIR)ppollEmulationTimeOut.out
 	$(RM) $(OBJDIR)ppollEmulationTimeOut.out
+
+system_syscall_client_lock.test: $(OBJDIR)syscalls_and_locks_app$(EXE_SUFFIX) $(OBJDIR)syscalls_and_locks_tool$(PINTOOL_SUFFIX)
+	$(PIN) -t $(OBJDIR)syscalls_and_locks_tool$(PINTOOL_SUFFIX) -lock_type 3 \
+	  -- $(OBJDIR)syscalls_and_locks_app$(EXE_SUFFIX) 1
+
+popen_syscall_client_lock.test: $(OBJDIR)syscalls_and_locks_app$(EXE_SUFFIX) $(OBJDIR)syscalls_and_locks_tool$(PINTOOL_SUFFIX)
+	$(PIN) -t $(OBJDIR)syscalls_and_locks_tool$(PINTOOL_SUFFIX) -lock_type 3  \
+	  -- $(OBJDIR)syscalls_and_locks_app$(EXE_SUFFIX) 2
+
+clone_syscall_different_process_client_lock.test: $(OBJDIR)syscalls_and_locks_app$(EXE_SUFFIX) $(OBJDIR)syscalls_and_locks_tool$(PINTOOL_SUFFIX)
+	$(PIN) -t $(OBJDIR)syscalls_and_locks_tool$(PINTOOL_SUFFIX) -lock_type 3 \
+	  -- $(OBJDIR)syscalls_and_locks_app$(EXE_SUFFIX) 3
+
+clone_syscall_same_process_client_lock.test: $(OBJDIR)syscalls_and_locks_app$(EXE_SUFFIX) $(OBJDIR)syscalls_and_locks_tool$(PINTOOL_SUFFIX)
+	$(PIN) -t $(OBJDIR)syscalls_and_locks_tool$(PINTOOL_SUFFIX) -lock_type 3 \
+	  -- $(OBJDIR)syscalls_and_locks_app$(EXE_SUFFIX) 4
 
 
 ##############################################################
@@ -118,3 +153,8 @@ ppollEmulationTimeOut.test: $(OBJDIR)ppollEmulation_app$(EXE_SUFFIX)
 
 # This section contains the build rules for all binaries that have special build rules.
 # See makefile.default.rules for the default build rules.
+
+###### Special applications' build rules ######
+
+$(OBJDIR)syscalls_and_locks_app$(EXE_SUFFIX): syscalls_and_locks_app.cpp
+	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)

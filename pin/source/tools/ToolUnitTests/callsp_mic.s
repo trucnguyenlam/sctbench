@@ -18,7 +18,7 @@ main:
     /*
      * Push a 'jmp *%rcx' instruction, then jump to it.
      */
-    lea     .l1, %rcx
+    lea     .l1(%rip), %rcx
     pushq   $0xe1ff     /* jmp *%rcx */
     jmp     *%rsp
 .l1:

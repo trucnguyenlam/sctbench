@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -158,7 +158,7 @@ int main(INT32 argc, CHAR **argv) {
     IMG_AddInstrumentFunction(ImageLoad, (KnobOutputFile.Value().empty()) ? &cout : &outFile);
 
     // Register function to be called when the application exits
-    PIN_AddFiniFunction(Fini, outFile);
+    PIN_AddFiniFunction(Fini, &outFile);
 
     // Never returns
     PIN_StartProgram();

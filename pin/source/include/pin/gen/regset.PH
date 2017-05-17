@@ -1,136 +1,124 @@
-//Groups: @ingroup\s+(API_REF|KNOBS|IMG_BASIC_API|INS_BASIC_API|INS_INST_API|INS_BASIC_API_GEN_IA32|INS_BASIC_API_IA32|INS_MOD_API_GEN_IA32|SEC_BASIC_API|RTN_BASIC_API|REG_BASIC_API|REG_CPU_GENERIC|REG_CPU_IA32|TRACE_BASIC_API|BBL_BASIC_API|SYM_BASIC_API|MISC_PRINT|MISC_PARSE|KNOB_API|KNOB_BASIC|KNOB_PRINT|LOCK|PIN_CONTROL|TRACE_VERSION_API|BUFFER_API|PROTO_API|PIN_PROCESS_API|PIN_THREAD_API|PIN_SYSCALL_API|WINDOWS_SYSCALL_API_UNDOC|DEBUG_API|ERROR_FILE_BASIC|TYPE_BASE|INSTLIB|ALARM|CODECACHE_API|CHILD_PROCESS_API|UTILS|MISC|CONTEXT_API|PHYSICAL_CONTEXT_API|REGVAL_API|EXCEPTION_API|APPDEBUG_API|STOPPED_THREAD_API|BUFFER_API|PROTO|INST_ARGS|DEPRECATED_PIN_API|INTERNAL_EXCEPTION_PRIVATE_UNDOCUMENTED|PIN_THREAD_PRIVATE|CHILD_PROCESS_INTERNAL|BBL_BASIC|ROGUE_BASIC_API|MESSAGE_TYPE|MESSAGE_BASIC|ERRFILE|MISC_BASIC|ITC_INST_API|CONTEXT_API_UNDOC|EXCEPTION_API_UNDOC|UNDOCUMENTED_PIN_API|OPIN|TRACE_VERSIONS
+//Groups: @ingroup\s+(API_REF|KNOBS|IMG_BASIC_API|INS_BASIC_API|INS_INST_API|INS_BASIC_API_GEN_IA32|INS_BASIC_API_IA32|INS_MOD_API_GEN_IA32|SEC_BASIC_API|RTN_BASIC_API|REG_BASIC_API|REG_CPU_GENERIC|REG_CPU_IA32|TRACE_BASIC_API|BBL_BASIC_API|SYM_BASIC_API|MISC_PRINT|MISC_PARSE|KNOB_API|KNOB_BASIC|KNOB_PRINT|LOCK|PIN_CONTROL|TRACE_VERSION_API|BUFFER_API|PROTO_API|PIN_PROCESS_API|PIN_THREAD_API|PIN_SYSCALL_API|WINDOWS_SYSCALL_API_UNDOC|DEBUG_API|ERROR_FILE_BASIC|TYPE_BASE|INSTLIB|ALARM|CODECACHE_API|CHILD_PROCESS_API|UTILS|MISC|CONTEXT_API|PHYSICAL_CONTEXT_API|PIN_CALLBACKS|EXCEPTION_API|APPDEBUG_API|STOPPED_THREAD_API|BUFFER_API|PROTO|INST_ARGS|DEPRECATED_PIN_API|INTERNAL_EXCEPTION_PRIVATE_UNDOCUMENTED|PIN_THREAD_PRIVATE|CHILD_PROCESS_INTERNAL|BBL_BASIC|ROGUE_BASIC_API|MESSAGE_TYPE|MESSAGE_BASIC|ERRFILE|MISC_BASIC|ITC_INST_API|CONTEXT_API_UNDOC|EXCEPTION_API_UNDOC|UNDOCUMENTED_PIN_API|OPIN|TRACE_VERSIONS
 /* PIN API */
 
 /* THIS FILE IS AUTOMAGICALLY GENERATED - DO NOT CHANGE DIRECTLY*/
 
 
-const LEVEL_BASE::UINT32 SET_SIZE = 32;
-
-                                                                  /* DO NOT EDIT */
-template<LEVEL_BASE::UINT32 _min,
-                    LEVEL_BASE::UINT32 _max, 
-                    LEVEL_BASE::UINT32 _num_sets=((_max-_min)/SET_SIZE) + 1> class REGISTER_SET 
+template<UINT32 _min, UINT32 _max> class REGISTER_SET
 {
   private:
-    LEVEL_BASE::UINT32 _set[_num_sets];
+    static const UINT32  _SET_SIZE  = sizeof(ADDRINT)*8;  // # of bits in each _set element
+    static const UINT32  _NUM_SETS  = ((_max-_min)/_SET_SIZE) + 1;
+    static const ADDRINT _ONE       = ADDRINT(1);
+    static const ADDRINT _ALL_ONES  = ~ADDRINT(0);
+
+    ADDRINT _set[_NUM_SETS];
     
   public:
-    REGISTER_SET<_min, _max, _num_sets>()
+    REGISTER_SET()
     {
-        ASSERTX( (_max - _min) < (_num_sets * SET_SIZE) );
-        for (LEVEL_BASE::UINT32 k=0; k< _num_sets; k++)
-            _set[k] = 0;
+        for (UINT32 k=0; k< _NUM_SETS; k++)     {_set[k] = 0;}
     }
 
-    REGISTER_SET<_min, _max, _num_sets>(LEVEL_BASE::UINT32 first, LEVEL_BASE::UINT32 last)
+    REGISTER_SET(UINT32 first, UINT32 last)
     {
-        ASSERTX( (_max - _min) < (_num_sets * SET_SIZE) );
-        for (LEVEL_BASE::UINT32 k=0; k< _num_sets; k++)
-            _set[k] = 0;
-        for (LEVEL_BASE::UINT32 r=first; r <= last; r++)
-            Insert( REG(r) );
+        for (UINT32 k=0; k< _NUM_SETS; k++)     {_set[k] = 0;}
+        for (UINT32 r=first; r <= last; r++)    {Insert(REG(r));}
     }
 
-    REG Min() const
-    {
-        return REG(_min);
-    }
-
-    REG Max() const
-    {
-        return REG(_max);
-    }
+    REG Min() const {return REG(_min);}
+    REG Max() const {return REG(_max);}
     
-    LEVEL_BASE::BOOL Contains(REG reg_no) const
+    BOOL Contains(REG reg_no) const
     {
-        const LEVEL_BASE::UINT32 i = LEVEL_BASE::UINT32(reg_no);
+        const UINT32 i = UINT32(reg_no);
 #if defined(__INTEL_COMPILER)
 #pragma warning(push)
 #pragma warning(disable : 186)
 #endif
-        ASSERTX( _min <= i && i <= _max );
+        ASSERTXSLOW( _min <= i && i <= _max );
 #if defined(__INTEL_COMPILER)
 #pragma warning(pop)
 #endif
 
-        const LEVEL_BASE::UINT32 set_no = (i - _min) / SET_SIZE;
-        const LEVEL_BASE::UINT32 pos_no = (i - _min) % SET_SIZE;
+        const UINT32 set_no = (i - _min) / _SET_SIZE;
+        const UINT32 pos_no = (i - _min) % _SET_SIZE;
 
-        return (_set[ set_no ] & (1UL << pos_no)) != 0;
+        return ((_set[ set_no ] & (_ONE << pos_no)) != 0);
     }
 
-    VOID InsertVector(REG reg_no,LEVEL_BASE::UINT32 vector)
+    VOID InsertVector(REG reg_no, UINT32 vector)
     {
-        const LEVEL_BASE::UINT32 i = LEVEL_BASE::UINT32(reg_no);
+        const UINT32 i = UINT32(reg_no);
 #if defined(__INTEL_COMPILER)
 #pragma warning(push)        
 #pragma warning(disable : 186)        
 #endif
-        ASSERTX( _min <= i && i <= _max );
+        ASSERTXSLOW( _min <= i && i <= _max );
 #if defined(__INTEL_COMPILER)
 #pragma warning(pop)
 #endif
-        const LEVEL_BASE::UINT32 set_no = (i - _min) / SET_SIZE;
-        ASSERTX( 0 == (i - _min) % SET_SIZE );
+        const UINT32 set_no = (i - _min) / _SET_SIZE;
+        ASSERTX( 0 == (i - _min) % _SET_SIZE );
         _set[set_no] = vector;
     }
     
     VOID InsertAll()
     {
-        for (LEVEL_BASE::UINT32 k=0; k<_num_sets; k++)
-            _set[k] = ~0;
+        for (UINT32 k=0; k<_NUM_SETS; k++) {_set[k] = _ALL_ONES;}
     }
 
     VOID Insert(REG reg_no)
     {
-        const LEVEL_BASE::UINT32 i = LEVEL_BASE::UINT32(reg_no);
+        const UINT32 i = UINT32(reg_no);
 #if defined(__INTEL_COMPILER)
 #pragma warning(push)        
 #pragma warning(disable : 186)        
 #endif
-        ASSERT( _min <= i && i <= _max,
-                "_min(" + decstr(_min) + ") i(" + decstr(i) + ") _max( " +decstr(_max) + ")\n");
+        if(KnobSlowAsserts)
+        {
+            ASSERT( _min <= i && i <= _max,
+                    "_min(" + decstr(_min) + ") i(" + decstr(i) + ") _max( " +decstr(_max) + ")\n");
+        }
 #if defined(__INTEL_COMPILER)
 #pragma warning(pop)
 #endif
-        const LEVEL_BASE::UINT32 set_no = (i - _min) / SET_SIZE;
-        const LEVEL_BASE::UINT32 pos_no = (i - _min) % SET_SIZE;
+        const UINT32 set_no = (i - _min) / _SET_SIZE;
+        const UINT32 pos_no = (i - _min) % _SET_SIZE;
 
-        _set[set_no] |= (1UL << pos_no);
+        _set[set_no] |= (_ONE << pos_no);
     }
 
     VOID Remove(REG reg_no)
     {
-        const LEVEL_BASE::UINT32 i = LEVEL_BASE::UINT32(reg_no);
+        const UINT32 i = UINT32(reg_no);
 #if defined(__INTEL_COMPILER)
 #pragma warning(push)
 #pragma warning(disable : 186)
 #endif
-        ASSERTX( _min <= i && i <= _max );
+        ASSERTXSLOW( _min <= i && i <= _max );
 #if defined(__INTEL_COMPILER)
 #pragma warning(pop)
 #endif
-        const LEVEL_BASE::UINT32 set_no = (i - _min) / SET_SIZE;
-        const LEVEL_BASE::UINT32 pos_no = (i - _min) % SET_SIZE;
+        const UINT32 set_no = (i - _min) / _SET_SIZE;
+        const UINT32 pos_no = (i - _min) % _SET_SIZE;
 
-        _set[set_no] &= ~(1UL << pos_no);
+        _set[set_no] &= ~(_ONE << pos_no);
     }
     
     VOID Clear()
     {
-        for (LEVEL_BASE::UINT32 k=0; k<_num_sets; k++)
-            _set[k] = 0;
+        for (UINT32 k=0; k<_NUM_SETS; k++) {_set[k] = 0;}
     }
 
     VOID Invert()
     {
-        for (LEVEL_BASE::UINT32 k=0; k<_num_sets; k++)
-            _set[k] = ~_set[k];
+        for (UINT32 k=0; k<_NUM_SETS; k++) {_set[k] = ~_set[k];}
     }
 
     REG PopNext()
     {
-        for (LEVEL_BASE::UINT32 i=_min; i<=_max; i++)
+        for (UINT32 i=_min; i<=_max; i++)
         {
             const REG reg = REG(i);
             if ( Contains(reg) )
@@ -145,13 +133,13 @@ template<LEVEL_BASE::UINT32 _min,
     
     REG PopNextFast()
     {
-        for (LEVEL_BASE::UINT32 s=0; s<_num_sets; s++)
+        for (UINT32 s=0; s<_NUM_SETS; s++)
         {
             if (_set[s] == 0) continue;
 
-            const LEVEL_BASE::UINT32 limit = MIN(_max, (s+1) * SET_SIZE);
+            const UINT32 limit = MIN(_max, (s+1) * _SET_SIZE);
 
-            for (LEVEL_BASE::UINT32 i = _min + (s * SET_SIZE); i <= limit; i++)
+            for (UINT32 i = _min + (s * _SET_SIZE); i <= limit; i++)
             {
                 const REG reg = REG(i);
                 if ( Contains(reg) )
@@ -165,99 +153,103 @@ template<LEVEL_BASE::UINT32 _min,
         return REG_INVALID();
     }
     
-    LEVEL_BASE::UINT32 PopCount() const
+    UINT32 PopCount() const
     {
-        LEVEL_BASE::UINT32 count = 0;
-        for ( LEVEL_BASE::UINT32 s=0; s<_num_sets; s++)
-            count += BitCount( _set[s] );
+        UINT32 count = 0;
+        for ( UINT32 s=0; s<_NUM_SETS; s++) {count += BitCount(_set[s]);}
         return count;
     }
 
-    LEVEL_BASE::BOOL PopCountIsZero() const
+    BOOL PopCountIsZero() const
     {
-        for ( LEVEL_BASE::UINT32 s=0; s<_num_sets; s++) if( _set[s] != 0 ) return FALSE;
+        for ( UINT32 s=0; s<_NUM_SETS; s++) {if( _set[s] != 0 ) return FALSE;}
         return TRUE;
     }
 
-    LEVEL_BASE::UINT32 HashKey() const
+    UINT32 HashKey() const
     {
-        LEVEL_BASE::UINT32 hashKey = 0;
-        for ( LEVEL_BASE::UINT32 s=0; s<_num_sets; s++)
-           hashKey = HashData(hashKey, _set[s] );
+        UINT32 hashKey = 0;
+        for ( UINT32 s=0; s<_NUM_SETS; s++) {hashKey = HashData(hashKey, _set[s]);}
         return hashKey;
     }
     
-    VOID operator=(const REGISTER_SET<_min,_max,_num_sets> a)
+    REGISTER_SET operator| (const REGISTER_SET & b) const 
     {
-        for (LEVEL_BASE::UINT32 i=0; i<_num_sets; i++)
-        {
-            _set[i] = a._set[i];
-        }
-    }
-
-    REGISTER_SET<_min,_max,_num_sets> operator| (const REGISTER_SET<_min,_max,_num_sets>& b) const 
-    {
-        REGISTER_SET<_min,_max,_num_sets> c;
+        REGISTER_SET c;
   
-        for (LEVEL_BASE::UINT32 i=0; i< _num_sets; i++)
-            c._set[i] = _set[i] | b._set[i];
+        for (UINT32 i=0; i< _NUM_SETS; i++) {c._set[i] = _set[i] | b._set[i];}
         return c;
         
     }
 
-    REGISTER_SET<_min,_max,_num_sets> & operator|=(const REGISTER_SET<_min,_max,_num_sets>& b)
+    REGISTER_SET & operator|=(const REGISTER_SET & b)
     {
   
-        for (LEVEL_BASE::UINT32 i=0; i< _num_sets; i++)
-            _set[i] |= b._set[i];
+        for (UINT32 i=0; i< _NUM_SETS; i++) {_set[i] |= b._set[i];}
         return *this;
     }
 
-    int operator== (const REGISTER_SET<_min,_max,_num_sets>& b) const 
+    int operator== (const REGISTER_SET & b) const 
     {
-        for (LEVEL_BASE::UINT32 i=0; i< _num_sets; i++) if( _set[i] != b._set[i] ) return FALSE;
+        for (UINT32 i=0; i< _NUM_SETS; i++) {if( _set[i] != b._set[i] ) return FALSE;}
         return TRUE;
         
     }
     
-    int operator!= (const REGISTER_SET<_min,_max,_num_sets>& b) const 
+    int operator!= (const REGISTER_SET & b) const 
     {
-        for (LEVEL_BASE::UINT32 i=0; i< _num_sets; i++) if( _set[i] != b._set[i] ) return TRUE;
+        for (UINT32 i=0; i< _NUM_SETS; i++) {if( _set[i] != b._set[i] ) return TRUE;}
         return FALSE;
     }
 
-    REGISTER_SET<_min,_max,_num_sets> operator& (const REGISTER_SET<_min,_max,_num_sets>& b) const 
+    REGISTER_SET operator& (const REGISTER_SET & b) const 
     {
-        REGISTER_SET<_min,_max,_num_sets> c;
+        REGISTER_SET c;
   
-        for (LEVEL_BASE::UINT32 i=0; i< _num_sets; i++)
-            c._set[i] = _set[i] & b._set[i];
+        for (UINT32 i=0; i< _NUM_SETS; i++) {c._set[i] = _set[i] & b._set[i];}
         return c;
         
     }
 
-    REGISTER_SET<_min,_max,_num_sets> operator- (const REGISTER_SET<_min,_max,_num_sets>& b) const
+    REGISTER_SET & operator&= (const REGISTER_SET & b)
     {
-        REGISTER_SET<_min,_max,_num_sets> c;
   
-        for (LEVEL_BASE::UINT32 i=0; i< _num_sets; i++)
-            c._set[i] = _set[i] & ~b._set[i];
+        for (UINT32 i=0; i< _NUM_SETS; i++) {_set[i] &= b._set[i];}
+        return *this;
+    }
+
+    REGISTER_SET operator- (const REGISTER_SET & b) const
+    {
+        REGISTER_SET c;
+  
+        for (UINT32 i=0; i< _NUM_SETS; i++) {c._set[i] = _set[i] & ~b._set[i];}
         return c;
         
+    }
+
+    REGISTER_SET & operator-= (const REGISTER_SET & b)
+    {
+  
+        for (UINT32 i=0; i< _NUM_SETS; i++) {_set[i] &= ~b._set[i];}
+        return *this;
     }
 
     STATIC inline string PrintRange(REG start, REG stop)
     {
         if ( start == stop )
+        {
             return REG_StringShort( start );
+        }
         else
+        {
             return REG_StringShort( start ) + "-" + REG_StringShort( stop ) ;
+        }
     }
 
     string Dump () const
     {
         string s("{");
-        for (LEVEL_BASE::UINT32 i=0; i< _num_sets; i++)
+        for (UINT32 i=0; i< _NUM_SETS; i++)
         {
             if (i!=0) s += ",";
             s += hexstr(_set[i]);
@@ -271,9 +263,9 @@ template<LEVEL_BASE::UINT32 _min,
         string s;
     
         s += "{";
-        LEVEL_BASE::BOOL printed_range = FALSE;
+        BOOL printed_range = FALSE;
         
-        for (LEVEL_BASE::UINT32 i=_min; i<=_max; i++)
+        for (UINT32 i=_min; i<=_max; i++)
         {
             const REG reg = REG(i);
             
@@ -297,19 +289,22 @@ template<LEVEL_BASE::UINT32 _min,
     
         s += "{";
 
-        LEVEL_BASE::BOOL first = TRUE;
+        BOOL first = TRUE;
         
-        for (LEVEL_BASE::UINT32 i=_min; i<=_max; i++)
+        for (UINT32 i=_min; i<=_max; i++)
         {
             const REG reg = REG(i);
             
             if ( Contains(reg) ) 
             {
                 if (first)
+                {
                     first = FALSE;
+                }
                 else
+                {
                     s += ",";
-                    
+                }   
                 s += REG_StringShort(reg);
             }
         }

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -38,17 +38,15 @@ END_LEGAL */
 #include <fstream>
 #include <sstream>
 
-#define ISIMPOINT_MAX_THREADS 50
+#define ISIMPOINT_MAX_THREADS 160
 
 #include "filter.H"
 #include "skipper.H"
 #include "icount.H"
-#include "alarm.H"
-
-#include "parse_address_count.H"
-
-#include "control.H"
-#include "control_stats.H"
-
 #include "follow_child.H"
+
+extern "C"{
+#include "xed-interface.h"
+}
+
 #endif

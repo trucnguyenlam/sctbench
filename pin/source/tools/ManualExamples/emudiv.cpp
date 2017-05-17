@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -45,7 +45,7 @@ END_LEGAL */
 EXCEPT_HANDLING_RESULT GlobalHandler(THREADID threadIndex, EXCEPTION_INFO * pExceptInfo, 
                                       PHYSICAL_CONTEXT * pPhysCtxt, VOID *v)
 {
-    cout << "GlobalHandler: Caught unexpected exception. " << PIN_ExceptionToString(pExceptInfo) << endl;
+    cout << "GlobalHandler: Caught unexpected exception. " << PIN_ExceptionToString(pExceptInfo) << endl << flush;
     return EHR_UNHANDLED;
 }
 
@@ -59,8 +59,9 @@ EXCEPT_HANDLING_RESULT DivideHandler(THREADID tid, EXCEPTION_INFO * pExceptInfo,
         //Temporary work-around, Remove when Mantis #1986 is resolved
         string str = PIN_ExceptionToString(pExceptInfo);
         printf("GlobalHandler: Caught divide by zero exception. %s\n", str.c_str());
+        fflush(stdout);
 #else
-        cout << "GlobalHandler: Caught divide by zero exception. " << PIN_ExceptionToString(pExceptInfo) << endl;
+        cout << "GlobalHandler: Caught divide by zero exception. " << PIN_ExceptionToString(pExceptInfo) << endl << flush;
 #endif
         CONTEXT * appCtxt = (CONTEXT *)appContextArg;
         ADDRINT faultIp = PIN_GetContextReg(appCtxt, REG_INST_PTR);
@@ -139,7 +140,6 @@ VOID InstrumentDivide(INS ins, VOID* v)
                     IARG_END);
         INS_Delete(ins);
    }
-        
 }
 
 /* ===================================================================== */
@@ -149,7 +149,7 @@ VOID InstrumentDivide(INS ins, VOID* v)
 INT32 Usage()
 {
     cerr << "This tool emulates divide" << endl;
-    cerr << KNOB_BASE::StringKnobSummary() << endl;
+    cerr << KNOB_BASE::StringKnobSummary() << endl << flush;
     return -1;
 }
 

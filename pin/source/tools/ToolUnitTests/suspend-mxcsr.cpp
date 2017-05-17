@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -67,7 +67,7 @@ int main()
     }
 
     CONTEXT ctxt;
-    std::memset(&ctxt, sizeof(ctxt), 0);
+    std::memset(&ctxt, 0, sizeof(ctxt));
 
     // Must specify CONTEXT_CONTROL here to avoid Windows bug on Vista and earlier (?).
     // On those systems, the SetThreadContext() call below will try to write the CONTROL

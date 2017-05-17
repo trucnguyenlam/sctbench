@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -33,31 +33,32 @@ END_LEGAL */
 //
 
 #include "pin.H"
+#include <iostream>
+#include <fstream>
 #include <stdio.h>
 
 using namespace std;
 
-FILE * trace;
+KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool",
+    "o", "load_dummy.out", "specify file name");
+
+ofstream TraceFile;
 
 // Pin calls this function every time a new img is loaded
 VOID ImageLoad(IMG img, VOID *v)
 {
-    fprintf(trace, "%s loaded\n", IMG_Name(img).c_str());
-    fflush(trace);
+    TraceFile << IMG_Name(img).c_str() << " loaded" << endl;
 }
 
 // Pin calls this function every time an img is unloaded
 VOID ImageUnload(IMG img, VOID *v)
 {
-    fprintf(trace, "%s unloaded\n", IMG_Name(img).c_str());
-    fflush(trace);
+    TraceFile << IMG_Name(img).c_str() << " unloaded" << endl;;
 }
 
 // argc, argv are the entire command line, including pin -t <toolname> -- ...
 int main(int argc, char * argv[])
 {
-    trace = fopen("imageload.out", "w");
-
     // Initialize symbol processing
     PIN_InitSymbols();
     
@@ -66,6 +67,8 @@ int main(int argc, char * argv[])
     {
         return 1;
     }
+
+    TraceFile.open(KnobOutputFile.Value().c_str());
 
     // Register ImageLoad to be called when an image is loaded
     IMG_AddInstrumentFunction(ImageLoad, 0);
@@ -76,11 +79,11 @@ int main(int argc, char * argv[])
     // Start the program, never returns
     if (PIN_IsProbeMode()) 
     {
-        fprintf(trace, "Probe mode\n");
         PIN_StartProgramProbed();
-    } else 
+    }
+    
+    else 
     {
-        fprintf(trace, "JIT mode\n");
         PIN_StartProgram();
     }
 

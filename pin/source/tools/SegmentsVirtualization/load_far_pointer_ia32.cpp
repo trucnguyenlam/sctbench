@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -30,10 +30,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
 #include <stdio.h>
 #include <errno.h>
+#if defined(TARGET_ANDROID)
+#include <sys/syscall.h>
+#else
 #include <syscall.h>
+#endif
 #include <unistd.h> 
 #include <asm/ldt.h>
 #include <string.h> 
+
+#if defined(TARGET_ANDROID)
+#define SYS_modify_ldt __NR_modify_ldt
+#endif
 
 struct FarPointer
 {

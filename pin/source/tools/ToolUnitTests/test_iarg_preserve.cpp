@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -40,6 +40,11 @@ namespace WIND
 #else
 #define EXPORT_CSYM extern "C" 
 #endif
+#ifdef TARGET_WINDOWS
+#define ASMNAME(name)
+#else
+#define ASMNAME(name) asm(name)
+#endif
 
 #if defined(__cplusplus)
 #define EXTERN_C extern "C"
@@ -47,11 +52,11 @@ namespace WIND
 #define EXTERN_C
 #endif
 
-extern "C" BOOL ProcessorSupportsAvx();
-EXTERN_C VOID FldzToTop3();
-EXTERN_C VOID SetXmmRegsToZero();
-EXTERN_C VOID SetIntRegsToZero();
-EXTERN_C void UnMaskZeroDivideInMxcsr();
+extern "C" BOOL ProcessorSupportsAvx() ASMNAME("ProcessorSupportsAvx");
+EXTERN_C VOID FldzToTop3() ASMNAME("FldzToTop3");
+EXTERN_C VOID SetXmmRegsToZero() ASMNAME("SetXmmRegsToZero");
+EXTERN_C VOID SetIntRegsToZero() ASMNAME("SetIntRegsToZero");
+EXTERN_C void UnMaskZeroDivideInMxcsr() ASMNAME("UnMaskZeroDivideInMxcsr");
 
 EXTERN_C double var1;
 EXTERN_C double var2;

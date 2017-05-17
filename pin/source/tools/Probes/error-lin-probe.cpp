@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -39,12 +39,9 @@ END_LEGAL */
 // in libc and libpthread point to the same actual location (in a TLS),
 // but this assumption is fragile and may change at some time int he future.
 //
-// On FreeBSD, the function is called __error(). It suffers from the same problem
-// (but the threading library in FreeBSD is libthr). The problem is more severe
-// on FreeBSD because the function in libc and in libthr don't point to the same
-// location (libthr point to TLS and libc to a static variable).  Also, on FreeBSD,
-// libc and libpthr lack symbols, so the address of the function cannot be found.
-// This tool is not supported on FreeBSD.
+// In Android, the function is called __errno. Pthreads is baked into bionic,
+// So we don't have the same issues that we have in Linux.
+//
 
 #include "pin.H"
 #include <iostream>
@@ -52,6 +49,12 @@ END_LEGAL */
 #include <errno.h>
 
 using namespace std;
+
+#if defined(TARGET_ANDROID)
+#define ERRNO_SYMBOL ("__errno")
+#else
+#define ERRNO_SYMBOL ("__errno_location")
+#endif
 
 typedef ADDRINT * (*ERRNO_LOCATION_FUNPTR)();
 ADDRINT pf_errno_location = 0;
@@ -77,7 +80,7 @@ VOID ToolCheckError()
 VOID ImageLoad(IMG img, VOID *v)
 {
 
-    RTN errno_location_rtn = RTN_FindByName(img, "__errno_location");
+    RTN errno_location_rtn = RTN_FindByName(img, ERRNO_SYMBOL);
     if (RTN_Valid(errno_location_rtn))
     {
         pf_errno_location = RTN_Address(errno_location_rtn);

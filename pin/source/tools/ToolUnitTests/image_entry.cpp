@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -36,7 +36,7 @@ END_LEGAL */
 
 /* ===================================================================== */
 /*! @file
- * Replace main's executebale entry point and kernel32.dll entry point
+ * Replace main's executable entry point and DLL entry point
  */
 
 #include "pin.H"
@@ -62,8 +62,8 @@ KNOB<BOOL> KnobVerbose(KNOB_MODE_WRITEONCE, "pintool",
 
 INT32 Usage()
 {
-    cerr << "This pin tool replaces main's executebale entry point \
-             and kernel32.dll entry point." << endl;
+    cerr << "This pin tool replaces main's executable entry point \
+             and DLL entry point." << endl;
     cerr << KNOB_BASE::StringKnobSummary();
     cerr << endl;
     cerr.flush();
@@ -91,12 +91,48 @@ ofstream traceFile;
 PIN_LOCK lock;
 //counter of number of exe entry point entrances
 UINT32 exeEntryCounter = 0;
-//counter of number of kernel32 entry point entrances, reason = THREAD_ATTACH
-UINT32 kernel32EntryCounterThreadAttach = 0;
-//counter of number of kernel32 entry point entrances, reason = THREAD_DETACH
-UINT32 kernel32EntryCounterThreadDetach = 0;
+//counter of number of DLL entry point entrances, reason = THREAD_ATTACH
+UINT32 dllEntryCounterThreadAttach = 0;
+//counter of number of DLL entry point entrances, reason = THREAD_DETACH
+UINT32 dllEntryCounterThreadDetach = 0;
 //this variable is set to 1 when the application start callback is called
 static volatile int isAppStarted = 0;
+
+/* ===================================================================== */
+// Fini code
+/* ===================================================================== */
+VOID CoreFini()
+{
+    traceFile << "exeEntryCounter = " << exeEntryCounter << endl;
+    traceFile << "dllEntryCounterThreadAttach = " << dllEntryCounterThreadAttach << endl;
+    traceFile << "dllEntryCounterThreadDetach = " << dllEntryCounterThreadDetach << endl;
+    traceFile.close();
+}
+
+// Do not use destructor of static object to write to trace file.
+// Invocation of destructors of static objects in a Pin tool DLL is (still) not guaranteed
+// in probe mode due to new Pin image loader limitations.
+/*
+class PROBE_FINI_OBJECT
+{
+  public:
+    ~PROBE_FINI_OBJECT()
+    {
+        if(isAppStarted == 0) {traceFile << "AppStart() was not called" << endl;}
+        CoreFini();
+    }
+};
+*/
+
+VOID Fini(INT32 code, VOID *v)
+{
+    CoreFini();
+}
+
+VOID AppStart(VOID *v)
+{
+    isAppStarted = 1;
+}
 
 /* ===================================================================== */
 /* Main executable entry point (before - JIT / replacement - PROBE) */
@@ -104,13 +140,13 @@ static volatile int isAppStarted = 0;
 //Used in JIT mode
 void BeforeExeEntry()
 {
-    GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     exeEntryCounter++;
     if(KnobVerbose)
     {
         traceFile << "In exe entry point, threadid = " << PIN_GetTid() << endl;
     }
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 //Used in PROBE mode
@@ -118,56 +154,61 @@ int MyExeEntry(
     CONTEXT * context,
     EXE_ENTRY_POINT orig_exeEntry )
 {
-    GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     exeEntryCounter++;
     if(KnobVerbose)
     {
         traceFile << "In exe entry point, threadid = " << PIN_GetTid() << endl;
     }
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 
     return orig_exeEntry();  
 }
 
 /* ===================================================================== */
-/* kernel32 entry point replacement */
+/* DLL entry point replacement */
 /* ===================================================================== */
-WIND::BOOLEAN WINAPI MyKernel32Entry(
+WIND::BOOLEAN WINAPI MyDllEntry(
     CONTEXT * context,
-    DLL_ENTRY_POINT orig_kernel32Entry,
+    DLL_ENTRY_POINT orig_dllEntry,
     WIND::HINSTANCE hDllHandle, 
     WIND::DWORD     nReason,    
     WIND::LPVOID    Reserved )
 {
-    GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     if(nReason == DLL_THREAD_ATTACH)
     {
-        kernel32EntryCounterThreadAttach++;
-    } 
+        dllEntryCounterThreadAttach++;
+    }
     else if(nReason == DLL_THREAD_DETACH)
     {
-        kernel32EntryCounterThreadDetach++;
-    } 
+        dllEntryCounterThreadDetach++;
+    }
     if(KnobVerbose)
     {
-        traceFile << "In kernel32 entry point,  threadid = " << PIN_GetTid() << 
+        traceFile << "In DLL entry point,  threadid = " << PIN_GetTid() <<
                      ", dll handle = " << hDllHandle << ", reason  = " << nReason << endl;
     }
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 
     WIND::BOOLEAN ret;
     if (PIN_IsProbeMode())
     {
-        ret = orig_kernel32Entry(hDllHandle, nReason, Reserved);
+        ret = orig_dllEntry(hDllHandle, nReason, Reserved);
+        if (nReason == DLL_PROCESS_DETACH)
+        {
+            // It is called at late exit stage when all threads but current are finished.
+            CoreFini();
+        }
     } else 
     {
         //FIXME : Use PIN_CallApplicationFunction when it possible
         //        (Fix for mantis 1122/1123)
 #if 1
-        ret = orig_kernel32Entry(hDllHandle, nReason, Reserved);  
+        ret = orig_dllEntry(hDllHandle, nReason, Reserved);  
 #else
         PIN_CallApplicationFunction( context, PIN_ThreadId(),
-                                 CALLINGSTD_STDCALL, AFUNPTR(orig_kernel32Entry),
+                                 CALLINGSTD_STDCALL, AFUNPTR(orig_dllEntry), NULL,
                                  PIN_PARG(WIND::BOOLEAN),   &ret,
                                  PIN_PARG(WIND::HINSTANCE), hDllHandle, 
                                  PIN_PARG(WIND::DWORD) ,    nReason,    
@@ -281,38 +322,7 @@ VOID ReplaceDllEntryPoint(IMG img, const CHAR * dllName, AFUNPTR replacementFunc
 VOID ImageLoad(IMG img, VOID *v)
 {
     ReplaceExeEntryPoint(img);
-    ReplaceDllEntryPoint(img, "kernel32", AFUNPTR(MyKernel32Entry));
-}
-
-/* ===================================================================== */
-// Fini code
-/* ===================================================================== */
-VOID CoreFini()
-{
-    traceFile << "exeEntryCounter = " << exeEntryCounter << endl;
-    traceFile << "kernel32EntryCounterThreadAttach = " << kernel32EntryCounterThreadAttach << endl;
-    traceFile << "kernel32EntryCounterThreadDetach = " << kernel32EntryCounterThreadAttach << endl;
-    traceFile.close();
-}
-
-class PROBE_FINI_OBJECT
-{
-  public:
-    ~PROBE_FINI_OBJECT()
-    {
-        if(isAppStarted == 0) {traceFile << "AppStart() was not called" << endl;}
-        CoreFini();
-    }
-};
-
-VOID Fini(INT32 code, VOID *v)
-{
-    CoreFini();
-}
-
-VOID AppStart(VOID *v)
-{
-    isAppStarted = 1;
+    ReplaceDllEntryPoint(img, "win_tls_dll.dll", AFUNPTR(MyDllEntry));
 }
 
 /* ===================================================================== */
@@ -331,14 +341,15 @@ int main(int argc, CHAR *argv[])
     traceFile << hex;
     traceFile.setf(ios::showbase);
 
-    InitLock(&lock);
+    PIN_InitLock(&lock);
     
     IMG_AddInstrumentFunction(ImageLoad, 0);
     
     if (PIN_IsProbeMode()) 
     {
         PIN_AddApplicationStartFunction(AppStart, 0);
-        static PROBE_FINI_OBJECT finiObject;
+        // Do not define static object to use its destructor. See earlier related remark.
+        //static PROBE_FINI_OBJECT finiObject;
         PIN_StartProgramProbed();
     } else 
     {

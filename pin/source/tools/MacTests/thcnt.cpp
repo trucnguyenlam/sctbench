@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -32,7 +32,7 @@ END_LEGAL */
 #include <set>
 #include "pin.H"
 
-// On Mac OS we have workq threads that might be reused.
+// On OS X* we have workq threads that might be reused.
 // This tool is used to count the number of system threads
 // and compare it to the number of "new" threads that have
 // been seen by pin.
@@ -53,7 +53,8 @@ static OSTID_MAP tidMap;
 
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_InitLock(&lock);
+    PIN_GetLock(&lock, threadid+1);
     numThreads++;
     if (threadid > maxThreads)
         maxThreads = threadid;
@@ -66,12 +67,13 @@ VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
         numSysThreads++;
         tidMap.insert(oid);
     }
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 // This function is called when the application exits
 VOID Fini(INT32 code, VOID *v)
 {
+    ASSERT(numThreads > 1, "Pin didn't catch any workq threads!");
     // Write to a file since std stream might be closed by the application
     FILE *fp = fopen(KnobOutputFile.Value().c_str(), "w");
     if (fp == NULL) {

@@ -45,7 +45,6 @@ using namespace LEVEL_VM;
 #if defined(TARGET_LINUX)
 #include "image_elf.PH"
 #include "symbol_elf.PH"
-#include "debug_elf.PH"
 #include "probe_instrument.PH"
 #elif defined(TARGET_MAC)
 #include "image_macho.PH"
@@ -59,7 +58,6 @@ using namespace LEVEL_VM;
 #elif defined(TARGET_BSD)
 #include "image_elf.PH"
 #include "symbol_elf.PH"
-#include "debug_elf.PH"
 #include "probe_instrument.PH"
 #else
 #error "Unknown OS"

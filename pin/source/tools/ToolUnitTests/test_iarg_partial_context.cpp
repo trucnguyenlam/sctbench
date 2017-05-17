@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -946,7 +946,7 @@ VOID REPLACE_ReplacedX87Regs(CONTEXT *context, THREADID tid, AFUNPTR originalFun
     printf("TOOL Calling replaced ReplacedX87Regs()\n");
     fflush (stdout);
     PIN_CallApplicationFunction(ctxt, tid, CALLINGSTD_DEFAULT, 
-                                originalFunction, PIN_PARG_END());
+                                originalFunction, NULL, PIN_PARG_END());
     printf("TOOL Returned from replaced ReplacedX87Regs()\n");
     fflush (stdout);
 

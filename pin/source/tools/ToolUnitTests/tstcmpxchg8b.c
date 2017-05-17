@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -34,11 +34,17 @@ END_LEGAL */
 # include <stdlib.h>
 #endif
 
-extern int cmpxchg8_base(int *buff);
-extern int cmpxchg8_plus8(int *buff);
-extern int cmpxchg8_esp(int *buff);
+#ifdef TARGET_WINDOWS
+#define ASMNAME(name)
+#else
+#define ASMNAME(name) asm(name)
+#endif
 
-main()
+extern int cmpxchg8_base(int *buff) ASMNAME("cmpxchg8_base");
+extern int cmpxchg8_plus8(int *buff) ASMNAME("cmpxchg8_plus8");
+extern int cmpxchg8_esp(int *buff) ASMNAME("cmpxchg8_esp");
+
+int main()
 {
     int arr[4];
     int res;

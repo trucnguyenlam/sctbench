@@ -23,19 +23,19 @@ goto :runMake
 
 :setIclEnv32
 if "%ICPP_COMPILER10%"=="" goto :checkIcl11Env32
-if not exist "%ICPP_COMPILER10%\IA32\Bin\iclvars.bat" goto :runMake
-call "%ICPP_COMPILER10%\IA32\Bin\iclvars.bat"
+if not exist "%ICPP_COMPILER10%\bin\iclvars.bat" goto :runMake
+call "%ICPP_COMPILER10%\bin\iclvars.bat" ia32 vs2010
 goto runMake
 :checkIcl11Env32
 if "%ICPP_COMPILER11%"=="" goto :runMake
 if not exist "%ICPP_COMPILER11%\bin\ia32\iclvars_ia32.bat" goto :runMake
-call "%ICPP_COMPILER11%\bin\ia32\iclvars_ia32.bat"
+call "%ICPP_COMPILER11%\bin\ia32\iclvars_ia32.bat" ia32 vs2010
 goto runMake
 
 :setIclEnv64
 if "%ICPP_COMPILER10%"=="" goto :checkIcl11Env64
 if not exist "%ICPP_COMPILER10%\EM64T\Bin\iclvars.bat" goto :runMake
-call "%ICPP_COMPILER10%\EM64T\Bin\iclvars.bat"
+call "%ICPP_COMPILER10%\EM64T\Bin\iclvars.bat" intel64 vs2010
 goto runMake
 :checkIcl11Env64
 if "%ICPP_COMPILER11%"=="" goto :runMake

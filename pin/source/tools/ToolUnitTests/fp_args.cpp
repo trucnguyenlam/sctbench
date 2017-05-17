@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -71,7 +71,7 @@ int fp_func3_wrapper( CONTEXT * ctxt, AFUNPTR fp_func3_ptr, int i1, float f2, in
     */
     int f2_int = *(int *)(&f2);
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, fp_func3_ptr,
+                                 CALLINGSTD_DEFAULT, fp_func3_ptr, NULL,
                                  PIN_PARG(int), &res,
                                  PIN_PARG(int), i1,
                                  PIN_PARG(int), f2_int,
@@ -91,7 +91,7 @@ int fp_func3_wrapper( CONTEXT * ctxt, AFUNPTR fp_func3_ptr, int i1, float f2, in
 
     // all fp args are in xmm regs in context - do not pass any args to the app function
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, fp_func3_ptr,
+                                 CALLINGSTD_DEFAULT, fp_func3_ptr, NULL,
                                  PIN_PARG(int), &res,
                                  PIN_PARG(int), i1,
                                  PIN_PARG(int), i3,
@@ -126,7 +126,7 @@ float fp_func4_wrapper( CONTEXT * ctxt, AFUNPTR fp_ptr, double d1, float f2, int
     */
     int f2_int = *(int *)(&f2);
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, fp_ptr,
+                                 CALLINGSTD_DEFAULT, fp_ptr, NULL,
                                  PIN_PARG(float), &resf,
                                  PIN_PARG(int), d_param1->_d0, // lower part of d1
                                  PIN_PARG(int), d_param1->_d1, // upper part of d1
@@ -154,7 +154,7 @@ float fp_func4_wrapper( CONTEXT * ctxt, AFUNPTR fp_ptr, double d1, float f2, int
 
     // all fp args are in xmm regs in context - only pass the int args to the app function
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, fp_ptr,
+                                 CALLINGSTD_DEFAULT, fp_ptr, NULL,
                                  PIN_PARG(float), &resf,
                                  PIN_PARG(int), i3,
                                  PIN_PARG_END() );
@@ -182,7 +182,7 @@ double fp_func1_wrapper( CONTEXT * ctxt, AFUNPTR fp_ptr, double d1)
 
 
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, fp_ptr,
+                                 CALLINGSTD_DEFAULT, fp_ptr, NULL,
                                  PIN_PARG(double), &resd,
                                  PIN_PARG(int), d_param1->_d0,
                                  PIN_PARG(int), d_param1->_d1,
@@ -203,7 +203,7 @@ double fp_func1_wrapper( CONTEXT * ctxt, AFUNPTR fp_ptr, double d1)
     fflush(stdout);
     // all fp args are in xmm regs in context - do not pass any args to the app function
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, fp_ptr,
+                                 CALLINGSTD_DEFAULT, fp_ptr, NULL,
                                  PIN_PARG(double), &resd,
                                  PIN_PARG_END() );
 

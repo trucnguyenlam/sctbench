@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -115,7 +115,7 @@ VOID Instruction(INS ins, VOID *v)
 VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,
                   UINT64 numElements, VOID *v)
 {
-    GetLock(&fileLock, 1);
+    PIN_GetLock(&fileLock, 1);
 
     /* Check that the values are the ones we expect. */
     struct bufferEntry * b = (struct bufferEntry *)buf;
@@ -136,7 +136,7 @@ VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,
         fprintf(outfile, "Test failed\n");
      }
     fflush(outfile);
-    ReleaseLock(&fileLock);
+    PIN_ReleaseLock(&fileLock);
 
     return buf;
 }
@@ -150,10 +150,10 @@ VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,
  */
 VOID Fini(INT32 code, VOID *v)
 {
-    GetLock(&fileLock, 1);
+    PIN_GetLock(&fileLock, 1);
     fprintf(outfile, "eof\n");
     fclose(outfile);
-    ReleaseLock(&fileLock);
+    PIN_ReleaseLock(&fileLock);
 }
 
 void ThreadStart(THREADID tid, CONTEXT * context, int flags, void * v)
@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    InitLock(&fileLock);
+    PIN_InitLock(&fileLock);
 
     // add an instrumentation function
     INS_AddInstrumentFunction(Instruction, 0);

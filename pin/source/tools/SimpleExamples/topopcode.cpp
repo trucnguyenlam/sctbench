@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -92,7 +92,7 @@ INT32 Usage()
 /* INDEX HELPERS */
 /* ===================================================================== */
 
-const UINT32 MAX_INDEX = 4096;       // enough even for the IA-64 architecture
+const UINT32 MAX_INDEX = 4096;
 const UINT32 INDEX_SPECIAL =  3000;
 const UINT32 MAX_MEM_SIZE = 512;
 

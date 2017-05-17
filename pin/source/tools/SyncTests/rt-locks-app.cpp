@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -49,18 +49,26 @@ END_LEGAL */
 #include <iostream>
 #include <cstdlib>
 #include <pthread.h>
+#if !defined(TARGET_ANDROID)
 #include <sched.h>
+#endif
 #include <unistd.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/syscall.h>
-
+#if defined(TARGET_ANDROID)
+#include <android_sched.h>
+#endif
 
 // The number of times that the scheduler thread tries to lower the priority
 // of the worker thread.  The test exits with success if we can complete this
 // many iterations without deadlock.
 //
 const unsigned long NUM_SCHEDULES = 100;
+
+#ifndef SYS_gettid
+#define SYS_gettid __NR_gettid
+#endif
 
 enum PRIORITY
 {

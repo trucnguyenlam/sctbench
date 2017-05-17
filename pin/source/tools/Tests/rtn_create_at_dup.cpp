@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -29,10 +29,10 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
 /*!
- * This is a test for mantis 2575.
+ * This is a test for mantis 2575 and was updated for Mantis 3116.
  *
- * This tests verifies that RTN_CreateAt returns RTN_Invalid rather than crashing when
- * used on an address which already has an RTN. See Mantis 2575 for more details.
+ * This tests verifies that RTN_CreateAt replaces that RTN when used on an address
+ * which already has an RTN. See Mantis 3116 for more details.
  *
  */
 
@@ -55,9 +55,11 @@ static VOID ImageLoad(IMG img, VOID * v) {
             if (!RTN_Valid(rtn)) continue;
 
             // There is already an RTN object associated with this address so RTN_CreateAt
-            // should return RTN_Invalid.
+            // should replace this RTN
             //
-            ASSERT(RTN_CreateAt(RTN_Address(rtn), "NEWNAME") == RTN_Invalid(), "FAILED");
+            string oldName = RTN_Name(rtn);
+            rtn = RTN_CreateAt(RTN_Address(rtn), "NEWNAME");
+            ASSERT(oldName != RTN_Name(rtn), "FAILED");
         }
     }
 }

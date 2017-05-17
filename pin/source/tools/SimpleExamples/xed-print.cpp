@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -92,7 +92,8 @@ VOID use_xed(ADDRINT pc) {
         // set the runtime adddress for disassembly 
         xed_uint64_t runtime_address = static_cast<xed_uint64_t>(pc); 
 
-        xed_decoded_inst_dump_intel_format(&xedd, buf, 2048, runtime_address);
+        xed_format_context(XED_SYNTAX_INTEL, &xedd,
+                           buf, 2048, runtime_address, 0, 0);
         *out << buf << endl;
     }
 

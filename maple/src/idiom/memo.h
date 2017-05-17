@@ -86,9 +86,9 @@ class Memo {
   void Save(const std::string &db_name, StaticInfo *sinfo);
 
  protected:
-  typedef std::tr1::unordered_map<iRoot *, iRootInfo *> iRootInfoMap;
-  typedef std::tr1::unordered_set<iRootInfo *> iRootInfoSet;
-  typedef std::tr1::unordered_map<iRootInfo *, int> CandidateMap;
+  typedef std::unordered_map<iRoot *, iRootInfo *> iRootInfoMap;
+  typedef std::unordered_set<iRootInfo *> iRootInfoSet;
+  typedef std::unordered_map<iRootInfo *, int> CandidateMap;
 
   iRootInfo *GetiRootInfo(iRoot *iroot, bool locking);
   iRootInfo *FindiRootInfo(iRoot *iroot, bool locking);

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -37,6 +37,11 @@ END_LEGAL */
 #include <string.h>
 #include "pin.H"
 
+#ifdef TARGET_WINDOWS
+#define ASMNAME(name)
+#else
+#define ASMNAME(name) asm(name)
+#endif
 
 struct REGS16
 {
@@ -68,10 +73,10 @@ static bool TestPopA16();
 static bool TestPushA32();
 static bool TestPopA32();
 
-extern "C" void DoPushA16(const REGS16 *, REGS16 *, UINT16 *);
-extern "C" void DoPopA16(const REGS16 *, REGS16 *);
-extern "C" void DoPushA32(const REGS32 *, REGS32 *, UINT32 *);
-extern "C" void DoPopA32(const REGS32 *, REGS32 *);
+extern "C" void DoPushA16(const REGS16 *, REGS16 *, UINT16 *) ASMNAME("DoPushA16");
+extern "C" void DoPopA16(const REGS16 *, REGS16 *) ASMNAME("DoPopA16");
+extern "C" void DoPushA32(const REGS32 *, REGS32 *, UINT32 *) ASMNAME("DoPushA32");
+extern "C" void DoPopA32(const REGS32 *, REGS32 *) ASMNAME("DoPopA32");
 
 
 int main(int argc, char * argv[])

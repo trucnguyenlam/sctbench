@@ -1,40 +1,40 @@
-//Groups: @ingroup\s+(API_REF|KNOBS|IMG_BASIC_API|INS_BASIC_API|INS_INST_API|INS_BASIC_API_GEN_IA32|INS_BASIC_API_IA32|INS_MOD_API_GEN_IA32|SEC_BASIC_API|RTN_BASIC_API|REG_BASIC_API|REG_CPU_GENERIC|REG_CPU_IA32|TRACE_BASIC_API|BBL_BASIC_API|SYM_BASIC_API|MISC_PRINT|MISC_PARSE|KNOB_API|KNOB_BASIC|KNOB_PRINT|LOCK|PIN_CONTROL|TRACE_VERSION_API|BUFFER_API|PROTO_API|PIN_PROCESS_API|PIN_THREAD_API|PIN_SYSCALL_API|WINDOWS_SYSCALL_API_UNDOC|DEBUG_API|ERROR_FILE_BASIC|TYPE_BASE|INSTLIB|ALARM|CODECACHE_API|CHILD_PROCESS_API|UTILS|MISC|CONTEXT_API|PHYSICAL_CONTEXT_API|REGVAL_API|EXCEPTION_API|APPDEBUG_API|STOPPED_THREAD_API|BUFFER_API|PROTO|INST_ARGS|DEPRECATED_PIN_API|INTERNAL_EXCEPTION_PRIVATE_UNDOCUMENTED|PIN_THREAD_PRIVATE|CHILD_PROCESS_INTERNAL|BBL_BASIC|ROGUE_BASIC_API|MESSAGE_TYPE|MESSAGE_BASIC|ERRFILE|MISC_BASIC|ITC_INST_API|CONTEXT_API_UNDOC|EXCEPTION_API_UNDOC|UNDOCUMENTED_PIN_API|OPIN|TRACE_VERSIONS
+//Groups: @ingroup\s+(API_REF|KNOBS|IMG_BASIC_API|INS_BASIC_API|INS_INST_API|INS_BASIC_API_GEN_IA32|INS_BASIC_API_IA32|INS_MOD_API_GEN_IA32|SEC_BASIC_API|RTN_BASIC_API|REG_BASIC_API|REG_CPU_GENERIC|REG_CPU_IA32|TRACE_BASIC_API|BBL_BASIC_API|SYM_BASIC_API|MISC_PRINT|MISC_PARSE|KNOB_API|KNOB_BASIC|KNOB_PRINT|LOCK|PIN_CONTROL|TRACE_VERSION_API|BUFFER_API|PROTO_API|PIN_PROCESS_API|PIN_THREAD_API|PIN_SYSCALL_API|WINDOWS_SYSCALL_API_UNDOC|DEBUG_API|ERROR_FILE_BASIC|TYPE_BASE|INSTLIB|ALARM|CODECACHE_API|CHILD_PROCESS_API|UTILS|MISC|CONTEXT_API|PHYSICAL_CONTEXT_API|PIN_CALLBACKS|EXCEPTION_API|APPDEBUG_API|STOPPED_THREAD_API|BUFFER_API|PROTO|INST_ARGS|DEPRECATED_PIN_API|INTERNAL_EXCEPTION_PRIVATE_UNDOCUMENTED|PIN_THREAD_PRIVATE|CHILD_PROCESS_INTERNAL|BBL_BASIC|ROGUE_BASIC_API|MESSAGE_TYPE|MESSAGE_BASIC|ERRFILE|MISC_BASIC|ITC_INST_API|CONTEXT_API_UNDOC|EXCEPTION_API_UNDOC|UNDOCUMENTED_PIN_API|OPIN|TRACE_VERSIONS
 /* PIN API */
 
 /* THIS FILE IS AUTOMAGICALLY GENERATED - DO NOT CHANGE DIRECTLY*/
 
 
-extern IMG IMG_Next(IMG x);
+extern IMG IMG_Next(IMG img);
 
                                                                   /* DO NOT EDIT */
-extern IMG IMG_Prev(IMG x);
+extern IMG IMG_Prev(IMG img);
 
                                                                   /* DO NOT EDIT */
 extern IMG IMG_Invalid();
 
                                                                   /* DO NOT EDIT */
-extern BOOL IMG_Valid(IMG x);
+extern BOOL IMG_Valid(IMG img);
 
                                                                   /* DO NOT EDIT */
-extern SEC IMG_SecHead(IMG x);
+extern SEC IMG_SecHead(IMG img);
 
                                                                   /* DO NOT EDIT */
-extern SEC IMG_SecTail(IMG x);
+extern SEC IMG_SecTail(IMG img);
 
                                                                   /* DO NOT EDIT */
-extern SYM IMG_RegsymHead(IMG x);
+extern SYM IMG_RegsymHead(IMG img);
 
                                                                   /* DO NOT EDIT */
-extern ADDRINT IMG_Entry(IMG x);
+extern ADDRINT IMG_Entry(IMG img);
 
                                                                   /* DO NOT EDIT */
-extern const string& IMG_Name(IMG x);
+extern const string& IMG_Name(IMG img);
 
                                                                   /* DO NOT EDIT */
-extern ADDRINT IMG_Gp(IMG x);
+extern ADDRINT IMG_Gp(IMG img);
 
                                                                   /* DO NOT EDIT */
-extern ADDRINT IMG_LoadOffset(IMG x);
+extern ADDRINT IMG_LoadOffset(IMG img);
 
                                                                   /* DO NOT EDIT */
 extern ADDRINT IMG_LowAddress(IMG img);
@@ -49,7 +49,7 @@ extern  ADDRINT IMG_StartAddress(IMG img);
 extern USIZE IMG_SizeMapped(IMG img);
 
                                                                   /* DO NOT EDIT */
-extern IMG_TYPE IMG_Type(IMG x);
+extern IMG_TYPE IMG_Type(IMG img);
 
                                                                   /* DO NOT EDIT */
 extern BOOL IMG_IsMainExecutable(IMG x);
@@ -58,13 +58,25 @@ extern BOOL IMG_IsMainExecutable(IMG x);
 extern BOOL IMG_IsStaticExecutable(IMG x);
 
                                                                   /* DO NOT EDIT */
-extern IMG SEC_Img(SEC x);
+extern UINT32 IMG_NumRegions(IMG img);
 
                                                                   /* DO NOT EDIT */
-extern SEC SEC_Next(SEC x);
+extern ADDRINT IMG_RegionHighAddress(IMG img, UINT32 n);
 
                                                                   /* DO NOT EDIT */
-extern SEC SEC_Prev(SEC x);
+extern ADDRINT IMG_RegionLowAddress(IMG img, UINT32 n);
+
+                                                                  /* DO NOT EDIT */
+extern IMG IMG_CreateAt(const char* filename, ADDRINT start, USIZE size, ADDRINT loadOffset, BOOL mainExecutable);
+
+                                                                  /* DO NOT EDIT */
+extern IMG SEC_Img(SEC sec);
+
+                                                                  /* DO NOT EDIT */
+extern SEC SEC_Next(SEC sec);
+
+                                                                  /* DO NOT EDIT */
+extern SEC SEC_Prev(SEC sec);
 
                                                                   /* DO NOT EDIT */
 extern SEC SEC_Invalid();
@@ -73,22 +85,22 @@ extern SEC SEC_Invalid();
 extern BOOL SEC_Valid(SEC x);
 
                                                                   /* DO NOT EDIT */
-extern RTN SEC_RtnHead(SEC x);
+extern RTN SEC_RtnHead(SEC sec);
 
                                                                   /* DO NOT EDIT */
-extern RTN SEC_RtnTail(SEC x);
+extern RTN SEC_RtnTail(SEC sec);
 
                                                                   /* DO NOT EDIT */
-extern const string& SEC_Name(SEC x);
+extern const string& SEC_Name(SEC sec);
 
                                                                   /* DO NOT EDIT */
-extern SEC_TYPE SEC_Type(SEC x);
+extern SEC_TYPE SEC_Type(SEC sec);
 
                                                                   /* DO NOT EDIT */
 extern BOOL SEC_Mapped(SEC sec);
 
                                                                   /* DO NOT EDIT */
-extern const VOID *SEC_Data(SEC x);
+extern const VOID *SEC_Data(SEC sec);
 
                                                                   /* DO NOT EDIT */
 extern SEC RTN_Sec(RTN x);
@@ -121,13 +133,16 @@ extern PIN_DEPRECATED_API BBL RTN_BblTail(RTN x);
 extern const string& RTN_Name(RTN x);
 
                                                                   /* DO NOT EDIT */
+extern BOOL RTN_IsArtificial(RTN x);
+
+                                                                  /* DO NOT EDIT */
 extern SYM RTN_Sym(RTN x);
 
                                                                   /* DO NOT EDIT */
 extern AFUNPTR RTN_Funptr(RTN x);
 
                                                                   /* DO NOT EDIT */
-inline INT32 RTN_Id(RTN x) { return x.q();}
+inline UINT32 RTN_Id(RTN x) { return x.q();}
 
                                                                   /* DO NOT EDIT */
 /* DO NOT EDIT */
@@ -196,7 +211,13 @@ extern BOOL SYM_Valid(SYM x);
 extern BOOL SYM_Dynamic(SYM x);
 
                                                                   /* DO NOT EDIT */
-extern BOOL SYM_IFunc(SYM x);
+extern BOOL SYM_GeneratedByPin(SYM x);
+
+                                                                  /* DO NOT EDIT */
+extern BOOL SYM_IFuncImplementation(SYM x);
+
+                                                                  /* DO NOT EDIT */
+extern BOOL SYM_IFuncResolver(SYM x);
 
                                                                   /* DO NOT EDIT */
 extern ADDRINT SYM_Value(SYM x);
@@ -218,7 +239,7 @@ enum UNDECORATION {
 
                                                                   /* DO NOT EDIT */
 enum SYMBOL_INFO_MODE {
-    NO_SYMBOLS     = 0,       ///< No symbols required 
+    NO_SYMBOLS     = 0,       ///< No symbols required
     EXPORT_SYMBOLS = (1<<0),  ///< Only symbols taken from export table are provided (Windows only)
     DEBUG_SYMBOLS  = (1<<1),  ///< Debug symbols (Windows only, currently implemented as DEBUG_OR_EXPORT_SYMBOLS)
     IFUNC_SYMBOLS  = (1<<2),  ///< IFUNC symbols (Linux only)
@@ -236,13 +257,13 @@ extern IMG IMG_FindImgById(UINT32 id);
 extern IMG IMG_FindByAddress(ADDRINT address);
 
                                                                   /* DO NOT EDIT */
-extern VOID RTN_AddInstrumentFunction(RTN_INSTRUMENT_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK RTN_AddInstrumentFunction(RTN_INSTRUMENT_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
-extern VOID IMG_AddInstrumentFunction(IMAGECALLBACK fun, VOID *v);
+extern PIN_CALLBACK IMG_AddInstrumentFunction(IMAGECALLBACK fun, VOID *v);
 
                                                                   /* DO NOT EDIT */
-extern VOID IMG_AddUnloadFunction(IMAGECALLBACK fun, VOID *v);
+extern PIN_CALLBACK IMG_AddUnloadFunction(IMAGECALLBACK fun, VOID *v);
 
                                                                   /* DO NOT EDIT */
 extern USIZE RTN_Range(RTN rtn);
@@ -251,10 +272,25 @@ extern USIZE RTN_Range(RTN rtn);
 extern USIZE RTN_Size(RTN rtn);
 
                                                                   /* DO NOT EDIT */
+extern RTN RTN_IFuncResolver(RTN rtn);
+
+                                                                  /* DO NOT EDIT */
+extern RTN RTN_IFuncImplementation(RTN rtn);
+
+                                                                  /* DO NOT EDIT */
 extern IMG IMG_Open(const string& filename);
 
                                                                   /* DO NOT EDIT */
 extern VOID IMG_Close(IMG img);
+
+                                                                  /* DO NOT EDIT */
+extern VOID IMG_ReplayImageLoad(IMG img);
+
+                                                                  /* DO NOT EDIT */
+extern VOID* IMG_GetLoaderInfo(IMG img);
+
+                                                                  /* DO NOT EDIT */
+extern VOID IMG_SetLoaderInfo(IMG img, VOID* loaderInfo);
 
                                                                   /* DO NOT EDIT */
 extern string RTN_FindNameByAddress(ADDRINT address);
@@ -291,6 +327,9 @@ extern ADDRINT RTN_Address(RTN rtn);
 
                                                                   /* DO NOT EDIT */
 extern RTN RTN_CreateAt(ADDRINT address, string name);
+
+                                                                  /* DO NOT EDIT */
+extern BOOL RTN_IsDynamic(RTN rtn);
 
                                                                   /* DO NOT EDIT */
 extern ADDRINT SEC_Address(SEC sec);

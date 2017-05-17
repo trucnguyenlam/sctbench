@@ -441,7 +441,7 @@ void Observer::UpdateLocalInfo(ObserverAccess *curr_access, address_t addr,
   ObserverLocalInfo &curr_li = local_info_map_[curr_thd_id];
 
   // iterator recent accesses, calculate distance, discover complex iroots
-  std::tr1::unordered_set<address_t> touched_addr_set;
+  std::unordered_set<address_t> touched_addr_set;
   std::vector<ObserverAccess> local_prev_vec;
   for (ObserverLocalInfo::EntryMap::reverse_iterator mit =
           curr_li.entries_.rbegin(); mit != curr_li.entries_.rend(); ++mit) {

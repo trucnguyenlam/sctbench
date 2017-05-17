@@ -42,7 +42,7 @@ class SharedInstDB {
   void Save(const std::string &db_name, StaticInfo *sinfo);
 
  private:
-  typedef std::tr1::unordered_set<Inst *> SharedInstSet;
+  typedef std::unordered_set<Inst *> SharedInstSet;
 
   Mutex *internal_lock_;
   SharedInstSet shared_inst_set_;

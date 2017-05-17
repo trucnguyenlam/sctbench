@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -39,18 +39,18 @@ PIN_LOCK lock;
 
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     fprintf(out, "thread begin %d\n",threadid);
     fflush(out);
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
     
 VOID ThreadFini(THREADID threadid, const CONTEXT *ctxt, INT32 code, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     fprintf(out, "thread end %d code %d\n",threadid, code);
     fflush(out);
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
     
 ADDRINT lasttarget;
@@ -76,10 +76,12 @@ VOID Fini(INT32 code, VOID *v)
 
 int main(INT32 argc, CHAR **argv)
 {
-    InitLock(&lock);
+    PIN_InitLock(&lock);
     
     PIN_Init(argc, argv);
     
+    PIN_InitLock(&lock);
+
     out = fopen(KnobOutputFile.Value().c_str(), "w");
 
     INS_AddInstrumentFunction(Instruction, 0);

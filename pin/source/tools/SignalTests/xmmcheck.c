@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -62,7 +62,7 @@ END_LEGAL */
 #include <sys/time.h>
 #include <sys/utsname.h>
 
-// Virtual timers don't work well on Mac OS
+// Virtual timers don't work well on OS X
 #ifdef TARGET_MAC
 #define TIMER ITIMER_REAL
 #define SIGNAL SIGALRM

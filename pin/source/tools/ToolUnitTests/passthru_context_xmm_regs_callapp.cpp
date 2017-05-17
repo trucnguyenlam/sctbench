@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -62,7 +62,7 @@ VOID REPLACE_ReplacedXmmRegs(CONTEXT *context, THREADID tid, AFUNPTR originalFun
     printf ("TOOL in REPLACE_ReplacedXmmRegs\n");
     printf("TOOL Calling original application function\n");
     fflush (stdout);
-    PIN_CallApplicationFunction(context, tid, CALLINGSTD_DEFAULT, (AFUNPTR)originalFunction, PIN_PARG_END());
+    PIN_CallApplicationFunction(context, tid, CALLINGSTD_DEFAULT, (AFUNPTR)originalFunction, NULL, PIN_PARG_END());
     // no return from the application function
     ASSERTX(0);
 }

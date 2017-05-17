@@ -1,4 +1,4 @@
-//Groups: @ingroup\s+(API_REF|KNOBS|IMG_BASIC_API|INS_BASIC_API|INS_INST_API|INS_BASIC_API_GEN_IA32|INS_BASIC_API_IA32|INS_MOD_API_GEN_IA32|SEC_BASIC_API|RTN_BASIC_API|REG_BASIC_API|REG_CPU_GENERIC|REG_CPU_IA32|TRACE_BASIC_API|BBL_BASIC_API|SYM_BASIC_API|MISC_PRINT|MISC_PARSE|KNOB_API|KNOB_BASIC|KNOB_PRINT|LOCK|PIN_CONTROL|TRACE_VERSION_API|BUFFER_API|PROTO_API|PIN_PROCESS_API|PIN_THREAD_API|PIN_SYSCALL_API|WINDOWS_SYSCALL_API_UNDOC|DEBUG_API|ERROR_FILE_BASIC|TYPE_BASE|INSTLIB|ALARM|CODECACHE_API|CHILD_PROCESS_API|UTILS|MISC|CONTEXT_API|PHYSICAL_CONTEXT_API|REGVAL_API|EXCEPTION_API|APPDEBUG_API|STOPPED_THREAD_API|BUFFER_API|PROTO|INST_ARGS|DEPRECATED_PIN_API|INTERNAL_EXCEPTION_PRIVATE_UNDOCUMENTED|PIN_THREAD_PRIVATE|CHILD_PROCESS_INTERNAL|BBL_BASIC|ROGUE_BASIC_API|MESSAGE_TYPE|MESSAGE_BASIC|ERRFILE|MISC_BASIC|ITC_INST_API|CONTEXT_API_UNDOC|EXCEPTION_API_UNDOC|UNDOCUMENTED_PIN_API|OPIN|TRACE_VERSIONS
+//Groups: @ingroup\s+(API_REF|KNOBS|IMG_BASIC_API|INS_BASIC_API|INS_INST_API|INS_BASIC_API_GEN_IA32|INS_BASIC_API_IA32|INS_MOD_API_GEN_IA32|SEC_BASIC_API|RTN_BASIC_API|REG_BASIC_API|REG_CPU_GENERIC|REG_CPU_IA32|TRACE_BASIC_API|BBL_BASIC_API|SYM_BASIC_API|MISC_PRINT|MISC_PARSE|KNOB_API|KNOB_BASIC|KNOB_PRINT|LOCK|PIN_CONTROL|TRACE_VERSION_API|BUFFER_API|PROTO_API|PIN_PROCESS_API|PIN_THREAD_API|PIN_SYSCALL_API|WINDOWS_SYSCALL_API_UNDOC|DEBUG_API|ERROR_FILE_BASIC|TYPE_BASE|INSTLIB|ALARM|CODECACHE_API|CHILD_PROCESS_API|UTILS|MISC|CONTEXT_API|PHYSICAL_CONTEXT_API|PIN_CALLBACKS|EXCEPTION_API|APPDEBUG_API|STOPPED_THREAD_API|BUFFER_API|PROTO|INST_ARGS|DEPRECATED_PIN_API|INTERNAL_EXCEPTION_PRIVATE_UNDOCUMENTED|PIN_THREAD_PRIVATE|CHILD_PROCESS_INTERNAL|BBL_BASIC|ROGUE_BASIC_API|MESSAGE_TYPE|MESSAGE_BASIC|ERRFILE|MISC_BASIC|ITC_INST_API|CONTEXT_API_UNDOC|EXCEPTION_API_UNDOC|UNDOCUMENTED_PIN_API|OPIN|TRACE_VERSIONS
 /* PIN API */
 
 /* THIS FILE IS AUTOMAGICALLY GENERATED - DO NOT CHANGE DIRECTLY*/
@@ -10,29 +10,6 @@ typedef enum
 #if !defined(TARGET_DOXYGEN)
     REG_NONE = 1,
     REG_FIRST = 2,
-
-    // immediate operand
-    REG_IMM8 = REG_FIRST,
-    REG_IMM_BASE = REG_IMM8,
-    REG_IMM,
-    REG_IMM32,
-    REG_IMM_LAST = REG_IMM32,
-
-    // memory operand
-    REG_MEM,
-    REG_MEM_BASE = REG_MEM,
-    REG_MEM_OFF8,
-    REG_MEM_OFF32,
-    REG_MEM_LAST = REG_MEM_OFF32,
-
-    // memory-address offset operand
-    REG_OFF8,
-    REG_OFF_BASE = REG_OFF8,
-    REG_OFF,
-    REG_OFF32,
-    REG_OFF_LAST = REG_OFF32,
-
-    REG_MODX,
 
     // base for all kinds of registers (application, machine, pin)
     REG_RBASE, 
@@ -232,8 +209,6 @@ typedef enum
 #else // MIC
     REG_EMM_LAST = REG_EMM_BASE,
 #endif
-
-    REG_MXT,
 
     // REG_X87 is a representative of the X87 fp state - it is NOT available for explicit use in ANY
     // of the Pin APIs. It also MUST appear before the xmm,ymm and mxcsr register in order to ensure
@@ -463,12 +438,21 @@ typedef enum
     REG_PIN_GDI = REG_PIN_EDI,                  // PIN_GDI == PIN_EDI on 32 bit, PIN_RDI on 64 bit.
 # endif
     REG_PIN_ESI,
+# if defined(TARGET_IA32)
+    REG_PIN_GSI = REG_PIN_ESI,                  
+# endif
     REG_PIN_EBP,
+# if defined(TARGET_IA32)
+    REG_PIN_GBP = REG_PIN_EBP,                  
+# endif
     REG_PIN_ESP,
 # if defined (TARGET_IA32)
     REG_PIN_STACK_PTR = REG_PIN_ESP,
 # endif
     REG_PIN_EBX,
+# if defined(TARGET_IA32)
+    REG_PIN_GBX = REG_PIN_EBX,                  
+# endif
     REG_PIN_EDX,
 # if defined(TARGET_IA32)
     REG_PIN_GDX = REG_PIN_EDX,                  
@@ -503,12 +487,15 @@ typedef enum
     REG_PIN_RDI,
     REG_PIN_GDI = REG_PIN_RDI,
     REG_PIN_RSI,
+    REG_PIN_GSI = REG_PIN_RSI,
     REG_PIN_RBP,
+    REG_PIN_GBP = REG_PIN_RBP,
     REG_PIN_RSP,
     
     REG_PIN_STACK_PTR = REG_PIN_RSP,
     
     REG_PIN_RBX,
+    REG_PIN_GBX = REG_PIN_RBX,
     REG_PIN_RDX,
     REG_PIN_GDX = REG_PIN_RDX,
     REG_PIN_RCX,
@@ -561,8 +548,6 @@ typedef enum
     REG_PIN_R15W,
     REG_PIN_R15D,
 # endif
-    REG_PIN_X87,
-    REG_PIN_MXCSR,
 
     /* ! @todoshould be REG_PIN_THREAD_ID ?*/
     // Every thread is assigned an index so we can implement tls
@@ -629,8 +614,18 @@ typedef enum
     REG_INST_G17,                            ///< Scratch register used in pintools
     REG_INST_G18,                            ///< Scratch register used in pintools
     REG_INST_G19,                            ///< Scratch register used in pintools
+    REG_INST_G20,                            ///< Scratch register used in pintools
+    REG_INST_G21,                            ///< Scratch register used in pintools
+    REG_INST_G22,                            ///< Scratch register used in pintools
+    REG_INST_G23,                            ///< Scratch register used in pintools
+    REG_INST_G24,                            ///< Scratch register used in pintools
+    REG_INST_G25,                            ///< Scratch register used in pintools
+    REG_INST_G26,                            ///< Scratch register used in pintools
+    REG_INST_G27,                            ///< Scratch register used in pintools
+    REG_INST_G28,                            ///< Scratch register used in pintools
+    REG_INST_G29,                            ///< Scratch register used in pintools
     REG_INST_TOOL_FIRST = REG_INST_G0,     
-    REG_INST_TOOL_LAST = REG_INST_G19,
+    REG_INST_TOOL_LAST = REG_INST_G29,
 
     REG_BUF_BASE0,
     REG_BUF_BASE1,
@@ -642,7 +637,7 @@ typedef enum
     REG_BUF_BASE7,
     REG_BUF_BASE8,
     REG_BUF_BASE9,
-    REG_BUF_LAST = REG_BUF_BASE9,
+    REG_BUF_BASE_LAST = REG_BUF_BASE9,
 
     REG_BUF_END0,
     REG_BUF_END1,
@@ -655,6 +650,7 @@ typedef enum
     REG_BUF_END8,
     REG_BUF_END9,
     REG_BUF_ENDLAST = REG_BUF_END9,
+    REG_BUF_LAST = REG_BUF_ENDLAST,
 
     REG_INST_SCRATCH_LAST = REG_BUF_ENDLAST,
 
@@ -719,6 +715,7 @@ typedef enum
     REG_PIN_BRIDGE_APP_IP, // hold the application (not code cache) IP to resume
     REG_PIN_BRIDGE_SP_BEFORE_ALIGN, // hold the stack ptr value before the stack alignment
     REG_PIN_BRIDGE_SP_BEFORE_CALL, // hold the stack ptr value before call to replaced function in probe mode
+    REG_PIN_BRIDGE_SP_BEFORE_MARSHALLING_FRAME, // hold the stack ptr value before allocating the marshalling frame
     REG_PIN_BRIDGE_MARSHALLING_FRAME, // hold the address of the marshalled reference registers
     REG_PIN_BRIDGE_ON_STACK_CONTEXT_FRAME, // hold the address of the on stack context frame
     REG_PIN_BRIDGE_ON_STACK_CONTEXT_SP, // hold the sp at which the on stack context was pushed
@@ -736,6 +733,8 @@ typedef enum
 
     REG_PIN_SPILLPTR,  // ptr to the pin spill area
     REG_PIN_GR_LAST = REG_PIN_SPILLPTR,
+    REG_PIN_X87,
+    REG_PIN_MXCSR,
 
     // REG_PIN_FLAGS is x86-specific, but since it is not a gr, we put it out of
     // REG_PIN_GR_BASE and REG_PIN_GR_LAST
@@ -894,16 +893,93 @@ const ADDRINT ARCH_STATE_SIZE = (NUM_PHYSICAL_REGS + NUM_SPECIAL_REGS)*sizeof(AD
                                       + FPSTATE_ALIGNMENT);
 
                                                                   /* DO NOT EDIT */
-inline BOOL REG_is_gr(REG reg){ return (reg >= REG_GR_BASE) && (reg <= REG_GR_LAST);}
+struct REGDEF_ENTRY {
+    REG reg;                     // The REG enum of this register, used only to verify that this _regDefTable
+                                 // entry is indeed for the REG whose enum is equal to the index of this entry.
+    UINT32 regSpillSize;         // The size of this register's spill slot in the spill area
+    REGWIDTH regWidth;           // The width of this register
+    UINT64 regClassBitMap;       // The REG_CLASS of this register as a bitmap
+    UINT64 regSubClassBitMap;    // The REG_SUBCLASS of this register as a bitmap
+    REG_ALLOC_TYPE regAllocType; // Specified the type of physical register that must be allocated to this reg
+    REG regFullName;             // The REG enum of the full register this register is part of
+    REG regMachineName;          // The REG that this register must be allocated into when the register mapping is 
+                                 // identity
+    REG regPinName;              // sort of the inverse of regMachineName - for app regs, the corresponding Pin reg
+};
+
+                                                                  /* DO NOT EDIT */
+extern const REGDEF_ENTRY _regDefTable[] ;
+
+                                                                  /* DO NOT EDIT */
+extern UINT64 _regClassBitMapTable[REG_LAST];
+
+                                                                  /* DO NOT EDIT */
+extern UINT64 _regSubClassBitMapTable[REG_LAST];
+
+                                                                  /* DO NOT EDIT */
+extern UINT32 _regSpillSizeTable[REG_LAST];
+
+                                                                  /* DO NOT EDIT */
+extern REGWIDTH _regWidthTable[REG_LAST];
+
+                                                                  /* DO NOT EDIT */
+extern REG_ALLOC_TYPE _regAllocTypeTable[REG_LAST];
+
+                                                                  /* DO NOT EDIT */
+extern REG _regFullNameTable[REG_LAST];
+
+                                                                  /* DO NOT EDIT */
+extern REG _regMachineNameTable[REG_LAST];
+
+                                                                  /* DO NOT EDIT */
+extern REG _regPinNameTable[REG_LAST];
+
+                                                                  /* DO NOT EDIT */
+extern INT32 _regWidthToBitWidth[];
+
+                                                                  /* DO NOT EDIT */
+inline VOID InitRegTables()
+{
+    for (UINT32 i=0; i<(int)REG_LAST; i++)
+    {
+        ASSERTXSLOW((REG)(i)==_regDefTable[i].reg);
+        _regClassBitMapTable[i] = _regDefTable[i].regClassBitMap;
+        _regSubClassBitMapTable[i] = _regDefTable[i].regSubClassBitMap;
+        _regSpillSizeTable[i] = _regDefTable[i].regSpillSize;
+        _regWidthTable[i] = _regDefTable[i].regWidth;
+        _regAllocTypeTable[i] = _regDefTable[i].regAllocType;
+        _regFullNameTable[i] = _regDefTable[i].regFullName;
+        _regMachineNameTable[i] = _regDefTable[i].regMachineName;
+        _regPinNameTable[i] = _regDefTable[i].regPinName;
+    }
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_reg(REG reg){ return (reg >= REG_RBASE) && (reg < REG_LAST);}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pseudo(REG reg){ return (reg == REG_ORIG_GAX);}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_gr(REG reg)
+{ 
+    return ((_regClassBitMapTable[reg]) == (_REGCBIT(REG_CLASS_GR)));
+}
 
                                                                   /* DO NOT EDIT */
 inline BOOL REG_is_fr(REG reg)
 {
-   return (reg >= REG_FIRST_FP_REG &&
-           (((reg >= REG_FPST_BASE) && (reg <= REG_FPST_LAST)) ||
-            ((reg >= REG_XMM_BASE) && (reg <= REG_XMM_LAST)) ||
-            ((reg >= REG_YMM_BASE) && (reg <= REG_YMM_LAST)) ||
-            (reg == REG_MXCSR) || (reg == REG_MXCSRMASK)));
+   const REG_CLASS_BITS  frClassMask = 
+        (_REGCBIT(REG_CLASS_XMM))                 |
+        (_REGCBIT(REG_CLASS_YMM))                 |
+        (_REGCBIT(REG_CLASS_ZMM))                 |
+        (_REGCBIT(REG_CLASS_K))                   |
+        (_REGCBIT(REG_CLASS_FPST))                |
+        (_REGCBIT(REG_CLASS_ST))                  |
+        (_REGCBIT(REG_CLASS_MXCSR))               |
+        (_REGCBIT(REG_CLASS_MXCSRMASK));
+
+   return (((_regClassBitMapTable[reg]) & frClassMask) != 0);
 }
 
                                                                   /* DO NOT EDIT */
@@ -924,114 +1000,62 @@ inline BOOL REG_is_gr64(REG reg)
                                                                   /* DO NOT EDIT */
 inline BOOL REG_is_gr32(REG reg)
 {
-    switch (reg)
-    {
-      case REG_EDI:
-      case REG_ESI:
-      case REG_EBP:
-      case REG_ESP:
-      case REG_EBX:
-      case REG_EDX:
-      case REG_ECX:
-      case REG_EAX:
-#if defined(TARGET_IA32E) || defined(TARGET_MIC)
-      case REG_R8D:
-      case REG_R9D:
-      case REG_R10D:
-      case REG_R11D:
-      case REG_R12D:
-      case REG_R13D:
-      case REG_R14D:
-      case REG_R15D:    
-#endif        
-        return TRUE;
-      default:
-        return FALSE;
-    }
+    
+#if defined(TARGET_IA32E) | defined(TARGET_MIC)
+    return (_regClassBitMapTable[reg] == _REGCBIT(REG_CLASS_GRH32));
+#else
+    return (_regClassBitMapTable[reg] == _REGCBIT(REG_CLASS_GR));
+#endif
 }
 
                                                                   /* DO NOT EDIT */
 inline BOOL REG_is_gr16(REG reg)
 {
-    switch (reg)
-    {
-      case REG_DI:
-      case REG_SI:
-      case REG_BP:
-      case REG_SP:
-      case REG_BX:
-      case REG_DX:
-      case REG_CX:
-      case REG_AX:
-#if defined(TARGET_IA32E) || defined(TARGET_MIC)
-      case REG_R8W:
-      case REG_R9W:
-      case REG_R10W:
-      case REG_R11W:
-      case REG_R12W:
-      case REG_R13W:
-      case REG_R14W:
-      case REG_R15W:    
-#endif        
-        return TRUE;
-      default:
-        return FALSE;
-    }
+    return (_regClassBitMapTable[reg] == _REGCBIT(REG_CLASS_GRH16));
+    
 }
 
                                                                   /* DO NOT EDIT */
 inline BOOL REG_is_gr8(REG reg)
 {
-    switch (reg)
-    {
-      case REG_AL:
-      case REG_AH:
-      case REG_BL:
-      case REG_BH:
-      case REG_CL:
-      case REG_CH:
-      case REG_DL:
-      case REG_DH:
-#if defined(TARGET_IA32E) || defined(TARGET_MIC)
-      case REG_SIL:
-      case REG_DIL:
-      case REG_SPL:
-      case REG_BPL:
-      case REG_R8B:
-      case REG_R9B:
-      case REG_R10B:
-      case REG_R11B:
-      case REG_R12B:
-      case REG_R13B:
-      case REG_R14B:
-      case REG_R15B:    
-#endif        
-        return TRUE;
-      default:
-        return FALSE;
-    }
+    const REG_CLASS_BITS  gr8classMask = (_REGCBIT(REG_CLASS_GRU8)) | (_REGCBIT(REG_CLASS_GRL8));
+    return ((_regClassBitMapTable[reg] & gr8classMask) != 0);
+    
 }
 
                                                                   /* DO NOT EDIT */
-inline BOOL REG_is_seg(REG reg){ return (reg >= REG_SEG_BASE) && (reg <= REG_SEG_LAST);}
+inline BOOL REG_is_seg(REG reg)
+{ 
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_SEG)));
+}
 
                                                                   /* DO NOT EDIT */
 inline BOOL REG_is_fr_for_get_context(REG reg)
 {
-   return  (reg >= REG_FIRST_FP_REG &&
-           (((reg >= REG_FPST_BASE) && (reg < REG_ST_BASE)) ||
-            (reg == REG_MXCSR) || (reg == REG_MXCSRMASK)));
+     const REG_CLASS_BITS  frClassMask = 
+        (_REGCBIT(REG_CLASS_K) )                  |
+        (_REGCBIT(REG_CLASS_FPST) )               |
+        (_REGCBIT(REG_CLASS_MXCSR))               |
+        (_REGCBIT(REG_CLASS_MXCSRMASK));
+
+    return ((_regClassBitMapTable[reg] & frClassMask) != 0);
 }
 
                                                                   /* DO NOT EDIT */
 inline BOOL REG_is_fr_or_x87(REG reg)
 {
-   return ((reg == REG_X87) || (reg >= REG_FIRST_FP_REG &&
-           (((reg >= REG_FPST_BASE) && (reg <= REG_FPST_LAST)) ||
-            ((reg >= REG_XMM_BASE) && (reg <= REG_XMM_LAST)) ||
-            ((reg >= REG_YMM_BASE) && (reg <= REG_YMM_LAST)) ||
-            (reg == REG_MXCSR) || (reg == REG_MXCSRMASK) 
-            || (reg == REG_X87))));
+    const REG_CLASS_BITS  frClassMask = 
+        (_REGCBIT(REG_CLASS_XMM))                 |
+        (_REGCBIT(REG_CLASS_YMM))                 |
+        (_REGCBIT(REG_CLASS_ZMM) )                |
+        (_REGCBIT(REG_CLASS_K) )                  |
+        (_REGCBIT(REG_CLASS_FPST))                |
+        (_REGCBIT(REG_CLASS_ST))                  |
+        (_REGCBIT(REG_CLASS_X87))                 |
+        (_REGCBIT(REG_CLASS_MXCSR))               |
+        (_REGCBIT(REG_CLASS_MXCSRMASK));
+
+    return ((_regClassBitMapTable[reg] & frClassMask) != 0);
 }
 
                                                                   /* DO NOT EDIT */
@@ -1044,22 +1068,358 @@ inline BOOL REG_is_any_mxcsr(REG reg) { return (REG_MXCSR == reg || REG_PIN_MXCS
 inline BOOL REG_is_any_x87(REG reg) { return (REG_X87 == reg || REG_PIN_X87 == reg); }
 
                                                                   /* DO NOT EDIT */
-inline BOOL REG_is_mm(REG reg){ return (reg >= REG_MM_BASE) && (reg <= REG_MM_LAST); }
+inline BOOL REG_is_mm(REG reg)
+{ 
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_MM)));
+}
 
                                                                   /* DO NOT EDIT */
-inline BOOL REG_is_xmm(REG reg){ return (reg >= REG_XMM_BASE) && (reg <= REG_XMM_LAST);}
+inline BOOL REG_is_xmm(REG reg)
+{ 
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_XMM)));
+}
 
                                                                   /* DO NOT EDIT */
-inline BOOL REG_is_ymm(REG reg){ return (reg >= REG_YMM_BASE) && (reg <= REG_YMM_LAST); }
+inline BOOL REG_is_ymm(REG reg)
+{ 
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_YMM)));
+}
 
                                                                   /* DO NOT EDIT */
-inline BOOL REG_is_zmm(REG reg){ return (reg >= REG_ZMM_BASE) && (reg <= REG_ZMM_LAST); }
+inline BOOL REG_is_zmm(REG reg)
+{
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_ZMM)));
+}
 
                                                                   /* DO NOT EDIT */
-inline BOOL REG_is_k_mask(REG reg){ return (reg >= REG_K_BASE) && (reg <= REG_K_LAST); }
+inline BOOL REG_is_xmm_ymm_zmm(REG reg)
+{ 
+    const REG_CLASS_BITS  xmm_ymm_zmmClassMask = (_REGCBIT(REG_CLASS_XMM)) | (_REGCBIT(REG_CLASS_YMM)) | (_REGCBIT(REG_CLASS_ZMM));
+    return ((_regClassBitMapTable[reg] & xmm_ymm_zmmClassMask) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_k_mask(REG reg)
+{
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_K)));
+}
 
                                                                   /* DO NOT EDIT */
 inline REG REG_corresponding_ymm_reg(REG reg) { return static_cast<REG>(reg-REG_XMM_BASE+REG_YMM_BASE); }
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_st(REG reg)
+{ 
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_ST)));
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_fpst(REG reg) 
+{ 
+    const REG_CLASS_BITS classMask = (_REGCBIT(REG_CLASS_ST)) | (_REGCBIT(REG_CLASS_FPST));
+    return ((_regClassBitMapTable[reg] & classMask) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_in_X87(REG reg) 
+{    
+    return (REG_is_fpst(reg) | REG_is_mm(reg));
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_machine(REG reg) 
+{ 
+    return (reg >= REG_MACHINE_BASE) && (reg <= REG_MACHINE_LAST); 
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_application(REG reg) 
+{ 
+    return ((_regClassBitMapTable[reg] & REGCBIT_APP_ALL) != 0); 
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin(REG reg)
+{
+    return ((_regClassBitMapTable[reg] & REGCBIT_PIN_ALL) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_subclass_none(REG reg)
+{ 
+    return ((_regSubClassBitMapTable[reg] &    (REG_SUBCLASS_BITS(1) << (REG_SUBCLASS_NONE))) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin_gpr(REG reg)
+{
+    return REG_is_pin(reg) && REG_is_subclass_none(reg);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_seg_base(REG reg)
+{
+    return (reg == REG_SEG_GS_BASE)||(reg == REG_SEG_FS_BASE);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_valid_for_iarg_reg_value(REG reg)
+{
+    const REG_CLASS_BITS allowedClassMask = ((_REGCBIT(REG_CLASS_GR)) | (_REGCBIT(REG_CLASS_PIN_GR)) | (_REGCBIT(REG_CLASS_SEG))
+#ifdef TARGET_MIC
+                                            | (_REGCBIT(REG_CLASS_K))
+#endif
+                                            | REGCBIT_PARTIAL | REGCBIT_APP_FLAGS | REGCBIT_PIN_FLAGS);
+    const REG_CLASS_BITS disallowedPartialRegs = ((_REGCBIT(REG_CLASS_FLAGS16)) | (_REGCBIT(REG_CLASS_FLAGS32))
+                                        | (_REGCBIT(REG_CLASS_IP16)) | (_REGCBIT(REG_CLASS_IP32))
+                                        | (_REGCBIT(REG_CLASS_DFLAG)) | (_REGCBIT(REG_CLASS_STATUS_FLAGS)));
+
+    // Allow base GS, and base FS - there is explicit code that handles these registers
+    if (REG_is_seg_base(reg))
+        return TRUE;
+
+    // Disallow registers that are not legal
+    if (reg < REG_FIRST || reg > REG_LAST)
+        return FALSE;
+
+    // Disallow some registers that are smaller to fit into ADDRINT and don't have
+    // special implementation that allow PIN to get their value
+    if ((_regClassBitMapTable[reg] & disallowedPartialRegs) != 0)
+        return FALSE;
+
+    // We don't allow PIN internal register which correspond to an architectural register
+    // e.g. REG_PIN_EBX
+    if (REG_is_pin_gpr(reg))
+        return FALSE;
+
+    // If we passed all of the filters above, allow only those registers that are in the
+    // appropriate classes
+    return ((_regClassBitMapTable[reg] & allowedClassMask) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin_gr(REG reg) 
+{ 
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_PIN_GR)));
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin_gr_half32(REG reg) 
+{ 
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_PIN_GRH32)));
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin_xmm(REG reg)
+{ 
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_PIN_XMM)));
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin_ymm(REG reg)
+{ 
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_PIN_YMM)));
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin_zmm(REG reg)
+{ 
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_PIN_ZMM)));
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin_k_mask(REG reg)
+{ 
+    return (_regClassBitMapTable[reg] == (_REGCBIT(REG_CLASS_PIN_K)));
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_gr_type(REG reg) 
+{
+    const REG_CLASS_BITS  grclassMask = (_REGCBIT(REG_CLASS_GR)) | (_REGCBIT(REG_CLASS_PIN_GR));
+    return ((_regClassBitMapTable[reg] & grclassMask) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline REG REG_AppFlags() {return REG_GFLAGS;}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_flags(REG reg) {return reg == REG_GFLAGS;}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin_flags(REG reg) {return reg == REG_PIN_FLAGS;}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_status_flags(REG reg) {return reg == REG_STATUS_FLAGS;}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin_status_flags(REG reg) {return reg == REG_PIN_STATUS_FLAGS;}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_df_flag(REG reg) {return reg == REG_DF_FLAG;}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin_df_flag(REG reg) {return reg == REG_PIN_DF_FLAG;}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_flags_type(REG reg)
+{
+    const REG_CLASS_BITS  flagsClassMask = ((_REGCBIT(REG_CLASS_FLAGS)) | (_REGCBIT(REG_CLASS_PIN_FLAGS)));
+    return ((_regClassBitMapTable[reg] & flagsClassMask) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_flags_any_size_type(REG reg)
+{
+    const REG_CLASS_BITS  flagsClassMask 
+        = ((_REGCBIT(REG_CLASS_FLAGS)) | (_REGCBIT(REG_CLASS_PIN_FLAGS))
+        | (_REGCBIT(REG_CLASS_FLAGS32)) | (_REGCBIT(REG_CLASS_FLAGS16)));
+    return ((_regClassBitMapTable[reg] & flagsClassMask) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_status_flags_type(REG reg)
+{
+    const REG_CLASS_BITS  flagsStatusClassMask = ((_REGCBIT(REG_CLASS_STATUS_FLAGS)) | (_REGCBIT(REG_CLASS_PIN_STATUS_FLAGS)));
+    return ((_regClassBitMapTable[reg] & flagsStatusClassMask) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_app_status_flags_type(REG reg)
+{
+    return ((_regClassBitMapTable[reg] & _REGCBIT(REG_CLASS_STATUS_FLAGS)) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_df_flag_type(REG reg)
+{
+    const REG_CLASS_BITS  dfClassMask = ((_REGCBIT(REG_CLASS_DFLAG)) | (_REGCBIT(REG_CLASS_PIN_DFLAG)));
+    return ((_regClassBitMapTable[reg] & dfClassMask) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_app_df_flag_type(REG reg)
+{
+    return ((_regClassBitMapTable[reg] & _REGCBIT(REG_CLASS_DFLAG)) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_any_flags_type(REG reg)
+{
+     return ((_regClassBitMapTable[reg] & (REGCBIT_APP_FLAGS | REGCBIT_PIN_FLAGS)) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_any_pin_flags(REG reg)
+{
+    return ((_regClassBitMapTable[reg] & REGCBIT_PIN_FLAGS) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_any_app_flags(REG reg)
+{
+    return ((_regClassBitMapTable[reg] & REGCBIT_APP_FLAGS) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline REG REG_get_status_flags_reg_of_type(REG reg)
+{
+    if (REG_is_flags(reg))
+    {
+        return (REG_STATUS_FLAGS);
+    }
+    else
+    {
+        ASSERTX (REG_is_pin_flags(reg));
+        return (REG_PIN_STATUS_FLAGS);
+    }
+}
+
+                                                                  /* DO NOT EDIT */
+inline REG REG_get_df_flag_reg_of_type(REG reg)
+{
+    if (REG_is_flags(reg))
+    {
+        return (REG_DF_FLAG);
+    }
+    else
+    {
+        ASSERTX (REG_is_pin_flags(reg));
+        return (REG_PIN_DF_FLAG);
+    }
+}
+
+                                                                  /* DO NOT EDIT */
+inline REG REG_get_full_flags_reg_of_type(REG reg)
+{
+    if (REG_is_any_app_flags(reg))
+    {
+        return (REG_GFLAGS);
+    }
+    else
+    {
+        ASSERTX (REG_is_any_pin_flags(reg));
+        return (REG_PIN_FLAGS);
+    }
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_stackptr_type(REG reg)
+{
+    return ((_regSubClassBitMapTable[reg] & REGSBIT_STACKPTR_ALL) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_representative_reg(REG reg)
+{
+    // currently the REG_X87 represents the whole X87 state used
+    // for passing the CONTEXT* for IARG_CONST_CONTEXT. 
+    const REG_CLASS_BITS  representativeClassMask = ((_REGCBIT(REG_CLASS_X87)) | (_REGCBIT(REG_CLASS_PIN_X87)));
+    return ((_regClassBitMapTable[reg] & representativeClassMask) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_x87_reg(REG reg)
+{ 
+    const REG_CLASS_BITS  x87ClassMask = ((_REGCBIT(REG_CLASS_X87)) | (_REGCBIT(REG_CLASS_PIN_X87)));
+    return ((_regClassBitMapTable[reg] & x87ClassMask) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin_inst(REG reg) 
+{ 
+    return ((_regSubClassBitMapTable[reg] & REGSBIT_PIN_INST_ALL) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_buffer(REG reg) 
+{ 
+    return ((_regSubClassBitMapTable[reg] &    (REG_SUBCLASS_BITS(1) << (REG_SUBCLASS_PIN_INST_BUF))) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_inst_scratch(REG reg) 
+{ 
+    return ((_regSubClassBitMapTable[reg] & REGSBIT_PIN_SCRATCH_ALL) != 0);
+}
+
+                                                                  /* DO NOT EDIT */
+inline ADDRINT REG_regSubClassBitMapTable() 
+{ 
+    return ((ADDRINT)(_regSubClassBitMapTable));
+}
+
+                                                                  /* DO NOT EDIT */
+inline ADDRINT REG_regDefTable() 
+{ 
+    return ((ADDRINT)(_regDefTable));
+}
+
+                                                                  /* DO NOT EDIT */
+inline BOOL REG_is_pin_tmp(REG reg) 
+{ 
+    return ((_regSubClassBitMapTable[reg] &    (REG_SUBCLASS_BITS(1) << (REG_SUBCLASS_PIN_TMP))) != 0);
+}
 
                                                                   /* DO NOT EDIT */
 typedef enum
@@ -1074,13 +1434,27 @@ inline REG REG_INVALID() {return REG_INVALID_;}
 inline BOOL REG_valid(REG reg){ return reg != REG_INVALID();}
 
                                                                   /* DO NOT EDIT */
-extern BOOL REG_is_pin64(REG reg);
+inline BOOL REG_is_pin64(REG reg)
+{
+#if defined(TARGET_IA32)
+    // Nothing is 64 bit on a 32 bit machine
+    return FALSE;
+#endif
+
+    return REG_is_pin_gr(reg);  // all FULL WIDTH pin gr registers are 64-bits
+}
+
+                                                                  /* DO NOT EDIT */
+extern UINT32 REG_Size(REG reg);
+
+                                                                  /* DO NOT EDIT */
+extern REG REG_FullRegName(const REG reg);
 
                                                                   /* DO NOT EDIT */
 extern string REG_StringShort(REG reg);
 
                                                                   /* DO NOT EDIT */
-extern REG REG_FullRegName(const REG reg);
+extern REG REG_IdentityCopy(const REG reg);
 
                                                                   /* DO NOT EDIT */
 

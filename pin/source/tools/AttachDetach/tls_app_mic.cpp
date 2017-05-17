@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -45,8 +45,8 @@ END_LEGAL */
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <syscall.h>
-#include <linux/unistd.h> 
+#include <sys/syscall.h>
+#include <unistd.h> 
 #include <asm/prctl.h> 
 #include <sys/prctl.h> 
 #include <errno.h>

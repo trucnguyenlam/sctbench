@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -41,7 +41,8 @@ END_LEGAL */
    Another major goal is the simplicity of implementation. 
 
    Regions are specified using a text file with the records of the form:
-   comment,thread-id,region-id,simulation-region-start-icount,simulation-region-end-icount,region-weight
+   comment,thread-id,region-id,simulation-region-start-icount,
+   simulation-region-end-icount,region-weight
 
    [ fields after the first six are ignored, so are lines beginning with '#' ]
 
@@ -67,14 +68,14 @@ END_LEGAL */
 
         each sub-region has a start and end event. So there are eight 
         events possible (some coinciding e.g. warmup-end and prolog-start)
-            CONTROL_WARMUP_START  : Beginning of warmup region
-            CONTROL_WARMUP_STOP  : End of warmup region
-            CONTROL_PROLOG_START : Beginning of prolog  region
-            CONTROL_PROLOG_STOP  : End of prolog region
-            CONTROL_START        : Beginning of interval
-            CONTROL_STOP         : End of interval
-            CONTROL_EPILOG_START : Beginning of epilog region
-            CONTROL_EPILOG_STOP  : End of epilog region
+            EVENT_WARMUP_START  : Beginning of warmup region
+            EVENT_WARMUP_STOP  : End of warmup region
+            EVENT_PROLOG_START : Beginning of prolog  region
+            EVENT_PROLOG_STOP  : End of prolog region
+            EVENT_START        : Beginning of interval
+            EVENT_STOP         : End of interval
+            EVENT_EPILOG_START : Beginning of epilog region
+            EVENT_EPILOG_STOP  : End of epilog region
 
     * Using the warmup/prolog/epilog knobs provided to the controller,
        the region boundaries for the four sub-regions above are computed for
@@ -92,6 +93,13 @@ END_LEGAL */
       one tuple for each of the possible 8 events for four sub-regions.
 */
 
+#include <algorithm>
+#include <sstream> 
+#include <string.h>
+
+using namespace std;
+#define ISIMPOINT_MAX_THREADS 160
+namespace CONTROLLER{
 class IREGION
 {
     private:   
@@ -105,7 +113,6 @@ class IREGION
         size_t _rno;  // assigned
         UINT64 _warmup_length; // computed + assigned
         UINT64 _prolog_length; // computed + assigned
-        UINT64 _region_length; // computed + assigned
         UINT64 _epilog_length; // computed + assigned
         UINT32 _weightTimesHundredThousand; // computed + assigned
          // Convert input weight ('double' 0--1)  to  UINT32 to avoid
@@ -121,17 +128,19 @@ class IREGION
             _rno = 0; 
             _warmup_length = 0;
             _prolog_length = 0;
-            _region_length = 0;
             _epilog_length = 0;
             _weightTimesHundredThousand = 0;
         }
         string GetComment() const { return _comment;}
         UINT32 GetRegionId() const { return _rid;}
-        UINT64 GetWarmupLength() const { return _warmup_length;}
-        UINT64 GetPrologLength() const { return _prolog_length;}
-        UINT64 GetRegionLength() const { return _region_length;}
+        UINT64 GetRegionStartICount() const { return _icountStart; }
+        UINT64 GetRegionEndICount() const { return _icountEnd; }
+        UINT64 GetWarmupLength() const { return _warmup_length; }
+        UINT64 GetPrologLength() const { return _prolog_length; }
+        UINT64 GetRegionLength() const { return _icountEnd - _icountStart; }
         UINT64 GetEpilogLength() const { return _epilog_length;}
-        UINT32 GetWeightTimesHundredThousand() const { return _weightTimesHundredThousand;}
+        UINT32 GetWeightTimesHundredThousand() const {
+            return _weightTimesHundredThousand;}
 };
 
 class IEVENT
@@ -140,7 +149,7 @@ class IEVENT
         IEVENT()
         {
             icount = 0;
-            type = CONTROL_INVALID;
+            type = EVENT_INVALID;
             iregion = (class IREGION *) NULL;
         }
         static BOOL EventLessThan (const IEVENT & a, const IEVENT & b)
@@ -148,92 +157,92 @@ class IEVENT
             BOOL retval = false;
             if(a.icount == b.icount)
             {
-                switch(b.type)
+                if (b.type == EVENT_WARMUP_START)
                 {
-                    case CONTROL_WARMUP_START : 
-                        {
-                            if ((a.type == CONTROL_WARMUP_START))
-                            {
-                                retval =  true;
-                            }    
-                            break;
-                        }
-                    case CONTROL_WARMUP_STOP : 
-                        {
-                            if ((a.type == CONTROL_WARMUP_START) || (a.type == CONTROL_WARMUP_STOP))
-                            {
-                                retval =  true;
-                            }    
-                            break;
-                        }
-                    case CONTROL_PROLOG_START : 
-                        {
-                            if ((a.type == CONTROL_WARMUP_START) || (a.type == CONTROL_WARMUP_STOP) || (a.type == CONTROL_PROLOG_START))
-                            {
-                                retval =  true;
-                            }    
-                            break;
-                        }
-                    case CONTROL_PROLOG_STOP : 
-                        {
-                            if ((a.type == CONTROL_WARMUP_START) || (a.type == CONTROL_WARMUP_STOP) || (a.type == CONTROL_PROLOG_START) || (a.type == CONTROL_PROLOG_STOP))
-                            {
-                                retval =  true;
-                            }    
-                            break;
-                        }
-                    case CONTROL_START : 
-                        {
-                            retval = true;
-                            if ((a.type == CONTROL_STOP) || (a.type == CONTROL_EPILOG_START) || (a.type == CONTROL_EPILOG_STOP))
-                            {
-                                retval =  false;
-                            }    
-                            break;
-                        }
-                    case CONTROL_STOP : 
-                        {
-                            retval = true;
-                            if ((a.type == CONTROL_EPILOG_START) || (a.type == CONTROL_EPILOG_STOP))
-                            {
-                                retval =  false;
-                            }    
-                            break;
-                        }
-                    case CONTROL_EPILOG_START :
-                        {
-                            retval = true;
-                            if ((a.type == CONTROL_EPILOG_STOP))
-                            {
-                                retval =  false;
-                            }    
-                            break;
-                        }
-                    case CONTROL_EPILOG_STOP : 
-                        {
-                            retval =  true;
-                            break;
-                        }
-                    default: retval =  true;
+                    if ((a.type == EVENT_WARMUP_START))
+                    {
+                        retval =  true;
+                    }    
+                }
+                else if (b.type == EVENT_WARMUP_STOP)
+                {
+                    if ((a.type == EVENT_WARMUP_START) || 
+                        (a.type == EVENT_WARMUP_STOP))
+                    {
+                        retval =  true;
+                    }    
+                }
+                else if (b.type == EVENT_PROLOG_START)
+                {
+                    if ((a.type == EVENT_WARMUP_START) || 
+                        (a.type == EVENT_WARMUP_STOP) || 
+                        (a.type == EVENT_PROLOG_START))
+                    {
+                        retval =  true;
+                    }    
+                }
+                else if (b.type == EVENT_PROLOG_STOP)
+                {
+                    if ((a.type == EVENT_WARMUP_START) || 
+                        (a.type == EVENT_WARMUP_STOP) || 
+                        (a.type == EVENT_PROLOG_START) || 
+                        (a.type == EVENT_PROLOG_STOP))
+                    {
+                        retval =  true;
+                    }    
+                }
+                else if (b.type == EVENT_START)
+                {
+                    retval = true;
+                    if ((a.type == EVENT_STOP) || 
+                        (a.type == EVENT_EPILOG_START) || 
+                        (a.type == EVENT_EPILOG_STOP))
+                    {
+                        retval =  false;
+                    }    
+                }
+                else if (b.type == EVENT_STOP)
+                {
+                    retval = true;
+                    if ((a.type == EVENT_EPILOG_START) || 
+                        (a.type == EVENT_EPILOG_STOP))
+                    {
+                        retval =  false;
+                    }    
+                }
+                else if (b.type == EVENT_EPILOG_START)
+                {
+                    retval = true;
+                    if ((a.type == EVENT_EPILOG_STOP))
+                    {
+                        retval =  false;
+                    }    
+                }
+                else if (b.type == EVENT_EPILOG_STOP)
+                {
+                    retval =  true;
+                }
+                else{
+                    retval =  true;
                 }
                 return retval;
             }
             return a.icount < b.icount;
         }
 
-        static const CHAR * EventToString(CONTROL_EVENT type)
+        static const CHAR * EventToString(EVENT_TYPE type)
         {
             switch(type)
             {
-                case CONTROL_THREADID : return "control-threadid";
-                case CONTROL_START : return "region-start";
-                case CONTROL_STOP : return "region-end";
-                case CONTROL_WARMUP_START : return "warmup-start";
-                case CONTROL_WARMUP_STOP : return "warmup-end";
-                case CONTROL_PROLOG_START : return "prolog-start";
-                case CONTROL_PROLOG_STOP : return "prolog-end";
-                case CONTROL_EPILOG_START : return "epilog-start";
-                case CONTROL_EPILOG_STOP : return "epilog-end";
+                case EVENT_THREADID : return "control-threadid";
+                case EVENT_START : return "region-start";
+                case EVENT_STOP : return "region-end";
+                case EVENT_WARMUP_START : return "warmup-start";
+                case EVENT_WARMUP_STOP : return "warmup-end";
+                case EVENT_PROLOG_START : return "prolog-start";
+                case EVENT_PROLOG_STOP : return "prolog-end";
+                case EVENT_EPILOG_START : return "epilog-start";
+                case EVENT_EPILOG_STOP : return "epilog-end";
                 default: return "invalid";
             }
         }
@@ -241,7 +250,7 @@ class IEVENT
     private:
         friend class CONTROL_IREGIONS; // allow it to set private fields
         UINT64 icount;
-        CONTROL_EVENT type;
+        EVENT_TYPE type;
         class IREGION * iregion;
 };
 
@@ -250,6 +259,7 @@ typedef vector<IEVENT> IEVENT_VECTOR;
 
 /*! @ingroup CONTROLLER_IREGIONS
 */
+
 class CONTROL_IREGIONS
 {
     private:
@@ -263,17 +273,53 @@ class CONTROL_IREGIONS
     };
 
     public:
-    CONTROL_IREGIONS(BOOL passContext=false, const string & prefix = "",
-                     const string& knob_family = "pintool:control")
-        : _passContext(passContext),
-          _rFileKnob(KNOB_MODE_WRITEONCE, knob_family, "regions:in", "", "Regions file", prefix),
-         _rWarmupKnob(KNOB_MODE_WRITEONCE, knob_family, "regions:warmup", "0", "# of instructions in the warm-up region", prefix),
-          _rPrologKnob(KNOB_MODE_WRITEONCE, knob_family, "regions:prolog", "0", "# of instructions in the prolog region", prefix),
-          _rEpilogKnob(KNOB_MODE_WRITEONCE, knob_family, "regions:epilog", "0", "# of instructions in the epilog region", prefix),
-          _rVerboseKnob(KNOB_MODE_WRITEONCE, knob_family, "regions:verbose", "0", "Print information about regions/events ", prefix),
-          _rOverlapOkKnob(KNOB_MODE_WRITEONCE, knob_family, "regions:overlap-ok", "0", "Allow overlap in regions.", prefix),
-          _rOutFileKnob(KNOB_MODE_WRITEONCE, knob_family, "regions:out", "", "Output file containing regions skipped due to overlap", prefix)
+    CONTROL_IREGIONS(CONTROL_ARGS & control_args, 
+        CONTROL_MANAGER* cm)
+        : _control_args(control_args),
+          _rFileKnob(KNOB_MODE_WRITEONCE,
+                     control_args.get_knob_family(),
+                     "regions:in",
+                     "",
+                     "Regions file",
+                     control_args.get_prefix()),
+         _rWarmupKnob(KNOB_MODE_WRITEONCE,
+                      control_args.get_knob_family(),
+                      "regions:warmup",
+                      "0",
+                      "# of instructions in the warm-up region",
+                      control_args.get_prefix()),
+          _rPrologKnob(KNOB_MODE_WRITEONCE,
+                       control_args.get_knob_family(),
+                       "regions:prolog",
+                       "0",
+                       "# of instructions in the prolog region",
+                       control_args.get_prefix()),
+          _rEpilogKnob(KNOB_MODE_WRITEONCE,
+                       control_args.get_knob_family(),
+                       "regions:epilog",
+                       "0",
+                       "# of instructions in the epilog region",
+                       control_args.get_prefix()),
+          _rVerboseKnob(KNOB_MODE_WRITEONCE,
+                        control_args.get_knob_family(),
+                        "regions:verbose",
+                        "0",
+                        "Print information about regions/events ",
+                        control_args.get_prefix()),
+          _rOverlapOkKnob(KNOB_MODE_WRITEONCE,
+                          control_args.get_knob_family(),
+                          "regions:overlap-ok",
+                          "0",
+                          "Allow overlap in regions.",
+                          control_args.get_prefix()),
+          _rOutFileKnob(KNOB_MODE_WRITEONCE,
+                        control_args.get_knob_family(),
+                        "regions:out",
+                        "",
+                        "Output file containing regions skipped due to overlap",
+                        control_args.get_prefix())
     {
+        _cm = cm;
         _valid = true;
         _maxThreads = ISIMPOINT_MAX_THREADS;
         _regions = new IREGION_VECTOR[_maxThreads];
@@ -284,35 +330,40 @@ class CONTROL_IREGIONS
         memset(_nextevent, 0, sizeof(_nextevent[0]) * _maxThreads);
         _xcount = 0;
         _last_triggered_region = new IREGION * [_maxThreads];
-        memset(_last_triggered_region , 0, sizeof(_last_triggered_region[0]) * _maxThreads);
+        memset(_last_triggered_region , 0, 
+               sizeof(_last_triggered_region[0]) * _maxThreads);
     }
 
     /*! @ingroup CONTROLLER_IREGIONS
       Activate the controller if the -regions knob is provided
       @return 1 if controller can start an interval, otherwise 0
     */
-    INT32 CheckKnobs(CONTROL_HANDLER ch, VOID * val)
+    INT32 Activate(BOOL passContext)
     {
         if (strcmp(_rFileKnob.Value().c_str(),"") == 0)
         {
             return 0;
         }
+        _passContext = passContext;
         _active = true;
         PIN_AddThreadStartFunction(ThreadStart, this);
 
-        if (!strcmp(_rOutFileKnob.Value().c_str(),"") == 0)
+        if (strcmp(_rOutFileKnob.Value().c_str(),"") != 0)
         {
             xfile.open(_rOutFileKnob.Value().c_str());
             if (!xfile.is_open())
             {
-                cerr << "Could not open output  file " << _rOutFileKnob.Value().c_str() << endl;
+                cerr << "Could not open output  file " << 
+                    _rOutFileKnob.Value().c_str() << endl;
                 exit(-1);
             }
         }
         if (_rVerboseKnob) 
         {
-            cerr << "AFUNPTR(AdvanceIf) " << hex <<  reinterpret_cast<ADDRINT>(this->AdvanceIf) << endl;
-            cerr << "AFUNPTR(AdvanceThen) " << hex <<  reinterpret_cast<ADDRINT>(this->AdvanceThen) << endl;
+            cerr << "AFUNPTR(AdvanceIf) " << hex <<  
+                reinterpret_cast<ADDRINT>(this->AdvanceIf) << endl;
+            cerr << "AFUNPTR(AdvanceThen) " << hex <<  
+                reinterpret_cast<ADDRINT>(this->AdvanceThen) << endl;
         }
 
         ReadRegionsFile();
@@ -325,18 +376,17 @@ class CONTROL_IREGIONS
 
         if(_rVerboseKnob) PrintEvents();
 
-        _controlHandler = ch;
-        _controlVal = val;
-
         _ScratchReg = PIN_ClaimToolRegister();
         return 1;
     }
     bool IsActive() const { return _active; };
-    IREGION * LastTriggeredRegion(THREADID tid) const { return _last_triggered_region[tid];}
+    IREGION * LastTriggeredRegion(THREADID tid) const { 
+        return _last_triggered_region[tid];}
 
     private:
-    BOOL _passContext;
+    CONTROL_ARGS _control_args;
     bool _valid;
+    CONTROLLER::CONTROL_MANAGER* _cm;
 
     UINT32 StringToUINT32(string &s, const char * name)
     {
@@ -376,7 +426,8 @@ class CONTROL_IREGIONS
 
         if (!rfile.is_open())
         {
-            cerr << "Could not open regions file " << _rFileKnob.Value().c_str() << endl;
+            cerr << "Could not open regions file " << 
+                _rFileKnob.Value().c_str() << endl;
             exit(-1);
         }
 
@@ -392,7 +443,7 @@ class CONTROL_IREGIONS
 
             CHAR record[BUFSIZE+1];
             CHAR urecord[BUFSIZE+1];
-			string field;
+            string field;
 
             double t_weight;
             string t_comment;
@@ -402,71 +453,82 @@ class CONTROL_IREGIONS
             UINT64 t_icountEnd;
 
             rfile.getline(record, BUFSIZE);
-			lineNum++;
+            lineNum++;
 
             if(strlen(record)==0) continue;
 
             // Create a temporary record with lower case letters
-            for(UINT32 i=0; i <= strlen(record); i++) urecord[i] = tolower(record[i]); 
+            for(UINT32 i=0; i <= strlen(record); i++)
+                urecord[i] = tolower(record[i]); 
 
             // first word "comment" : this is the header
-			if(strncmp(urecord,"comment",7)==0) continue;
+            if(strncmp(urecord,"comment",7)==0) continue;
 
             // first letter '#' : this is a comment 
-			if(urecord[0]=='#') continue;
+            if(urecord[0]=='#') continue;
 
-			istringstream s(record);
-			recordNum++;
+            istringstream s(record);
+            recordNum++;
 
 
-			// cerr << "Record # " << recordNum << endl;
+            // cerr << "Record # " << recordNum << endl;
             field.clear();
-			getline(s, field, ',');
+            getline(s, field, ',');
             ASSERT(!field.empty(), "Empty comment field.");
             t_comment = field;
-			// cerr << "Comment " << t_comment << endl;
+            // cerr << "Comment " << t_comment << endl;
 
             field.clear();
-			getline(s, field, ',');
+            getline(s, field, ',');
             ASSERT(!field.empty(), "Empty thread-id field.");
             t_tid = StringToUINT32(field, "thread-id");
-			// cerr << "thread-id " << t_tid << endl;
+            // cerr << "thread-id " << t_tid << endl;
 
             field.clear();
-			getline(s, field, ',');
+            getline(s, field, ',');
             ASSERT(!field.empty(), "Empty region-id field.");
             t_rid = StringToUINT32(field, "region-id");
-			//cerr << "region-id " << t_rid << endl;
+            //cerr << "region-id " << t_rid << endl;
 
             field.clear();
-			getline(s, field, ',');
+            getline(s, field, ',');
             ASSERT(!field.empty(), "Empty start-icount field.");
             istringstream sistart(field);
-            t_icountStart  = StringToUINT64(field, "simulation-region-start-icount");
-			//cerr << "start-icount " << t_icountStart << endl;
+            t_icountStart  = StringToUINT64(field, 
+                                            "simulation-region-start-icount");
+            //cerr << "start-icount " << t_icountStart << endl;
 
             field.clear();
-			getline(s, field, ',');
+            getline(s, field, ',');
             ASSERT(!field.empty(), "Empty end-icount field.");
-            t_icountEnd  = StringToUINT64(field, "simulation-region-end-icount");
-			//cerr << "end-icount " << siend << endl;
+            t_icountEnd  = StringToUINT64(field, 
+                                          "simulation-region-end-icount");
+            //cerr << "end-icount " << siend << endl;
 
-            ASSERT(t_icountEnd > t_icountStart , "simulation-region-start-icount:"  + decstr(t_icountStart)  + " is not smaller than simulation-region-end-icount:" + decstr(t_icountEnd) );
+            ASSERT(t_icountEnd > t_icountStart , 
+                   "simulation-region-start-icount:"  + 
+                   decstr(t_icountStart)  + 
+                   " is not smaller than simulation-region-end-icount:" 
+                   + decstr(t_icountEnd) );
 
             field.clear();
-			getline(s, field, ',');
+            getline(s, field, ',');
             ASSERT(!field.empty(), "Empty region-weight field.");
             t_weight  = StringToDouble(field, "region-weight");
-            ASSERT((t_weight >= 0), "region-weight (" + field + ") must be positive" );
-            ASSERT((t_weight <= 1), "region-weight (" + field + ") must be between 0 and 1" );
-			//cerr << "region-weight" << t_weight << endl;
+            ASSERT((t_weight >= 0), 
+                    "region-weight (" + field + ") must be positive" );
+            ASSERT((t_weight <= 1), 
+                    "region-weight (" + field + ") must be between 0 and 1" );
+            //cerr << "region-weight" << t_weight << endl;
 
             string tail;
 
             s >> tail;
 
             if(!tail.empty())
-                cerr << "WARNING: regions:in file '" << filename << "' line number " << dec << lineNum << ": ignoring fields : " << tail  << endl;
+                cerr << "WARNING: regions:in file '" << filename << 
+                    "' line number " << dec << lineNum << 
+                    ": ignoring fields : " << tail  << endl;
 
             _regions[t_tid].push_back(IREGION());
             region = & _regions[t_tid].back();
@@ -494,12 +556,13 @@ class CONTROL_IREGIONS
                 << " rid " << region->_rid
                 << " tid " << region->_tid
                 << " weight " << region->_weight
-                << " weightTimesHundredThousand " << region->_weightTimesHundredThousand
+                << " weightTimesHundredThousand " 
+                << region->_weightTimesHundredThousand
                 << " icountStart " << region->_icountStart
                 << " icountEnd " << region->_icountEnd
                 << " warmup_length " << region->_warmup_length
                 << " prolog_length " << region->_prolog_length
-                << " region_length " << region->_region_length
+                << " region_length " << region->GetRegionLength()
                 << " epilog_length " << region->_epilog_length
                 << endl;
             }
@@ -518,8 +581,16 @@ class CONTROL_IREGIONS
                 {
                     if (xfile.is_open())
                     {
-                        if(_xcount==0) xfile << "comment,thread-id,region-id,simulation-region-start-icount,simulation-region-end-icount,region-weight" << endl;
-                        xfile << "#expanded region " << dec << span_begin << ":" << dec << span_end << " overlapped with event " << IEVENT::EventToString(event->type) << " at " << dec << event->icount << endl; 
+                        if(_xcount==0) 
+                            xfile << "comment,thread-id,region-id,"
+                            << "simulation-region-start-icount,"
+                            << "simulation-region-end-icount,region-weight" 
+                            << endl;
+                        xfile << "#expanded region " << dec << span_begin 
+                            << ":" << dec << span_end 
+                            << " overlapped with event " 
+                            << IEVENT::EventToString(event->type) << " at " 
+                            << dec << event->icount << endl; 
                         _xcount++;
                     }
                     return true;
@@ -536,7 +607,9 @@ class CONTROL_IREGIONS
             for ( UINT32 i = 0; i < _events[tid].size(); i++ )
             {
                 IEVENT * event = & _events[tid][i];
-                cerr << "tid " << dec << tid << " event " << IEVENT::EventToString(event->type) << " at " << dec << event->icount << endl; 
+                cerr << "tid " << dec << tid << " event " 
+                    << IEVENT::EventToString(event->type) << " at " 
+                    << dec << event->icount << endl; 
             }
         }
     }
@@ -545,12 +618,14 @@ class CONTROL_IREGIONS
     {
         for(UINT32 tid=0; tid < _maxThreads; tid++)
         {
-            sort(_events[tid].begin(), _events[tid].end(), IEVENT::EventLessThan);
+            sort(_events[tid].begin(), _events[tid].end(), 
+                IEVENT::EventLessThan);
         }
         TRACE_AddInstrumentFunction(Trace, this);
     }
 
-    VOID InsertOneEvent(UINT32 tid, UINT64 icount, CONTROL_EVENT type, IREGION * region)
+    VOID InsertOneEvent(UINT32 tid, UINT64 icount, 
+                        EVENT_TYPE type, IREGION * region)
     {
         IEVENT * event = 0;
         _events[tid].push_back(IEVENT());
@@ -577,7 +652,7 @@ class CONTROL_IREGIONS
                 // << " icountEnd " << region->_icountEnd
                 // << endl;
 
-                INT64 wstart = region->_icountStart - _rPrologKnob - _rWarmupKnob;
+                INT64 wstart = region->_icountStart-_rPrologKnob-_rWarmupKnob;
                 INT64 wend = region->_icountStart - _rPrologKnob;
                 INT64 pstart = wend;
                 INT64 pend = region->_icountStart;
@@ -633,23 +708,22 @@ class CONTROL_IREGIONS
                 {
                     if(_rWarmupKnob && (wstart > 0))
                     {
-                        InsertOneEvent(tid, wstart, CONTROL_WARMUP_START, region);
-                        InsertOneEvent(tid, wend, CONTROL_WARMUP_STOP, region);
+                        InsertOneEvent(tid, wstart, EVENT_WARMUP_START, region);
+                        InsertOneEvent(tid, wend, EVENT_WARMUP_STOP, region);
                         region->_warmup_length = wend - wstart;
                     }
                     if(_rPrologKnob && (pstart > 0))
                     {
-                        InsertOneEvent(tid, pstart, CONTROL_PROLOG_START, region);
-                        InsertOneEvent(tid, pend, CONTROL_PROLOG_STOP, region);
+                        InsertOneEvent(tid, pstart, EVENT_PROLOG_START, region);
+                        InsertOneEvent(tid, pend, EVENT_PROLOG_STOP, region);
                         region->_prolog_length = pend - pstart;
                     }
-                    InsertOneEvent(tid, rstart, CONTROL_START, region);
-                    InsertOneEvent(tid, rend, CONTROL_STOP, region);
-                    region->_region_length = rend - rstart;
+                    InsertOneEvent(tid, rstart, EVENT_START, region);
+                    InsertOneEvent(tid, rend, EVENT_STOP, region);
                     if(_rEpilogKnob && (eend > estart))
                     {
-                        InsertOneEvent(tid, estart, CONTROL_EPILOG_START, region);
-                        InsertOneEvent(tid, eend, CONTROL_EPILOG_STOP, region);
+                        InsertOneEvent(tid, estart, EVENT_EPILOG_START, region);
+                        InsertOneEvent(tid, eend, EVENT_EPILOG_STOP, region);
                         region->_epilog_length = eend - estart;
                     }
                 }
@@ -685,37 +759,43 @@ class CONTROL_IREGIONS
     static VOID Trace(TRACE trace, VOID * cregion)
     {
         CONTROL_IREGIONS * cr = static_cast<CONTROL_IREGIONS *>(cregion);
-        for (BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl))
+        BBL bbl = TRACE_BblHead(trace);
+        for (; BBL_Valid(bbl); bbl = BBL_Next(bbl))
         {
+            CONTROL_ARGS * ca = &cr->_control_args;
+            
             INS_InsertIfCall(BBL_InsHead(bbl), IPOINT_BEFORE,
-                               AFUNPTR(AdvanceIf),
-                               IARG_CALL_ORDER, CALL_ORDER_LAST,
-                               IARG_FAST_ANALYSIS_CALL,
-                               IARG_REG_VALUE, cr->_ScratchReg, 
-                               IARG_UINT32, BBL_NumIns(bbl), 
-                               IARG_END);
+                             AFUNPTR(AdvanceIf),
+                             IARG_CALL_ORDER, ca->get_instrument_order(),
+                             IARG_FAST_ANALYSIS_CALL,
+                             IARG_REG_VALUE, cr->_ScratchReg, 
+                             IARG_UINT32, BBL_NumIns(bbl), 
+                             IARG_END);
+            
             if (cr->_passContext)
             {
                 INS_InsertThenCall(BBL_InsHead(bbl), IPOINT_BEFORE,
-                               AFUNPTR(AdvanceThen),
-                               IARG_CALL_ORDER, CALL_ORDER_LAST,
-                               IARG_FAST_ANALYSIS_CALL,
-                               IARG_ADDRINT, cregion, 
-                               IARG_REG_VALUE, cr->_ScratchReg, 
-                               IARG_CONTEXT, 
-                               IARG_INST_PTR,
-                               IARG_END);
+                                   AFUNPTR(AdvanceThen),
+                                   IARG_CALL_ORDER, ca->get_instrument_order(),
+                                   IARG_FAST_ANALYSIS_CALL,
+                                   IARG_ADDRINT, cregion, 
+                                   IARG_REG_VALUE, cr->_ScratchReg, 
+                                   IARG_CONTEXT, 
+                                   IARG_INST_PTR,
+                                   IARG_END);
             }
             else 
             {
                 INS_InsertThenCall(BBL_InsHead(bbl), IPOINT_BEFORE,
-                               AFUNPTR(AdvanceThen), 
-                               IARG_FAST_ANALYSIS_CALL,
-                               IARG_ADDRINT, cregion, 
-                               IARG_REG_VALUE, cr->_ScratchReg, 
-                               IARG_ADDRINT, static_cast<ADDRINT>(0), // pass a null instead
-                               IARG_INST_PTR, 
-                               IARG_END);
+                                   AFUNPTR(AdvanceThen), 
+                                   IARG_CALL_ORDER, ca->get_instrument_order(),
+                                   IARG_FAST_ANALYSIS_CALL,
+                                   IARG_ADDRINT, cregion, 
+                                   IARG_REG_VALUE, cr->_ScratchReg,
+                                   // next pass a null instead as the context
+                                   IARG_ADDRINT, static_cast<ADDRINT>(0),
+                                   IARG_INST_PTR, 
+                                   IARG_END);
             }
         }
     }
@@ -726,7 +806,9 @@ class CONTROL_IREGIONS
         return ( td->_count >= td->_next_event_count);
     }
 
-    static VOID PIN_FAST_ANALYSIS_CALL AdvanceThen(CONTROL_IREGIONS * cr, THREAD_DATA * td, CONTEXT * ctxt, VOID * ip)
+    static VOID PIN_FAST_ANALYSIS_CALL AdvanceThen(CONTROL_IREGIONS * cr, 
+                                                   THREAD_DATA * td, 
+                                                   CONTEXT * ctxt, VOID * ip)
     {
         THREADID tid = td->_tid;
         UINT32 e = cr->_nextevent[tid];
@@ -737,9 +819,8 @@ class CONTROL_IREGIONS
         {
             if(td->_count < cr->_events[tid][i].icount) break;
             IEVENT * event = & cr->_events[tid][i];
-            // cerr << "TRIGGERED: tid " << dec << tid << " event " << IEVENT::EventToString(event->type) << " at " << dec << event->icount << endl; 
             cr->_last_triggered_region[tid] = event->iregion;
-            cr->_controlHandler(event->type, cr->_controlVal, ctxt, ip, tid);
+            cr->_cm->Fire(event->type, ctxt, ip, tid, TRUE);
         }
         cr->_nextevent[tid] = i;
         if(cr->_nextevent[tid] >= cr->_events[tid].size())
@@ -762,8 +843,6 @@ class CONTROL_IREGIONS
     KNOB<string> _rOutFileKnob;
     IREGION_VECTOR *_regions; // per thread vector containing region info
     IEVENT_VECTOR *_events;  // per thread list (sorted by icount) of events
-    CONTROL_HANDLER _controlHandler;
-    VOID * _controlVal;
     bool _active;
     THREADID _maxThreads;
     ofstream xfile;  // for writing out regions excluded due to overlap
@@ -772,5 +851,7 @@ class CONTROL_IREGIONS
     UINT32 _xcount; // number of regions excluded
     IREGION ** _last_triggered_region;
     REG _ScratchReg;
+    BOOL _passContext;
 };
+}
 #endif

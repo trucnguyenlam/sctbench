@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -56,7 +56,7 @@ static void * pushI(void *stack)
     // Don't use anything on the stack, since we're about to switch esp.
     // (Since they're normally addressed relative to ebp locals should be OK,
     // but this is safest)
-    register void * sp  asm("%ebx");
+    register void * sp  asm("%edx");
     register void * osp asm("%ecx");
 
     readStack(sp);
@@ -73,7 +73,7 @@ static void * pushIW(void *stack)
     // Don't use anything on the stack, since we're about to switch esp.
     // (Since they're normally addressed relative to ebp locals should be OK,
     // but this is safest)
-    register void * sp  asm("%ebx");
+    register void * sp  asm("%edx");
     register void * osp asm("%ecx");
 
     readStack(sp);
@@ -87,7 +87,7 @@ static void * pushIW(void *stack)
 
 static void * pushSP(void *stack)
 {
-    register void * sp  asm("%ebx");
+    register void * sp  asm("%edx");
     register void * osp asm("%ecx");
 
     readStack(sp);
@@ -101,7 +101,7 @@ static void * pushSP(void *stack)
 
 static void * pushSPIndirect(void *stack)
 {
-    register void * sp  asm("%ebx");
+    register void * sp  asm("%edx");
     register void * osp asm("%ecx");
 
     readStack(sp);
@@ -118,7 +118,7 @@ static void * pushSPIndirect(void *stack)
  */
 static void * pushA(void *stack)
 {
-    register void * sp  asm("%ebx");
+    register void * sp  asm("%edx");
     register void * osp asm("%ecx");
 
     readStack(sp);
@@ -135,7 +135,7 @@ static void * pushA(void *stack)
  */
 static void * pushF(void *stack)
 {
-    register void * sp  asm("%ebx");
+    register void * sp  asm("%edx");
     register void * osp asm("%ecx");
 
     readStack(sp);
@@ -149,10 +149,18 @@ static void * pushF(void *stack)
 
 static unsigned char xlat(unsigned char * base, unsigned char index)
 {
-    register unsigned char result asm ("%al") = index;
-    register unsigned char * b asm ("%ebx") = base;
+    // ebx is the PIC register, but its use is fixed in xlat. Preserve original value.
 
-    __asm__ ("xlat" : "=a"(result) : "a"(result), "r"(b));
+    register unsigned char result asm ("%al") = index;
+
+    __asm__ (
+             "movl %%ebx, %%edx;"
+             "movl %2, %%ebx;"
+             "xlat;"
+             "movl %%edx, %%ebx;"
+             : "=a"(result)
+             : "0"(result), "m"(base)
+             : "%edx");
 
     return result;
 }

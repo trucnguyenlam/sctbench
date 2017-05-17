@@ -6,8 +6,13 @@
 
 .text
     .align 4
+#ifdef TARGET_MAC
+.globl _CheckSPAlign
+_CheckSPAlign:
+#else
 .globl CheckSPAlign
 CheckSPAlign:
+#endif
     add     $-24, %rsp
     movdqa  %xmm0, 0(%rsp)
     add     $24, %rsp

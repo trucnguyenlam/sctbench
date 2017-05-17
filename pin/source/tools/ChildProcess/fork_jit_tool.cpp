@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -44,7 +44,11 @@ END_LEGAL */
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
-#if defined(TARGET_MAC) || defined(TARGET_BSD)
+#if defined(TARGET_ANDROID)
+#define SYS_fork __NR_fork
+#define SYS_clone __NR_clone
+#endif
+#if defined(TARGET_MAC) || defined(TARGET_BSD) || defined(TARGET_ANDROID)
 #include <sys/syscall.h>
 #else
 #include <syscall.h>
@@ -84,9 +88,9 @@ ofstream childOut;
  */
 VOID BeforeFork(THREADID threadid, const CONTEXT* ctxt, VOID * arg)
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     Out << "TOOL: Before fork." << endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 /*
@@ -99,9 +103,9 @@ VOID BeforeFork(THREADID threadid, const CONTEXT* ctxt, VOID * arg)
 VOID AfterForkInParent(THREADID threadid, const CONTEXT* ctxt, VOID * arg)
 {
     pid_t parentPid = *(pid_t*)&arg;
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     Out << "TOOL: After fork in parent." << endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
     if (PIN_GetPid() != parentPid)
     {
     	cerr << "PIN_GetPid() fails in parent process" << endl;
@@ -158,9 +162,9 @@ VOID AfterForkInChild(THREADID threadid, const CONTEXT* ctxt, VOID * arg)
     // Since that thread does not exist in the child, it will never release the lock.
     // Compensate by re-initializing the lock here in the child.
 
-    InitLock(&lock);
-    GetLock(&lock, threadid+1);
-    ReleaseLock(&lock);
+
+    PIN_GetLock(&lock, threadid+1);
+    PIN_ReleaseLock(&lock);
 
     pid_t parentPid = *(pid_t*)&arg;
 
@@ -227,7 +231,9 @@ int main(INT32 argc, CHAR **argv)
     {
         return Usage();
     }
-	
+
+    PIN_InitLock(&lock);
+
     Out.open(KnobOutputFile.Value().c_str());
     
     unsigned long parentPid = (unsigned long)PIN_GetPid();

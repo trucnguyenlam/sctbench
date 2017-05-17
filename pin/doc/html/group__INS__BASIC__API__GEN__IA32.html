@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -27,7 +28,7 @@
 </h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef UINT32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#ga777febf29369ab66655906ba68464e5">LEVEL_CORE::INS_PROP</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__INS__BASIC__API__IA32.html#g6d69415447fed4e2d09d754cf54ef5fb">PREDICATE_IA32</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g86f7fb67313713de42a734956e27cf0e">LEVEL_BASE::PREDICATE</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g85141a6f16d6f95209af26fe902fc605">LEVEL_CORE::MEMORY_TYPE</a> { <br>
@@ -71,7 +72,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">USIZE&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#gf1f6351e4294109788ea60464cfe9a14">LEVEL_CORE::INS_MemoryWriteSize</a> (INS ins)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">PREDICATE&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g0ad730434cff7e93e90ff466cf1bfc4f">LEVEL_CORE::INS_GetPredicate</a> (INS ins)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g86f7fb67313713de42a734956e27cf0e">PREDICATE</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g0ad730434cff7e93e90ff466cf1bfc4f">LEVEL_CORE::INS_GetPredicate</a> (INS ins)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">USIZE&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g2b57e7dcb4af40e292c06a516d843021">LEVEL_CORE::INS_MemoryReadSize</a> (INS ins)</td></tr>
 
@@ -117,6 +118,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g81c6f7a582a31031b36e9d27102d7fcd">LEVEL_CORE::INS_IsIndirectBranchOrCall</a> (INS ins)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#ge5786fb5793b2391e23e894fd4952ad8">LEVEL_CORE::INS_HasExplicitMemoryReference</a> (INS ins)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__REG__CPU__IA32.html#g3b77029a2a445f70f0206dbad1e4e641">REG</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g3eec67d7944acc358f7dd3f6dbcb526e">LEVEL_CORE::INS_RegR</a> (INS x, UINT32 k)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__REG__CPU__IA32.html#g3b77029a2a445f70f0206dbad1e4e641">REG</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g4e23a38737e9b2a76f97b7b8d2517030">LEVEL_CORE::INS_RegW</a> (INS x, UINT32 k)</td></tr>
@@ -148,6 +151,10 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g3dc420313ce3f82e4ca60960f6f1cd44">LEVEL_CORE::INS_IsOriginal</a> (INS ins)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g3f20e37497b0ed02b03ca709a0ae42d1">LEVEL_CORE::INS_Disassemble</a> (INS ins)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">xed_decoded_inst_t *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g8e55cac19b118864f2c498e65e572eba">LEVEL_CORE::INS_XedDec</a> (INS ins)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__REG__CPU__IA32.html#g3b77029a2a445f70f0206dbad1e4e641">REG</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g27e0ce7f53d8f6f3108d679f59c8a37a">LEVEL_CORE::INS_XedExactMapToPinReg</a> (unsigned int r)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">UINT32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g5ee651cd69d153bb2ee86594a37e3ad6">LEVEL_CORE::INS_MemoryOperandCount</a> (INS ins)</td></tr>
 
@@ -191,13 +198,13 @@ Use these functions to examine an instruction. They work for all instruction set
  <b>CPU:</b> All<br>
  </dd></dl>
 <hr><h2>Typedef Documentation</h2>
-<a class="anchor" name="ga777febf29369ab66655906ba68464e5"></a><!-- doxytag: member="LEVEL_CORE::INS_PROP" ref="ga777febf29369ab66655906ba68464e5" args="" --><p>
+<a class="anchor" name="g86f7fb67313713de42a734956e27cf0e"></a><!-- doxytag: member="LEVEL_BASE::PREDICATE" ref="g86f7fb67313713de42a734956e27cf0e" args="" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">typedef UINT32 <a class="el" href="group__INS__BASIC__API__GEN__IA32.html#ga777febf29369ab66655906ba68464e5">LEVEL_CORE::INS_PROP</a>          </td>
+          <td class="md" nowrap valign="top">typedef <a class="el" href="group__INS__BASIC__API__IA32.html#g6d69415447fed4e2d09d754cf54ef5fb">PREDICATE_IA32</a> <a class="el" href="group__INS__BASIC__API__IA32.html#g6d69415447fed4e2d09d754cf54ef5fb">LEVEL_BASE::PREDICATE</a>          </td>
         </tr>
       </table>
     </td>
@@ -211,7 +218,9 @@ Use these functions to examine an instruction. They work for all instruction set
     <td>
 
 <p>
-Generic INS_PROP     </td>
+Predication type in instructions, see <a class="el" href="group__INS__BASIC__API__IA32.html#g6d69415447fed4e2d09d754cf54ef5fb">PREDICATE_IA32</a>. 
+<p>
+    </td>
   </tr>
 </table>
 <hr><h2>Enumeration Type Documentation</h2>
@@ -235,8 +244,7 @@ Generic INS_PROP     </td>
     <td>
 
 <p>
-<dl compact><dt><b>Returns:</b></dt><dd>true if this instruction has a memory op that can be rewritten Exclude memory accesses with ip or sp base, or absolute Exclude a write if has the same base register as a read </dd></dl>
-    </td>
+Memory type of argument     </td>
   </tr>
 </table>
 <a class="anchor" name="g3b24ec17730bcf65f7ff170f7ff49fba"></a><!-- doxytag: member="LEVEL_CORE::SYSCALL_STANDARD" ref="g3b24ec17730bcf65f7ff170f7ff49fba" args="" --><p>
@@ -404,6 +412,7 @@ Software interruption (INT n) in Windows. </td></tr>
 
 <p>
 The category of an instruction is a higher level semantic description of an instruction than its opcode (<a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g82b583eb54370b90eb16013b9ceccb0a">INS_Opcode</a>). So, for instance, you can test for a conditional branch by using INS_Category(ins) == XED_CATEGORY_COND_BR, whereas using INS_Opcode(ins) would require that you enumerate all twenty conditional branch opcodes.<p>
+The full mapping of opcodes to categories can be found in the idata.txt file in the XED distribution (which is distributed as part of the Pin kit). The category enumeration can be found in the file "xed-category-enum.h".<p>
 A category can be converted into a string by using <a class="el" href="group__INS__BASIC__API__GEN__IA32.html#gb11cc4f8c36cdfe05660e261aee9ae1e">CATEGORY_StringShort</a>.<p>
 <dl compact><dt><b>Returns:</b></dt><dd>Instruction category </dd></dl>
     </td>
@@ -463,7 +472,8 @@ A category can be converted into a string by using <a class="el" href="group__IN
     <td>
 
 <p>
-Disassembly type listing of instruction     </td>
+<dl compact><dt><b>Returns:</b></dt><dd>std::string disassembly of instruction </dd></dl>
+    </td>
   </tr>
 </table>
 <a class="anchor" name="g52ec8f9afe5ad2da77ab700e8d59f832"></a><!-- doxytag: member="LEVEL_CORE::INS_Extension" ref="g52ec8f9afe5ad2da77ab700e8d59f832" args="(const INS ins)" --><p>
@@ -501,7 +511,7 @@ Disassembly type listing of instruction     </td>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">PREDICATE LEVEL_CORE::INS_GetPredicate           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g86f7fb67313713de42a734956e27cf0e">PREDICATE</a> LEVEL_CORE::INS_GetPredicate           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top">INS&nbsp;</td>
           <td class="mdname1" valign="top" nowrap> <em>ins</em>          </td>
@@ -520,8 +530,38 @@ Disassembly type listing of instruction     </td>
     <td>
 
 <p>
-<dl compact><dt><b>Returns:</b></dt><dd>predicate for instruction (see PREDICATE)</dd></dl>
+<dl compact><dt><b>Returns:</b></dt><dd>predicate for instruction (see <a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g86f7fb67313713de42a734956e27cf0e">PREDICATE</a>)</dd></dl>
 CMOVcc and FMOVcc instructions are treated as predicated. Rep string ops are treated as predicated.     </td>
+  </tr>
+</table>
+<a class="anchor" name="ge5786fb5793b2391e23e894fd4952ad8"></a><!-- doxytag: member="LEVEL_CORE::INS_HasExplicitMemoryReference" ref="ge5786fb5793b2391e23e894fd4952ad8" args="(INS ins)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">BOOL LEVEL_CORE::INS_HasExplicitMemoryReference           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">INS&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>ins</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Test if this instruction has an explict memory operand. We include the memory operand in lea.<p>
+<dl compact><dt><b>Returns:</b></dt><dd>TRUE if the instruction is has an explicit memory operand </dd></dl>
+    </td>
   </tr>
 </table>
 <a class="anchor" name="g85371f49008f053ffa09ac242ae1c9e3"></a><!-- doxytag: member="LEVEL_CORE::INS_HasFallThrough" ref="g85371f49008f053ffa09ac242ae1c9e3" args="(INS ins)" --><p>
@@ -608,7 +648,7 @@ Note that an unconditional branch or call to the next instruction still doesn't 
     <td>
 
 <p>
-<dl compact><dt><b>Returns:</b></dt><dd>Used to indicate no instruction</dd></dl>
+<dl compact><dt><b>Returns:</b></dt><dd>Invalid instruction used in iterators <a class="el" href="group__INS__BASIC__API__GEN__IA32.html#gea9aa925c0d0c3a898843e32d40756ae">INS_Prev</a> and <a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g2711640bba1359feb3385a0c7b42ff4b">INS_Next</a></dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> All<br>
@@ -1403,7 +1443,8 @@ Detection of stack accesses is done in the same way as for <a class="el" href="g
     <td>
 
 <p>
-Is the nth memory operand read?     </td>
+<dl compact><dt><b>Returns:</b></dt><dd>TRUE if memory operand memopIdx is read </dd></dl>
+    </td>
   </tr>
 </table>
 <a class="anchor" name="g0cb7a4138a881972c59ca8c855765fba"></a><!-- doxytag: member="LEVEL_CORE::INS_MemoryOperandIsWritten" ref="g0cb7a4138a881972c59ca8c855765fba" args="(INS ins, UINT32 memopIdx)" --><p>
@@ -1440,7 +1481,8 @@ Is the nth memory operand read?     </td>
     <td>
 
 <p>
-Is the nth memory operand written?     </td>
+<dl compact><dt><b>Returns:</b></dt><dd>TRUE if memory operand memopIdx is written </dd></dl>
+    </td>
   </tr>
 </table>
 <a class="anchor" name="ga7cbec34f1fc0e6387b44304f38f41c8"></a><!-- doxytag: member="LEVEL_CORE::INS_MemoryOperandSize" ref="ga7cbec34f1fc0e6387b44304f38f41c8" args="(INS ins, UINT32 memoryOp)" --><p>
@@ -1634,7 +1676,7 @@ If you are trying to test what the opcode of an instruction is, use <a class="el
     <td>
 
 <p>
-Get the address of the next instruction. For the IA-64 architecture, it does not make sense to add the size to the address to get the next instruction so use this primitive for all architectures. <dl compact><dt><b>Returns:</b></dt><dd>Address of instruction that follows this one </dd></dl>
+Get the address of the next instruction. <dl compact><dt><b>Returns:</b></dt><dd>Address of instruction that follows this one </dd></dl>
     </td>
   </tr>
 </table>
@@ -2037,11 +2079,69 @@ Check to see if the given instruction is a system call and return corresponding 
     <td>
 
 <p>
-<dl compact><dt><b>Returns:</b></dt><dd>True if x is not <a class="el" href="group__INS__BASIC__API__GEN__IA32.html#gee7afe69950c06eceea88705d6639101">INS_Invalid()</a></dd></dl>
+<dl compact><dt><b>Returns:</b></dt><dd>Invalid instruction used in iterators <a class="el" href="group__INS__BASIC__API__GEN__IA32.html#gea9aa925c0d0c3a898843e32d40756ae">INS_Prev</a> and <a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g2711640bba1359feb3385a0c7b42ff4b">INS_Next</a></dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> All<br>
  </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="g8e55cac19b118864f2c498e65e572eba"></a><!-- doxytag: member="LEVEL_CORE::INS_XedDec" ref="g8e55cac19b118864f2c498e65e572eba" args="(INS ins)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">xed_decoded_inst_t* LEVEL_CORE::INS_XedDec           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">INS&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>ins</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Returns:</b></dt><dd>This provides the pointer to the decoded xed instruction. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="g27e0ce7f53d8f6f3108d679f59c8a37a"></a><!-- doxytag: member="LEVEL_CORE::INS_XedExactMapToPinReg" ref="g27e0ce7f53d8f6f3108d679f59c8a37a" args="(unsigned int r)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="group__REG__CPU__IA32.html#g3b77029a2a445f70f0206dbad1e4e641">REG</a> LEVEL_CORE::INS_XedExactMapToPinReg           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">unsigned int&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>r</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Convert a XED xed_reg_enum_t register to a Pin REG type. <dl compact><dt><b>Returns:</b></dt><dd>a valid pin register, but never an invalid one. Asserts if there is no exact map. </dd></dl>
     </td>
   </tr>
 </table>
@@ -2102,7 +2202,7 @@ To handle the case of zero iteration REP prefixed instructions (which used to dy
 Note that this is the same behavior as for CMOVcc instructions which can also have conditional memory accesses, but have never generated a zero memory size operand.     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:16 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

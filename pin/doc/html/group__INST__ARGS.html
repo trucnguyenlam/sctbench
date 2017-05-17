@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -97,6 +98,8 @@
 &nbsp;&nbsp;<a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b5681558cb5ef80789d5f6b0de4881efa7d50">IARG_MEMORYOP_PTR</a>, 
 <br>
 &nbsp;&nbsp;<a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56812cfdde475308523c9ada43f7f2e7c9ee">IARG_MULTI_MEMORYACCESS_EA</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56818c269a16a59d5478f87392257e94c69e">IARG_EXPLICIT_MEMORY_EA</a>, 
 <br>
 &nbsp;&nbsp;<a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b568177719c0c3ef7fa35672eefe4209d8361">IARG_BRANCH_TAKEN</a>, 
 <br>
@@ -226,7 +229,7 @@
 <br>
 &nbsp;&nbsp;<a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b5681883955f1b855db490b9fca95e5497995">IARG_MEMORYOP_EA</a>, 
 <br>
-&nbsp;&nbsp;<b>IARG_MEMORYOP_MASKED_ON</b>, 
+&nbsp;&nbsp;<a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b568163c1683c854070c2a5cea96b426722e5">IARG_MEMORYOP_MASKED_ON</a>, 
 <br>
 &nbsp;&nbsp;<a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b5681f5d6d43c28446f21292bbedc33f2815f">IARG_TSC</a>, 
 <br>
@@ -390,11 +393,11 @@ Type: UINT32. Constant (additional integer arg required). </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b5681897daee5920e5c9b437f7da52faa758e"></a><!-- doxytag: member="IARG_INST_PTR" ref="gg7e2c955c99fa84246bb2bce1525b5681897daee5920e5c9b437f7da52faa758e" args="" -->IARG_INST_PTR</em>&nbsp;</td><td>
 Type: ADDRINT. The address of the instrumented instruction. This value does not change at IPOINT_AFTER. This is simply shorthand for <code>IARG_ADDRINT, INS_Address(ins)</code>. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b56818b1a445366074f7277035293fcc20c98"></a><!-- doxytag: member="IARG_REG_VALUE" ref="gg7e2c955c99fa84246bb2bce1525b56818b1a445366074f7277035293fcc20c98" args="" -->IARG_REG_VALUE</em>&nbsp;</td><td>
-Type: ADDRINT for integer register. Value of a register (additional register arg required) <a class="el" href="group__REG__BASIC__API.html">REG: Register Object</a>. </td></tr>
+Type: ADDRINT for integer register. Value of a register (additional register arg required) <a class="el" href="group__REG__BASIC__API.html">REG: Register Object</a> Basically, this cannot be used to retrieve the value of registers whose size is different than ADDRINT's (i.e.: x87/XMM/YMM/ZMM registers) or registeres which are not architectural (REG_PIN_*), but there are some exceptions for this rule. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b5681729568e054f57c406ca89ae9de8312d1"></a><!-- doxytag: member="IARG_REG_REFERENCE" ref="gg7e2c955c99fa84246bb2bce1525b5681729568e054f57c406ca89ae9de8312d1" args="" -->IARG_REG_REFERENCE</em>&nbsp;</td><td>
-Type: "PIN_REGISTER *". Pointer to union holding register contents. Registers are updated. Not supported in Probe mode or with the Buffering APIs. </td></tr>
+Type: "@ref PIN_REGISTER *". Pointer to union holding register contents. Registers are updated. Not supported in Probe mode or with the Buffering APIs. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b568194d02495b9e10f52e66b0dfc51008519"></a><!-- doxytag: member="IARG_REG_CONST_REFERENCE" ref="gg7e2c955c99fa84246bb2bce1525b568194d02495b9e10f52e66b0dfc51008519" args="" -->IARG_REG_CONST_REFERENCE</em>&nbsp;</td><td>
-Type: "PIN_REGISTER *". Pointer to union holding register contents. Registers are not updated. Not supported with the Buffering APIs. </td></tr>
+Type: "@ref PIN_REGISTER *". Pointer to union holding register contents. Registers are not updated. Not supported with the Buffering APIs. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b56813cf8e5e03da1a8033539aab405df247a"></a><!-- doxytag: member="IARG_MEMORYREAD_EA" ref="gg7e2c955c99fa84246bb2bce1525b56813cf8e5e03da1a8033539aab405df247a" args="" -->IARG_MEMORYREAD_EA</em>&nbsp;</td><td>
 Type: ADDRINT. Effective address of a memory read, only valid if INS_IsMemoryRead is true and at IPOINT_BEFORE. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b5681ddc90a91094da2f04db95f3a2ecef733"></a><!-- doxytag: member="IARG_MEMORYREAD2_EA" ref="gg7e2c955c99fa84246bb2bce1525b5681ddc90a91094da2f04db95f3a2ecef733" args="" -->IARG_MEMORYREAD2_EA</em>&nbsp;</td><td>
@@ -415,6 +418,8 @@ Same as IARG_MEMORYWRITE_EA, but allows registering a <a class="el" href="group_
 Same as IARG_MEMORYOP_EA, but allows registering a <a class="el" href="group__PIN__CONTROL.html#g0411d789e6ec1dbfa0cdf936e91544ab">MEMORY_ADDR_TRANS_CALLBACK</a>. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b56812cfdde475308523c9ada43f7f2e7c9ee"></a><!-- doxytag: member="IARG_MULTI_MEMORYACCESS_EA" ref="gg7e2c955c99fa84246bb2bce1525b56812cfdde475308523c9ada43f7f2e7c9ee" args="" -->IARG_MULTI_MEMORYACCESS_EA</em>&nbsp;</td><td>
 Type: PIN_MULTI_MEM_ACCESS_INFO* the addresses read by the various vgather* instructions. </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b56818c269a16a59d5478f87392257e94c69e"></a><!-- doxytag: member="IARG_EXPLICIT_MEMORY_EA" ref="gg7e2c955c99fa84246bb2bce1525b56818c269a16a59d5478f87392257e94c69e" args="" -->IARG_EXPLICIT_MEMORY_EA</em>&nbsp;</td><td>
+Type: ADDRINT. Effective address of the explicit memory operand. Useful for instrumenting LEA instructions. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b568177719c0c3ef7fa35672eefe4209d8361"></a><!-- doxytag: member="IARG_BRANCH_TAKEN" ref="gg7e2c955c99fa84246bb2bce1525b568177719c0c3ef7fa35672eefe4209d8361" args="" -->IARG_BRANCH_TAKEN</em>&nbsp;</td><td>
 Type: BOOL. Non zero if a branch is taken. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b5681883669f246ea24704e3a30a8ec25354b"></a><!-- doxytag: member="IARG_BRANCH_TARGET_ADDR" ref="gg7e2c955c99fa84246bb2bce1525b5681883669f246ea24704e3a30a8ec25354b" args="" -->IARG_BRANCH_TARGET_ADDR</em>&nbsp;</td><td>
@@ -466,7 +471,7 @@ Type: PROTO. The function prototype of the application function. See <a class="e
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b5681d04f1eb185e914f0f11a839e2c26cbd8"></a><!-- doxytag: member="IARG_THREAD_ID" ref="gg7e2c955c99fa84246bb2bce1525b5681d04f1eb185e914f0f11a839e2c26cbd8" args="" -->IARG_THREAD_ID</em>&nbsp;</td><td>
 Type: THREADID. Application thread id. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b56819673f5f1a6c7d03d31a2eab0af88628e"></a><!-- doxytag: member="IARG_CONTEXT" ref="gg7e2c955c99fa84246bb2bce1525b56819673f5f1a6c7d03d31a2eab0af88628e" args="" -->IARG_CONTEXT</em>&nbsp;</td><td>
-Type: "CONTEXT *". Handle to access a context (architectural state). When passed at IPOINT_AFTER or IPOINT_TAKEN_BRANCH, PC points to the next instruction. Upon return from the analysis routine, Pin ignores any changes you've made to the CONTEXT. If you want to change register values, use IARG_REG_REFERENCE, IARG_RETURN_REGS, or <a class="el" href="group__CONTEXT__API.html#gc12dbb3ebd227f71a9644733f6faa116">PIN_ExecuteAt()</a>. IARG_CONTEXT is not supported on IA-64 architectures. See <a class="el" href="group__INST__ARGS.html#PROBE_IARGS">Probe Mode Considerations</a> for probe mode restrictions. Not supported with the Buffering APIs. </td></tr>
+Type: "CONTEXT *". Handle to access a context (architectural state). When passed at IPOINT_AFTER or IPOINT_TAKEN_BRANCH, PC points to the next instruction. Upon return from the analysis routine, Pin ignores any changes you've made to the CONTEXT. If you want to change register values, use IARG_REG_REFERENCE, IARG_RETURN_REGS, or <a class="el" href="group__CONTEXT__API.html#gc12dbb3ebd227f71a9644733f6faa116">PIN_ExecuteAt()</a>. See <a class="el" href="group__INST__ARGS.html#PROBE_IARGS">Probe Mode Considerations</a> for probe mode restrictions. Not supported with the Buffering APIs. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b568152f3e4ae9dfb93f4691d7342ee937c4d"></a><!-- doxytag: member="IARG_CONST_CONTEXT" ref="gg7e2c955c99fa84246bb2bce1525b568152f3e4ae9dfb93f4691d7342ee937c4d" args="" -->IARG_CONST_CONTEXT</em>&nbsp;</td><td>
 Type: "CONTEXT *". Like IARG_CONTEXT, but tool receives a read-only CONTEXT*. PIN_SetContextReg and PIN_SetContextFPState will not work with IARG_CONST_CONTEXT. The overhead of IARG_CONST_CONTEXT is considerably lower than that of IARG_CONTEXT. Tools that need a CONTEXT* and only read from it should use IARG_CONST_CONTEXT. Tools that need a CONTEXT* and only occasionally write into it should also use IARG_CONST_CONTEXT. One example of a tool that needs a CONTEXT* and only occasionally writes into it, would be an emulator that would need to write into the CONTEXT* only when an exception occurs, and then raise an exception with the CONTEXT*. PIN_SaveContext can be used by the tool to get a writable copy of the CONTEXT*. IARG_CONST_CONTEXT is available only in Jit mode, and is silently deprecated to IARG_CONTEXT in probe mode </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b5681515131a736477cab312a7b542f7618cf"></a><!-- doxytag: member="IARG_PRESERVE" ref="gg7e2c955c99fa84246bb2bce1525b5681515131a736477cab312a7b542f7618cf" args="" -->IARG_PRESERVE</em>&nbsp;</td><td>
@@ -525,6 +530,8 @@ DEPRECATED, see IARG_FUNCARG_ENTRYPOINT_{VALUE,REFERENCE}. </td></tr>
 DEPRECATED, see IARG_FUNCARG_ENTRYPOINT_{VALUE,REFERENCE}. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b5681883955f1b855db490b9fca95e5497995"></a><!-- doxytag: member="IARG_MEMORYOP_EA" ref="gg7e2c955c99fa84246bb2bce1525b5681883955f1b855db490b9fca95e5497995" args="" -->IARG_MEMORYOP_EA</em>&nbsp;</td><td>
 Type: ADDRINT. Effective address of a memory op (memory op index is next arg); only valid at IPOINT_BEFORE. </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b568163c1683c854070c2a5cea96b426722e5"></a><!-- doxytag: member="IARG_MEMORYOP_MASKED_ON" ref="gg7e2c955c99fa84246bb2bce1525b568163c1683c854070c2a5cea96b426722e5" args="" -->IARG_MEMORYOP_MASKED_ON</em>&nbsp;</td><td>
+Type: BOOL. TRUE if the this memory op (memory op index is next arg) is masked on; only valid at IPOINT_BEFORE. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b5681f5d6d43c28446f21292bbedc33f2815f"></a><!-- doxytag: member="IARG_TSC" ref="gg7e2c955c99fa84246bb2bce1525b5681f5d6d43c28446f21292bbedc33f2815f" args="" -->IARG_TSC</em>&nbsp;</td><td>
 Type: UINT64. Time Stamp Counter value at the point of entering the analysis call. </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg7e2c955c99fa84246bb2bce1525b56815418f2b61ef868b49cc06f059f88583f"></a><!-- doxytag: member="IARG_FILE_NAME" ref="gg7e2c955c99fa84246bb2bce1525b56815418f2b61ef868b49cc06f059f88583f" args="" -->IARG_FILE_NAME</em>&nbsp;</td><td>
@@ -704,7 +711,7 @@ Free a container to hold instrumentation arguments. Pass to *_InsertCall by usin
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

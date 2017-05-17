@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -55,7 +55,7 @@ int Boo(  CONTEXT * ctxt, AFUNPTR pf_Green )
     char ret = 0;
 
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, pf_Green,
+                                 CALLINGSTD_DEFAULT, pf_Green, NULL,
                                  PIN_PARG(char), &ret,
                                  PIN_PARG(int), INT_MIN,
                                  PIN_PARG(int), INT_MAX,

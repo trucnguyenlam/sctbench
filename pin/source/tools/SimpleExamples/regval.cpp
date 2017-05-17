@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -28,12 +28,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
-// This tool demonstrates the use of the REGVAL struct and matching APIs.
+// This tool demonstrates the use of the PIN_GetContextRegval API for various types of registers.
 // It is used with the regval_app application.
 
 #include <fstream>
 #include <cassert>
 #include "pin.H"
+#include "../Utils/regvalue_utils.h"
 
 using std::ofstream;
 
@@ -81,23 +82,20 @@ static void StopRoutine()
 static void PrintRegisters(const CONTEXT * ctxt)
 {
     if (!printRegsNow) return;
+    static const UINT stRegSize = REG_Size(REG_ST_BASE);
     for (int reg = (int)REG_GR_BASE; reg <= (int)REG_GR_LAST; ++reg)
     {
-        REGVAL regval;
-        PIN_GetContextRegval(ctxt, (REG)reg, &regval);
-        UINT64 val;
-        PIN_ReadRegvalQWord(&regval, &val, 0);
+        // For the integer registers, it is safe to use ADDRINT. But make sure to pass a pointer to it.
+        ADDRINT val;
+        PIN_GetContextRegval(ctxt, (REG)reg, reinterpret_cast<UINT8*>(&val));
         OutFile << REG_StringShort((REG)reg) << ": 0x" << hex << val << endl;
     }
     for (int reg = (int)REG_ST_BASE; reg <= (int)REG_ST_LAST; ++reg)
     {
-        REGVAL regval;
-        PIN_GetContextRegval(ctxt, (REG)reg, &regval);
-        UINT64 val[2]; // the x87 registers are 80-bit long,
-        PIN_ReadRegvalQWord(&regval, &val[0], 0);
-        PIN_ReadRegvalQWord(&regval, &val[1], 1);
-        // print in reverse order since index zero specifies the least significant word
-        OutFile << REG_StringShort((REG)reg) << ": 0x" << hex << val[1] << val[0] << endl;
+        // For the x87 FPU stack registers, using PIN_REGISTER ensures a large enough buffer.
+        PIN_REGISTER val;
+        PIN_GetContextRegval(ctxt, (REG)reg, reinterpret_cast<UINT8*>(&val));
+        OutFile << REG_StringShort((REG)reg) << ": " << Val2Str(&val, stRegSize) << endl;
     }
 }
 

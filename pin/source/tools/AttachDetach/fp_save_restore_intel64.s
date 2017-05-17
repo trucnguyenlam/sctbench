@@ -32,7 +32,7 @@ GetLock:
 try_again:
     lock cmpxchg %rsi, (%rdi)
     je done
-    call sched_yield
+    call sched_yield@plt
     jmp try_again
 done:
     pop %rdi

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -178,7 +178,7 @@ VOID BarReplacement(  CONTEXT * ctxt, AFUNPTR pf_Bar, INT64 param1, INT64 param2
         exit (-1);
     }
 
-    PIN_CallApplicationFunction( ctxt, PIN_ThreadId(), CALLINGSTD_DEFAULT, pf_Bar,
+    PIN_CallApplicationFunction( ctxt, PIN_ThreadId(), CALLINGSTD_DEFAULT, pf_Bar, NULL,
                                  PIN_PARG(void),
                                  PIN_PARG(INT64), param1Replacement,
                                  PIN_PARG(INT64), param2Replacement,

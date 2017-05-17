@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -496,29 +496,34 @@ VOID Fini(INT32 code, VOID *v)
             if (threadData[i].numEffectiveAddressesAnalyzed[j] == 0)
             {
                 fprintf(trace, "ERROR - Thread %x: no segment[%s] based accesses\n", i, GetMemoryAccessTypeString(j));
+				fflush(trace);
                 hadError = TRUE;
             }
             else
             {
                 fprintf(trace, "Thread %x: verified %d segmented[%s] accesses\n", i, threadData[i].numEffectiveAddressesAnalyzed[j], GetMemoryAccessTypeString(j));
+				fflush(trace);
             }
         }
         fprintf(trace, "\n");
+		fflush(trace);
     }
     if (!hadError)
     {
         printf ("SUCCESS\n");
+		fflush(stdout);
     }
     else
     {
         printf ("Had ERRORS - search above for string ERROR\n");
+		fflush(stdout);
     }
 }
 
 PIN_LOCK lock;
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     fprintf(trace, "thread begin %x %x\n",threadid, numThreads);
     numThreads++;
     if (threadid < MAX_THREADS)
@@ -537,13 +542,15 @@ VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
         fprintf (trace, "ERROR - maximum #threads exceeded\n");
     }
     fflush(trace);
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 
 int main(int argc, char *argv[])
 {
     PIN_Init(argc, argv);
+
+    PIN_InitLock(&lock);
 
     PIN_AddThreadStartFunction(ThreadStart, 0);
     INS_AddInstrumentFunction(Instruction, 0);

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -31,10 +31,10 @@ END_LEGAL */
 #include <stdio.h>
 #include "pin.H"
 #include <iostream>
-#include "instlib.H"
+#include "control_manager.H"
 
 
-using namespace INSTLIB;
+using namespace CONTROLLER;
 
 
 //
@@ -45,14 +45,14 @@ using namespace INSTLIB;
 
 
 // Contains knobs and instrumentation to recognize start/stop points
-CONTROL control;
+CONTROL_MANAGER control;
 
-VOID Handler(CONTROL_EVENT ev, VOID * v, CONTEXT * ctxt, VOID * ip , THREADID tid)
+VOID Handler(EVENT_TYPE ev, VOID * v, CONTEXT * ctxt, VOID * ip , THREADID tid,BOOL bcast)
 {
 
     switch(ev)
     {
-      case CONTROL_START:
+      case EVENT_START:
         if (ip == 0)
         {
             std::cerr << " IP zero before detach; use -skip/-ppfile/-start_address to specify detach location." << endl;
@@ -62,7 +62,7 @@ VOID Handler(CONTROL_EVENT ev, VOID * v, CONTEXT * ctxt, VOID * ip , THREADID ti
         PIN_Detach();
         break;
     
-      case CONTROL_STOP:
+      case EVENT_STOP:
         std::cerr << "Stop" << endl;
         break;
 
@@ -102,7 +102,8 @@ int main(int argc, char * argv[])
     }
 
     // Activate alarm, must be done before PIN_StartProgram
-    control.CheckKnobs(Handler, 0);
+    control.RegisterHandler(Handler, 0, FALSE);
+    control.Activate();
     
     // Callback function "byeWorld" is invoked
     // right before Pin releases control of the application

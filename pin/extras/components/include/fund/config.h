@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -173,6 +173,22 @@ END_LEGAL */
 #   define FUND_HOST_LINUX
 #   define FUND_HOST_IA32_LINUX
 #   define FUND_HOST_X86_LINUX
+#elif (FUND_TC_HOSTCPU == FUND_CPU_INTEL64) && (FUND_TC_HOSTOS == FUND_OS_ANDROID)
+#   define FUND_HOST_INTEL64
+#   define FUND_HOST_64X86
+#   define FUND_HOST_X86
+#   define FUND_HOST_ANDROID
+#   define FUND_HOST_LINUX
+#   define FUND_HOST_UNIX
+#   define FUND_HOST_INTEL64_ANDROID
+#   define FUND_HOST_INTEL64_UNIX
+#   define FUND_HOST_INTEL64_LINUX
+#   define FUND_HOST_64X86_ANDROID
+#   define FUND_HOST_64X86_LINUX
+#   define FUND_HOST_64X86_UNIX
+#   define FUND_HOST_X86_ANDROID
+#   define FUND_HOST_X86_UNIX
+#   define FUND_HOST_X86_LINUX
 # else
 #   error "Illegal host CPU / OS combination"
 #endif
@@ -299,6 +315,22 @@ END_LEGAL */
 #   define FUND_TARGET_LINUX
 #   define FUND_TARGET_IA32_LINUX
 #   define FUND_TARGET_X86_LINUX
+#elif (FUND_TC_TARGETCPU == FUND_CPU_INTEL64) && (FUND_TC_TARGETOS == FUND_OS_ANDROID)
+#   define FUND_TARGET_INTEL64
+#   define FUND_TARGET_64X86 
+#   define FUND_TARGET_X86 
+#   define FUND_TARGET_ANDROID
+#   define FUND_TARGET_LINUX
+#   define FUND_TARGET_UNIX
+#   define FUND_TARGET_INTEL64_ANDROID
+#   define FUND_TARGET_INTEL64_UNIX
+#   define FUND_TARGET_INTEL64_LINUX
+#   define FUND_TARGET_64X86_ANDROID
+#   define FUND_TARGET_64X86_LINUX
+#   define FUND_TARGET_64X86_UNIX
+#   define FUND_TARGET_X86_ANDROID
+#   define FUND_TARGET_X86_LINUX
+#   define FUND_TARGET_X86_UNIX
 #elif (FUND_TC_TARGETCPU == FUND_CPU_NONE) && (FUND_TC_TARGETOS == FUND_OS_NONE)
 #else
 #   error "Illegal target CPU / OS combination"

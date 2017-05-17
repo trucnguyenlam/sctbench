@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -35,34 +35,66 @@ END_LEGAL */
  *      Author: bkemper
  */
 #include <stdlib.h>
+#include <stdio.h>
 #include <iostream>
 #include <string>
 
-bool check_token(const char* var) {
-    // Check that LD_LIBRARY_PATH contains the required libraries to the VM.
-    //
-    char* raw_var = getenv(var);
-    if (raw_var) {
-        std::string var_value(raw_var);
-        size_t pos_found = var_value.find("TOKEN");
-        bool not_found_token = pos_found == std::string::npos;
-        bool not_only_token = pos_found > 0;
-        if (not_found_token || not_only_token)
-            return false;
-    } else {
-        return false;
+bool check_var_value(const char* var, const char * value) {
+    std::string var_str(getenv(var));
+    if (var_str == value) {
+        return true;
     }
-    return true;
+    return false;
 }
 
 int main(int argc, char *argv[]) {
-    // Check that LD_LIBRARY_PATH contains the required libraries to the VM.
-    //
-    if (!check_token("LD_LIBRARY_PATH") || !check_token("LD_ASSUME_KERNEL") ||
-        !check_token("LD_BIND_NOW") || !check_token("LD_PRELOAD")) {
-        std::cout << "Failed!" << std::endl;
+#if defined(TARGET_LINUX)
+    // Extract the kernel version
+    // 
+    FILE* pipe = popen("uname -r", "r");
+    if (!pipe) 
+    {
+        std::cerr << "Failed to get kernel version!" << std::endl;
         exit(1);
     }
-    std::cout << "Success!" << std::endl;
+
+    char buffer[128];
+    std::string kernel_ver = "";
+    while(!feof(pipe)) {
+        if(fgets(buffer, 128, pipe) != NULL)
+            kernel_ver += buffer;
+    }
+    pclose(pipe);
+
+    if (!(std::string(getenv("LD_LIBRARY_PATH")).find("/usr/lib") != std::string::npos))
+    {
+        std::cout << "Failed in application, while testing LD_LIBRARY_PATH!" << std::endl;
+        exit(1);
+    }
+
+    if (!(std::string(getenv("LD_ASSUME_KERNEL")).substr(0, 10) == kernel_ver.substr(0, 10)))
+    {
+        std::cout << "Failed in application, while testing LD_ASSUME_KERNEL!" << std::endl;
+        exit(1);
+    }
+
+    if (!check_var_value("LD_BIND_NOW", "1"))
+    {
+        std::cout << "Failed in application, while testing LD_BIND_NOW!" << std::endl;
+        exit(1);
+    }
+    
+    if (!check_var_value("LD_PRELOAD", "libm.so")) 
+    {
+        std::cout << "Failed in application, while testing LD_PRELOAD!" << std::endl;
+        exit(1);
+    }
+#elif defined(TARGET_MAC)
+    if (!(std::string(getenv("DYLD_LIBRARY_PATH")).find("/usr/lib") != std::string::npos)) {
+        std::cout << "Failed in application!" << std::endl;
+        exit(1);
+    }
+#endif
+    std::cout << "Application got env vars successfully!" << std::endl;
     return 0;
 }

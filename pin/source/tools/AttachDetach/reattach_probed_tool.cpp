@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -45,7 +45,7 @@ END_LEGAL */
 #include <stdlib.h>
 #include <assert.h>
 #include <sched.h>
-#include <linux/unistd.h>
+#include <unistd.h>
 #include <sys/syscall.h>
 
 using std::cerr;
@@ -196,19 +196,19 @@ VOID DETACH_SESSION::DetachCompleted(VOID *arg)
             << " Rececived " << detachIteration << " In DetachCompleted" << endl;
         exit(-1);
     }
-	GetLock(&lock, PIN_GetTid());
-	TraceFile << "Detach session " << detachIteration << " Detach completed; tid = " 
+    PIN_GetLock(&lock, PIN_GetTid());
+    TraceFile << "Detach session " << detachIteration << " Detach completed; tid = "
 	         << PIN_GetTid() << endl;
 	
     fprintf(stderr, "Iteration %lu completed\n",detachIteration);
     //cerr << "Iteration " << detachIteration << " completed." << endl;
-	if (detachIteration == MAX_ITERATION)
+	if (detachIteration >= MAX_ITERATION)
 	{
         TraceFile <<  "TEST PASSED" << endl;
 		TraceFile.close();
         exit(0);
 	}
-	ReleaseLock(&lock);
+	PIN_ReleaseLock(&lock);
 	
     sleep(1);
     SessionControl()->StartAttach();
@@ -226,9 +226,9 @@ VOID DETACH_SESSION::ImageLoad(IMG img, void *arg)
             << " Received " << detachIteration << " In ImageLoad" << endl;
         exit(-1);
     }
-    GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
 	TraceFile << "Load image " << IMG_Name(img) << endl;
-	ReleaseLock(&lock);
+	PIN_ReleaseLock(&lock);
 
 }
 VOID DETACH_SESSION::ImageUnload(IMG img, void *arg)
@@ -252,9 +252,9 @@ VOID SESSION_CONTROL::ApplicationStart(VOID *arg)
         exit(-1);
     }
 	
-	GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     TraceFile << "Application start notification at session " << iteration << endl;
-	ReleaseLock(&lock);
+	PIN_ReleaseLock(&lock);
     
     sleep(1); 
     SessionControl()->StartDetach();
@@ -270,9 +270,9 @@ VOID SESSION_CONTROL::AttachedThreadStart(VOID *sigmask, VOID *arg)
             << " Received " << iteration << " In AttachedThreadStart" << endl;
         exit(-1);
     }
-	GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     TraceFile << "Thread start " << ++(SessionControl()->_threadCounter) << " notification at session " << iteration << " tid " << PIN_GetTid() << endl;
-	ReleaseLock(&lock);
+	PIN_ReleaseLock(&lock);
 }
 
 INT SESSION_CONTROL::DedicatedThread(VOID *arg)
@@ -281,15 +281,15 @@ INT SESSION_CONTROL::DedicatedThread(VOID *arg)
     while (1)
     {
         SessionControl()->WaitForDetach();
-        GetLock(&lock, PIN_GetTid());
+        PIN_GetLock(&lock, PIN_GetTid());
         TraceFile << "Pin tool: sending detach request" << endl;
-        ReleaseLock(&lock);
+        PIN_ReleaseLock(&lock);
         PIN_DetachProbed();
 
         SessionControl()->WaitForAttach();
-        GetLock(&lock, PIN_GetTid());
+        PIN_GetLock(&lock, PIN_GetTid());
         TraceFile << "Pin tool: sending attach request" << endl;
-        ReleaseLock(&lock);
+        PIN_ReleaseLock(&lock);
         PIN_AttachProbed(AttachMain, (VOID *)reattachIteration++);
     }
     return 0;
@@ -332,9 +332,9 @@ VOID AttachMain(VOID *arg)
     UINT32 reattachIteration = *(reinterpret_cast <UINT32 *> (&arg));
     SessionControl()->StartIteration(reattachIteration);
 	
-	GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     TraceFile << "Re-attach session start, inside AttachMain; iteration " << reattachIteration << endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 	
 	IMG_AddInstrumentFunction(REATTACH_SESSION::ImageLoad, arg);
     IMG_AddUnloadFunction(REATTACH_SESSION::ImageUnload, arg);
@@ -357,7 +357,7 @@ int main(int argc, CHAR *argv[])
 
     PIN_Init(argc,argv);
 	
-	InitLock(&lock);
+	PIN_InitLock(&lock);
 	
 	char pidStr[10];
 	pidStr[0] = '\0';

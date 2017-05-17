@@ -69,7 +69,7 @@ ifeq ($(TARGET_OS),linux)
     APP_ROOTS += fork_app follow_child_app1 follow_child_app2 divide_by_zero
 endif
 
-# Mac
+# Mac OS X*
 ifeq ($(TARGET_OS),mac)
     TEST_TOOL_ROOTS += fork_jit_tool follow_child_tool strace
     TEST_ROOTS += statica
@@ -86,19 +86,16 @@ endif
 ###### Handle exceptions here ######
 
 # TODO: These tests fail - fix and remove the following:
-# See mantis 2963
+# See Mantis 2963
 ifeq ($(TARGET),mic)
     TEST_TOOL_ROOTS := $(filter-out nonstatica emudiv, $(TEST_TOOL_ROOTS))
     TEST_ROOTS := $(filter-out statica, $(TEST_ROOTS))
     SA_TOOL_ROOTS := $(filter-out statica, $(SA_TOOL_ROOTS))
 endif
 
-# TODO: These tests fail - fix and remove the following:
+# See Mantis 3204
 ifeq ($(TARGET_OS),mac)
-    TEST_TOOL_ROOTS := $(filter-out follow_child_tool fork_jit_tool inscount_tls invocation malloc_mt stack-debugger, \
-                                    $(TEST_TOOL_ROOTS))
-    TEST_ROOTS := $(filter-out statica, $(TEST_ROOTS))
-    SA_TOOL_ROOTS := $(filter-out statica, $(SA_TOOL_ROOTS))
+    TEST_TOOL_ROOTS := $(filter-out follow_child_tool, $(TEST_TOOL_ROOTS))
 endif
 
 
@@ -135,8 +132,10 @@ invocation.test: $(OBJDIR)invocation$(PINTOOL_SUFFIX) $(OBJDIR)little_malloc$(EX
 
 # This tool is tested in "Debugger/makefile". However, leave this line because it is referenced in the user manual.
 # The user may invoke make stack-debugger.test to build the tool and app shown in the manual.
+# There is an intentional "empty" line which contains a tab character so this "test" will have an empty recipe.
 stack-debugger.test: $(OBJDIR)stack-debugger$(PINTOOL_SUFFIX) $(OBJDIR)fibonacci$(EXE_SUFFIX)
 	
+
 # stand alone pin tool
 statica.test: $(OBJDIR)statica$(SATOOL_SUFFIX)
 	$(OBJDIR)statica$(SATOOL_SUFFIX) -i $(OBJDIR)statica$(SATOOL_SUFFIX) > $(OBJDIR)statica.dmp
@@ -173,7 +172,7 @@ follow_child_tool.test: $(OBJDIR)follow_child_tool$(PINTOOL_SUFFIX) $(OBJDIR)fol
 ###### Special applications' build rules ######
 
 $(OBJDIR)divide_by_zero$(EXE_SUFFIX): divide_by_zero_$(TARGET_OS).c
-	$(APP_CC) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS) $(APP_LIBS)
+	$(APP_CC) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS)
 
 $(OBJDIR)thread_app$(EXE_SUFFIX): thread_$(OS_TYPE).c
 	$(APP_CC) $(APP_CXXFLAGS) $(COMP_EXE)$@ $< $(APP_LDFLAGS) $(APP_LIBS)

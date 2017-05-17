@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -232,7 +233,7 @@ Insert call relative to a bbl. <dl compact><dt><b>Parameters:</b></dt><dd>
     <td>
 
 <p>
-Insert a call to funptr relative to a BBL. If funptr returns a non-zero ADDRINT, then the immediately following "then" analysis call is executed.<p>
+Insert a call to funptr relative to a BBL. If funptr returns a non-zero ADDRINT, then the immediately following "then" analysis call is executed. Note that if <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a> is used, Both "if" and "then" analysis calls must have the same order.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>bbl</em>&nbsp;</td><td>BBL to instrument </td></tr>
@@ -297,7 +298,7 @@ Insert a call to funptr relative to a BBL. If funptr returns a non-zero ADDRINT,
     <td>
 
 <p>
-Insert a call to funptr relative to a BBL. The function is called only if the immediately preceding "if" analysis call returns a non-zero value.<p>
+Insert a call to funptr relative to a BBL. The function is called only if the immediately preceding "if" analysis call returns a non-zero value. Note that if <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a> is used, Both "if" and "then" analysis calls must have the same order.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>bbl</em>&nbsp;</td><td>BBL to instrument </td></tr>
@@ -622,7 +623,7 @@ Number of INSs within a BBL.<p>
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

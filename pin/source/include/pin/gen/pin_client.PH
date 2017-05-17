@@ -1,4 +1,4 @@
-//Groups: @ingroup\s+(API_REF|KNOBS|IMG_BASIC_API|INS_BASIC_API|INS_INST_API|INS_BASIC_API_GEN_IA32|INS_BASIC_API_IA32|INS_MOD_API_GEN_IA32|SEC_BASIC_API|RTN_BASIC_API|REG_BASIC_API|REG_CPU_GENERIC|REG_CPU_IA32|TRACE_BASIC_API|BBL_BASIC_API|SYM_BASIC_API|MISC_PRINT|MISC_PARSE|KNOB_API|KNOB_BASIC|KNOB_PRINT|LOCK|PIN_CONTROL|TRACE_VERSION_API|BUFFER_API|PROTO_API|PIN_PROCESS_API|PIN_THREAD_API|PIN_SYSCALL_API|WINDOWS_SYSCALL_API_UNDOC|DEBUG_API|ERROR_FILE_BASIC|TYPE_BASE|INSTLIB|ALARM|CODECACHE_API|CHILD_PROCESS_API|UTILS|MISC|CONTEXT_API|PHYSICAL_CONTEXT_API|REGVAL_API|EXCEPTION_API|APPDEBUG_API|STOPPED_THREAD_API|BUFFER_API|PROTO|INST_ARGS|DEPRECATED_PIN_API|INTERNAL_EXCEPTION_PRIVATE_UNDOCUMENTED|PIN_THREAD_PRIVATE|CHILD_PROCESS_INTERNAL|BBL_BASIC|ROGUE_BASIC_API|MESSAGE_TYPE|MESSAGE_BASIC|ERRFILE|MISC_BASIC|ITC_INST_API|CONTEXT_API_UNDOC|EXCEPTION_API_UNDOC|UNDOCUMENTED_PIN_API|OPIN|TRACE_VERSIONS
+//Groups: @ingroup\s+(API_REF|KNOBS|IMG_BASIC_API|INS_BASIC_API|INS_INST_API|INS_BASIC_API_GEN_IA32|INS_BASIC_API_IA32|INS_MOD_API_GEN_IA32|SEC_BASIC_API|RTN_BASIC_API|REG_BASIC_API|REG_CPU_GENERIC|REG_CPU_IA32|TRACE_BASIC_API|BBL_BASIC_API|SYM_BASIC_API|MISC_PRINT|MISC_PARSE|KNOB_API|KNOB_BASIC|KNOB_PRINT|LOCK|PIN_CONTROL|TRACE_VERSION_API|BUFFER_API|PROTO_API|PIN_PROCESS_API|PIN_THREAD_API|PIN_SYSCALL_API|WINDOWS_SYSCALL_API_UNDOC|DEBUG_API|ERROR_FILE_BASIC|TYPE_BASE|INSTLIB|ALARM|CODECACHE_API|CHILD_PROCESS_API|UTILS|MISC|CONTEXT_API|PHYSICAL_CONTEXT_API|PIN_CALLBACKS|EXCEPTION_API|APPDEBUG_API|STOPPED_THREAD_API|BUFFER_API|PROTO|INST_ARGS|DEPRECATED_PIN_API|INTERNAL_EXCEPTION_PRIVATE_UNDOCUMENTED|PIN_THREAD_PRIVATE|CHILD_PROCESS_INTERNAL|BBL_BASIC|ROGUE_BASIC_API|MESSAGE_TYPE|MESSAGE_BASIC|ERRFILE|MISC_BASIC|ITC_INST_API|CONTEXT_API_UNDOC|EXCEPTION_API_UNDOC|UNDOCUMENTED_PIN_API|OPIN|TRACE_VERSIONS
 /* PIN API */
 
 /* THIS FILE IS AUTOMAGICALLY GENERATED - DO NOT CHANGE DIRECTLY*/
@@ -8,17 +8,27 @@
 
 #define EnterPinClientSlaveMode() CheckPinClientLock(__FUNCTION__)
 #define ExitPinClientSlaveMode() CheckPinClientLock(__FUNCTION__)
+#ifndef PIN_GENERATED_MESSAGE_PIN_H
 #define LOG_IMAGE(s)         if(MessageTypeLogImage.on())       ClientInt()->_VmLog("IMAGE", s);
 #define LOG_SYM(s)           if(MessageTypeLogSym.on())         ClientInt()->_VmLog("SYMBOLS", s);
 #define LOG_PROBE(s)         if(MessageTypeLogProbe.on())       ClientInt()->_VmLog("PROBE", s);
 #define LOG_FETCH_RTN_INS(s) if(MessageTypeLogFetchRtnIns.on()) ClientInt()->_VmLog("FETCH_RTN_INS", s);
 #define LOG_UNWIND(s)        if(MessageTypeLogUnwind.on())      ClientInt()->_VmLog("UNWIND", s);
 #define LOG_BUFFER(s)        if(MessageTypeLogBuffer.on())      ClientInt()->_VmLog("BUFFER", s);
-
+#endif
 class TRACE_CLASS;
 
                                                                   /* DO NOT EDIT */
 typedef TRACE_CLASS * TRACE;
+
+                                                                  /* DO NOT EDIT */
+class COMPLEX_CALLBACKVAL_BASE;
+
+                                                                  /* DO NOT EDIT */
+typedef COMPLEX_CALLBACKVAL_BASE * PIN_CALLBACK;
+
+                                                                  /* DO NOT EDIT */
+const PIN_CALLBACK PIN_CALLBACK_INVALID(0);
 
                                                                   /* DO NOT EDIT */
 typedef VOID (*REMOVE_INSTRUMENTATION_CALLBACK)(VOID *v);
@@ -110,6 +120,12 @@ extern VOID PIN_LockClient();
 extern VOID PIN_UnlockClient();
 
                                                                   /* DO NOT EDIT */
+extern VOID PIN_LockClient();
+
+                                                                  /* DO NOT EDIT */
+extern VOID PIN_UnlockClient();
+
+                                                                  /* DO NOT EDIT */
 extern VOID PIN_WriteErrorMessage( const char * msg, INT32 type, PIN_ERR_SEVERITY_TYPE severity, INT32 num, ... );
 
                                                                   /* DO NOT EDIT */
@@ -134,7 +150,7 @@ extern AFUNPTR RTN_ReplaceProbedEx(RTN replacedRtn, PROBE_MODE mode,
 
                                                                   /* DO NOT EDIT */
 extern VOID PIN_CallApplicationFunction(const CONTEXT * ctxt, THREADID tid, CALLINGSTD_TYPE cstype,
-    AFUNPTR origFunPtr, ... );
+    AFUNPTR origFunPtr, CALL_APPLICATION_FUNCTION_PARAM* param, ... );
 
                                                                   /* DO NOT EDIT */
 extern BOOL INS_IsAddedForFunctionReplacement(INS ins);
@@ -155,22 +171,32 @@ extern PIN_DEPRECATED_API VOID RTN_ComplexReplaceWithUninstrumentedRoutine(RTN r
 extern PIN_DEPRECATED_API ADDRINT PIN_FindAlternateAppStack();
 
                                                                   /* DO NOT EDIT */
-extern VOID TRACE_AddInstrumentFunction(TRACE_INSTRUMENT_CALLBACK fun, VOID *val);
+extern VOID CALLBACK_SetExecutionPriority(PIN_CALLBACK callback, INT32 priority);
 
                                                                   /* DO NOT EDIT */
-extern VOID CODECACHE_AddTraceInsertedFunction(TRACE_INSTRUMENT_CALLBACK fun, VOID *val);
+extern INT32 CALLBACK_GetExecutionPriority(PIN_CALLBACK callback);
 
                                                                   /* DO NOT EDIT */
-extern VOID INS_AddInstrumentFunction(INS_INSTRUMENT_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK TRACE_AddInstrumentFunction(TRACE_INSTRUMENT_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddFiniFunction(FINI_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK CODECACHE_AddTraceInsertedFunction(TRACE_INSTRUMENT_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddFiniUnlockedFunction(FINI_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK INS_AddInstrumentFunction(INS_INSTRUMENT_CALLBACK fun, VOID *val);
+
+                                                                  /* DO NOT EDIT */
+extern PIN_CALLBACK PIN_AddFiniFunction(FINI_CALLBACK fun, VOID *val);
+
+                                                                  /* DO NOT EDIT */
+extern PIN_CALLBACK PIN_AddFiniUnlockedFunction(FINI_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
 extern VOID PIN_AddFetchFunction(FETCH_CALLBACK fun, VOID *val);
+
+                                                                  /* DO NOT EDIT */
+extern size_t PIN_FetchCode(void *copyBuf, const VOID *address, size_t maxSize,
+                               EXCEPTION_INFO *pExceptInfo);
 
                                                                   /* DO NOT EDIT */
 extern VOID PIN_AddOutOfMemoryFunction(OUT_OF_MEMORY_CALLBACK fun, VOID *val);
@@ -182,35 +208,35 @@ extern VOID PIN_AddMemoryAddressTransFunction(MEMORY_ADDR_TRANS_CALLBACK fun, VO
 extern MEMORY_ADDR_TRANS_CALLBACK PIN_GetMemoryAddressTransFunction();
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddDetachFunction(DETACH_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK PIN_AddDetachFunction(DETACH_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddDetachFunctionProbed(DETACH_PROBED_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK PIN_AddDetachFunctionProbed(DETACH_PROBED_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddThreadStartFunction(THREAD_START_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK PIN_AddThreadStartFunction(THREAD_START_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddThreadAttachProbedFunction(THREAD_ATTACH_PROBED_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK PIN_AddThreadAttachProbedFunction(THREAD_ATTACH_PROBED_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddThreadDetachProbedFunction(
+extern PIN_CALLBACK PIN_AddThreadDetachProbedFunction(
         THREAD_DETACH_PROBED_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddApplicationStartFunction(APPLICATION_START_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK PIN_AddApplicationStartFunction(APPLICATION_START_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddThreadFiniFunction(THREAD_FINI_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK PIN_AddThreadFiniFunction(THREAD_FINI_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddContextChangeFunction(CONTEXT_CHANGE_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK PIN_AddContextChangeFunction(CONTEXT_CHANGE_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddSyscallEntryFunction(SYSCALL_ENTRY_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK PIN_AddSyscallEntryFunction(SYSCALL_ENTRY_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddSyscallExitFunction(SYSCALL_EXIT_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK PIN_AddSyscallExitFunction(SYSCALL_EXIT_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
 extern BOOL PIN_InterceptSignal(INT32 sig, INTERCEPT_SIGNAL_CALLBACK fun, VOID *val);
@@ -219,7 +245,7 @@ extern BOOL PIN_InterceptSignal(INT32 sig, INTERCEPT_SIGNAL_CALLBACK fun, VOID *
 extern BOOL PIN_UnblockSignal(INT32 sig, BOOL enable);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddProbesInsertedFunction( PROBES_INSERTED_CALLBACK fun, VOID *val );
+extern PIN_CALLBACK PIN_AddProbesInsertedFunction( PROBES_INSERTED_CALLBACK fun, VOID *val );
 
                                                                   /* DO NOT EDIT */
 enum FPOINT
@@ -230,7 +256,7 @@ enum FPOINT
 };
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_AddForkFunction(FPOINT point, FORK_CALLBACK fun, VOID *val);
+extern PIN_CALLBACK PIN_AddForkFunction(FPOINT point, FORK_CALLBACK fun, VOID *val);
 
                                                                   /* DO NOT EDIT */
 extern VOID PIN_RemoveInstrumentation();
@@ -352,10 +378,10 @@ extern BOOL PIN_SupportsProcessorState(PROCESSOR_STATE state);
 extern BOOL PIN_ContextContainsState(CONTEXT * ctxt, PROCESSOR_STATE state);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_SetContextRegval(CONTEXT * ctxt, REG reg, const REGVAL * val);
+extern VOID PIN_SetContextRegval(CONTEXT * ctxt, REG reg, const UINT8 * val);
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_GetContextRegval(const CONTEXT * ctxt, REG reg, REGVAL * val);
+extern VOID PIN_GetContextRegval(const CONTEXT * ctxt, REG reg, UINT8 * val);
 
                                                                   /* DO NOT EDIT */
 extern VOID PIN_SetContextReg(CONTEXT * ctxt, REG reg, ADDRINT val);
@@ -364,19 +390,16 @@ extern VOID PIN_SetContextReg(CONTEXT * ctxt, REG reg, ADDRINT val);
 extern ADDRINT PIN_GetContextReg(const CONTEXT * ctxt, REG reg);
 
                                                                   /* DO NOT EDIT */
+extern VOID PIN_SetContextFPState(CONTEXT * ctxt, const FPSTATE * fpstate);
+
+                                                                  /* DO NOT EDIT */
+extern VOID PIN_GetContextFPState(const CONTEXT * ctxt, FPSTATE * fpstate);
+
+                                                                  /* DO NOT EDIT */
 extern VOID PIN_SaveContext(const CONTEXT * ctxtFrom, CONTEXT * ctxtTo);
 
                                                                   /* DO NOT EDIT */
 extern VOID PIN_ExecuteAt(const CONTEXT * ctxt);
-
-                                                                  /* DO NOT EDIT */
-extern VOID PIN_AssignRegval(REGVAL * regval, const UINT64 * data, UINT size);
-
-                                                                  /* DO NOT EDIT */
-extern VOID PIN_ReadRegvalQWord(const REGVAL * regval, UINT64 * val, UINT i);
-
-                                                                  /* DO NOT EDIT */
-extern UINT PIN_GetRegvalSize(const REGVAL * regval);
 
                                                                   /* DO NOT EDIT */
 extern VOID PIN_SetSyscallArgument(CONTEXT *ctxt, SYSCALL_STANDARD std, UINT32 argNum, ADDRINT val);
@@ -454,10 +477,13 @@ extern REG PIN_ClaimToolRegister();
 extern CHAR * PIN_VmFullPath();
 
                                                                   /* DO NOT EDIT */
+extern const CHAR * PIN_ToolFullPath();
+
+                                                                  /* DO NOT EDIT */
 extern BOOL PIN_IsProcessExiting();
 
                                                                   /* DO NOT EDIT */
-extern VOID PIN_ExitProcess(INT32 exitCode);
+extern NORETURN VOID PIN_ExitProcess(INT32 exitCode);
 
                                                                   /* DO NOT EDIT */
 extern INT PIN_GetPid();
@@ -505,7 +531,16 @@ extern VOID PIN_DeallocateBuffer(BUFFER_ID id, VOID *buf);
 extern BOOL PIN_IsActionPending(THREADID tid);
 
                                                                   /* DO NOT EDIT */
+extern UINT32 PIN_GetInitialThreadCount();
+
+                                                                  /* DO NOT EDIT */
 extern VOID * PIN_GetBufferPointer(CONTEXT * const ctxt, BUFFER_ID id);
+
+                                                                  /* DO NOT EDIT */
+extern BOOL PIN_CheckReadAccess(VOID * addr);
+
+                                                                  /* DO NOT EDIT */
+extern BOOL PIN_CheckWriteAccess(VOID * addr);
 
                                                                   /* DO NOT EDIT */
 

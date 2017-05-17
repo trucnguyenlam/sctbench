@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -30,11 +30,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
 /*! @file
  *  Tool that tests the RTN_CreateAt function.
- * RTN_CreateAt() may be used in Probe mode and in JIT mode for 
+ * RTN_CreateAt() may be used in Probe mode and in JIT mode for
  * ahead-of-time (aoti) instrumentation
  *
- * We test the both Probe and JIT mode. We create a routine with  
- * RTN_CreateAt and then (1) replace it and (2) insert a call before 
+ * We test the both Probe and JIT mode. We create a routine with
+ * RTN_CreateAt and then (1) replace it and (2) insert a call before
  * the routine
  */
 
@@ -71,10 +71,23 @@ VOID ImageLoad(IMG img, VOID * v)
             // .fTable section holds 2 addresses of 2 routines
             // The both routines exist, but the symbols should not
             // be in symbol table
+            ADDRINT offset = 0;
+            // When instrumenting a PIE file, IMG_LoadOffset will contain the value that we need to find
+            // the actual address of the routines we want to create in memory. When we instrument a non-PIE file,
+            // the load offset is 0 on linux. But at least in Windows, IMG_LoadOffset does not return 0 even though
+            // the file isn't a PIE. Added a check so we only get the load offset if the executable is a PIE.
+#ifndef TARGET_MAC
+            if (IMG_Type(img) == IMG_TYPE_SHAREDLIB)
+#else
+            if (IMG_Type(img) == IMG_TYPE_SHARED)
+#endif
+            {
+                offset = IMG_LoadOffset(img);
+            }
             ADDRINT *secAddr = reinterpret_cast <ADDRINT *> (SEC_Address(sec));
-            ADDRINT proc1Addr = secAddr[0];
-            ADDRINT proc2Addr = secAddr[1];
-            
+            ADDRINT proc1Addr = secAddr[0] + offset;
+            ADDRINT proc2Addr = secAddr[1] + offset;
+
             // 1. Replace Proc1
             RTN rtn = RTN_FindByAddress(proc1Addr);
             if (RTN_Address(rtn) != proc1Addr)
@@ -86,8 +99,8 @@ VOID ImageLoad(IMG img, VOID * v)
                     exit(-1);
                 }
                 // The routine was created successfully
-                
-                PROTO proto = PROTO_Allocate(PIN_PARG(int), CALLINGSTD_DEFAULT, "MyReplacement", PIN_PARG_END());  
+
+                PROTO proto = PROTO_Allocate(PIN_PARG(int), CALLINGSTD_DEFAULT, "MyReplacement", PIN_PARG_END());
                 if (RunInProbeMode)
                 {
                     if (RTN_IsSafeForProbedReplacement(rtn))
@@ -102,13 +115,13 @@ VOID ImageLoad(IMG img, VOID * v)
             }
             else
             {
-                cout << "Proc1: Existing routine has been found at the given address, 0x" << 
+                cout << "Proc1: Existing routine has been found at the given address, 0x" <<
                         hex << proc1Addr << ". The new routine will not be created" << endl;
                 exit(-1);
             }
-            
+
             // 2. Insert a call before Proc2
-            
+
             rtn = RTN_FindByAddress(proc2Addr);
             if (RTN_Address(rtn) != proc2Addr)
             {
@@ -119,8 +132,8 @@ VOID ImageLoad(IMG img, VOID * v)
                     exit(-1);
                 }
                 // The routine was created successfully
-                
-                PROTO proto = PROTO_Allocate(PIN_PARG(int), CALLINGSTD_DEFAULT, "MyInsertedCall", PIN_PARG_END());  
+
+                PROTO proto = PROTO_Allocate(PIN_PARG(int), CALLINGSTD_DEFAULT, "MyInsertedCall", PIN_PARG_END());
                 if (RunInProbeMode)
                 {
                     if (RTN_IsSafeForProbedInsertion(rtn))
@@ -137,7 +150,7 @@ VOID ImageLoad(IMG img, VOID * v)
             }
             else
             {
-                cout << "Proc2: Existing routine has been found at the given address, 0x" << 
+                cout << "Proc2: Existing routine has been found at the given address, 0x" <<
                         hex << proc2Addr << ". The new routine will not be created" << endl;
                 exit(-1);
             }
@@ -147,7 +160,7 @@ VOID ImageLoad(IMG img, VOID * v)
         }
     }
     // Ensure that the new routine can be found inside image
-    
+
     if (found)
     {
         if (!RTN_Valid(RTN_FindByName(img, "Proc1NewRoutine")))
@@ -162,6 +175,7 @@ VOID ImageLoad(IMG img, VOID * v)
 int main(INT32 argc, CHAR **argv)
 {
     PIN_Init(argc, argv);
+    PIN_InitSymbols();
 
     IMG_AddInstrumentFunction(ImageLoad, 0);
 

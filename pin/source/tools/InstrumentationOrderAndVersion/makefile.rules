@@ -22,7 +22,7 @@ TEST_TOOL_ROOTS := instrumentation_order1 instrumentation_order2 instrumentation
                    instrumentation_order9 instrumentation_order10 instrumentation_order11 instrumentation_order12 \
                    instrumentation_order13 instrumentation_order14 instrumentation_order15 instrumentation_order16 \
                    instrumentation_order17 instrumentation_order18 instrumentation_order20 instrumentation_order21 \
-                   instrumentation_order22 instrumentation_order23 instrumentation_order
+                   instrumentation_order22 instrumentation_order23 instrumentation_order callbacks_order
 
 # This defines the tests to be run that were not already defined in TEST_TOOL_ROOTS.
 TEST_ROOTS :=
@@ -59,6 +59,12 @@ LIB_ROOTS :=
 
 ###### Place OS-specific definitions here ######
 
+# Android
+ifeq ($(TARGET_OS),android)
+    TEST_TOOL_ROOTS += special special_case special_case1 special_case2 special_case3 special_case_aoti special_case_aoti1
+    APP_ROOTS += redblue
+endif
+
 # Linux
 ifeq ($(TARGET_OS),linux)
     TEST_TOOL_ROOTS += special special_case special_case1 special_case2 special_case3 special_case_aoti special_case_aoti1
@@ -72,32 +78,14 @@ ifeq ($(TARGET_OS),windows)
     OBJECT_ROOTS += redblue_$(TARGET)
 endif
 
-# TODO: These tests fail on Mac - fix and remove the following:
-ifeq ($(TARGET_OS),mac)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order1=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order2=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order3=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order4=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order5=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order6=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order7=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order8=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order9=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order10=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order11=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order12=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order13=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order14=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order15=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order16=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order17=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order18=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order20=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order21=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order22=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:instrumentation_order23=)
+###### Handle exceptions here ######
+
+#See Mantis 3168
+ifeq ($(TARGET_OS),android)
+    TEST_TOOL_ROOTS := $(filter-out special_case special_case1 special_case2 special_case3 special_case_aoti \
+                                    special_case_aoti1, $(TEST_TOOL_ROOTS))
 endif
+
 
 ##############################################################
 #
@@ -304,6 +292,12 @@ instrumentation_order23.test: $(OBJDIR)instrumentation_order23$(PINTOOL_SUFFIX) 
 	  $(OBJDIR)instrumentation_order23_tool.out
 	$(RM) instrumentation_order23.out $(OBJDIR)instrumentation_order23_tool.out
 
+callbacks_order.test: $(OBJDIR)callbacks_order$(PINTOOL_SUFFIX) $(TESTAPP)
+	-$(PIN) -t $(OBJDIR)callbacks_order$(PINTOOL_SUFFIX) -o $(OBJDIR)callbacks_order.out \
+	  -- $(TESTAPP) makefile.rules $(OBJDIR)makefile.rules.callbacks_order 
+	$(DIFF) callbacks_order.reference $(OBJDIR)callbacks_order.out
+	$(RM) $(OBJDIR)makefile.rules.callbacks_order $(OBJDIR)callbacks_order.out
+
 
 ##############################################################
 #
@@ -321,6 +315,11 @@ $(OBJDIR)instrumentation_order_app$(EXE_SUFFIX): instrumentation_order_app.cpp
 
 $(OBJDIR)special_case_app$(EXE_SUFFIX): special_case_app.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
+
+ifeq ($(TARGET_OS),android)
+$(OBJDIR)redblue$(EXE_SUFFIX): redblue$(ASM_SUFFIX)
+	$(APP_CXX) $(APP_CXXFLAGS) $(COMP_EXE)$@ $< $(APP_LDFLAGS) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
+endif
 
 ifeq ($(TARGET_OS),linux)
 $(OBJDIR)redblue$(EXE_SUFFIX): redblue$(ASM_SUFFIX)

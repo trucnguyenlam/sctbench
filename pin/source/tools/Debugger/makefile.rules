@@ -63,6 +63,7 @@ LIB_ROOTS :=
 
 # Linux
 ifeq ($(TARGET_OS),linux)
+    TEST_TOOL_ROOTS += stop-resume-when-suspended check-if-thread-stopped
     TEST_ROOTS += simple-pindb-launch pindb-start-fini pindb-noprompt-kill pindb-detach pindb-abrupt-disconnect \
                   pindb-kill-like-gdb pindb-simple-command pindb-step-custom-break pindb-simultaneous-toolbreak \
                   pindb-simultaneous-toolbreak-serialize pindb-simultaneous-toolbreak-squash pindb-invalidate-regs \
@@ -79,17 +80,18 @@ ifeq ($(TARGET_OS),linux)
                   simultaneous-toolbreak_const_context xmm-$(TARGET)_with_set_xmm_scratch_regs_before_breakpoint_tool \
                   xmm-$(TARGET)_with_set_xmm_scratch_regs_before_breakpoint_tool_const_context \
                   xmm-$(TARGET)_with_set_xmm_scratch_regs_before_breakpoint_tool_and_set_xmm_reg \
-                  app-pause-in-app-thread app-pause-in-int-thread
+                  app-pause-in-app-thread app-pause-in-int-thread bphandler gdb-svr4-libraries-extension
     TOOL_ROOTS += stack-debugger start-fini-callback simple-command-tool use-debugger-shell simultaneous-toolbreak \
                   breaktool int3-count action-pending-tool checkpoint watchpoint launch-gdb-tool intercept-tool \
                   pc-change-async-tool interpreter-remove mt-exit-tool debugger-type set-mode-tool invalidate-regs \
                   set_xmm_scratches set_xmm_scratches_before_breakpoint set_xmm_scratches_before_breakpoint_and_set_xmm_reg \
                   set_xmm_scratches_for_ymmtest null-emulator-$(TARGET) \
-                  app-pause-in-app-thread-tool app-pause-in-int-thread-tool
+                  app-pause-in-app-thread-tool app-pause-in-int-thread-tool library-load-tool
     APP_ROOTS += simple-pindb simple simple-static exec fork action-pending-app thread checkpoint-app bptest-$(TARGET) \
                  watchpoint-app callerapp fibonacci sleep-unix intercept-app pc-change-bp pc-change-async xmm-$(TARGET) \
                  mt-exit signal-catch reattach-loop pthread-bare-exit pthread-bare-exitgroup thread-$(OS_TYPE) \
-                 ymm-$(TARGET) debugger-shell-app-$(TARGET) app-pause-app
+                 ymm-$(TARGET) debugger-shell-app-$(TARGET) app-pause-app pick-random-port bphandler_app dlopen-dlclose
+    OBJECT_ROOTS += simple-pindb-asm-$(TARGET_OS)-$(TARGET)
     ifeq ($(TARGET),ia32)
         TEST_ROOTS += access-64-on-32
     endif 
@@ -97,6 +99,7 @@ endif
 
 # Windows
 ifeq ($(TARGET_OS),windows)
+    TEST_TOOL_ROOTS += stop-resume-when-suspended check-if-thread-stopped
     TEST_ROOTS += simple-pindb-launch pindb-start-fini pindb-noprompt-kill pindb-detach pindb-abrupt-disconnect \
                   pindb-kill-like-gdb pindb-simple-command pindb-step-custom-break pindb-simultaneous-toolbreak \
                   pindb-simultaneous-toolbreak-serialize pindb-simultaneous-toolbreak-squash pindb-invalidate-regs \
@@ -111,6 +114,7 @@ ifeq ($(TARGET_OS),windows)
     APP_ROOTS += simple-pindb simple win-unhandled-exception win-handled-exception win-continued-exception1 \
                  win-continued-exception2 win-software-exception win-cpp-exception win-load-library \
                  win-thread-stress thread-$(OS_TYPE) app-pause-app
+    OBJECT_ROOTS += simple-pindb-asm-$(TARGET_OS)-$(TARGET)
     DLL_ROOTS += win-foo-library
     ifeq ($(TARGET),ia32)
         TEST_ROOTS += access-64-on-32
@@ -125,8 +129,13 @@ endif
 #
 ifeq ($(TARGET)-$(TARGET_OS),ia32-windows)
     ifneq ($(ICC),)
-        TEST_ROOTS := $(filter-out pindb-win-continued-exception1 pindb-win-continued-exception2, $(TEST_ROOTS))
+        TEST_ROOTS := $(filter-out pindb-win-continued-exception1 pindb-win-continued-exception2, $(TEST_ROOTS))        
     endif
+endif
+
+#pindb-win-step-exception fails on pinw32-12. Mantis: 3072. 
+ifeq ($(TARGET_OS),windows)
+    TEST_ROOTS := $(filter-out pindb-win-step-exception, $(TEST_ROOTS)) 
 endif
 
 # There is a bug with PinADX when using early-injection (the default) on 32-bit applications when running
@@ -138,11 +147,12 @@ ifeq ($(findstring CYGWIN_NT-5,$(osname))-$(HOST_ARCH)-$(TARGET),CYGWIN_NT-5-int
     TEST_ROOTS := $(filter-out pindb-start-fini, $(TEST_ROOTS))
 endif
 
-# Versions of gdb older than 6.6 do not understand the XMM registers, so disable the xmm tests.
-#
 ifeq ($(TARGET_OS),linux)
-    GDB_VERSION_IF_BEFORE_66 := $(shell $(GDB) --version | head -1 | $(GREP) -E -o "[6]\.[2-5]+")
+    GDB_VERSION_IF_BEFORE_66 :=  $(strip $(shell $(GDB) --version | head -1 | $(GREP) -E -o " [6]\.[2-5]+"))
+    GDB_VERSION_IF_AFTER_74 := $(strip $(shell $(GDB) --version | head -1 | $(GREP) -E -o " [7-9]\.[4-9]+"))
     ifneq ($(GDB_VERSION_IF_BEFORE_66),"")
+#   Versions of gdb older than 6.6 do not understand the XMM registers, so disable the xmm tests.
+#
         TEST_ROOTS := $(filter-out xmm-$(TARGET) xmm-$(TARGET)_with_set_xmm_scratch_regs_before_breakpoint_tool \
                                    xmm-$(TARGET)_with_set_xmm_scratch_regs_before_breakpoint_tool_const_context \
                                    xmm-$(TARGET)_with_set_xmm_scratch_regs_before_breakpoint_tool_and_set_xmm_reg, \
@@ -150,6 +160,13 @@ ifeq ($(TARGET_OS),linux)
         TOOL_ROOTS := $(filter-out set_xmm_scratches_before_breakpoint \
                                    set_xmm_scratches_before_breakpoint_and_set_xmm_reg set_xmm_scratches, $(TOOL_ROOTS))
         APP_ROOTS := $(filter-out xmm-$(TARGET), $(APP_ROOTS))
+    endif
+    ifeq ($(strip $(GDB_VERSION_IF_AFTER_74)),)
+#   Versions of gdb older than 7.4 do not understand svr4 libraries query
+#
+        TEST_ROOTS := $(filter-out gdb-svr4-libraries-extension, $(TEST_ROOTS))
+        TOOL_ROOTS := $(filter-out library-load-tool, $(TOOL_ROOTS))
+        APP_ROOTS := $(filter-out dlopen-dlclose, $(APP_ROOTS))
     endif
 endif
 
@@ -179,11 +196,6 @@ ifeq ($(TARGET),mic)
     OBJECT_ROOTS :=
     DLL_ROOTS :=
     LIB_ROOTS :=
-endif
-
-# TODO: These tests fail - fix and remove the following:
-ifeq ($(TARGET_OS),windows)
-    TEST_ROOTS := $(filter-out pindb-simple-simultaneous-multi-serialize pindb-simple-simultaneous-multi, $(TEST_ROOTS))
 endif
 
 
@@ -236,6 +248,22 @@ simple.test: $(OBJDIR)simple$(EXE_SUFFIX)
 	$(GREP) 'target remote' $(OBJDIR)$(@:.test=.out) >> $(OBJDIR)$(@:.test=.gdbin)
 	cat $(@:.test=.gdb) >> $(OBJDIR)$(@:.test=.gdbin)
 	$(GDB) -batch -x $(OBJDIR)$(@:.test=.gdbin) -n $(OBJDIR)simple$(EXE_SUFFIX) > $(OBJDIR)$(@:.test=.gdbout)
+	$(PYCOMPARE) -p $(@:.test=.compare) -c $(OBJDIR)$(@:.test=.gdbout)
+	$(RM) -f $(OBJDIR)$(@:.test=.out) $(OBJDIR)$(@:.test=.gdbin) $(OBJDIR)$(@:.test=.gdbout)
+
+# Basic test for breakpoint handling features.
+#
+bphandler.test: $(OBJDIR)bphandler$(PINTOOL_SUFFIX) $(OBJDIR)bphandler_app$(EXE_SUFFIX)
+	$(RM) -f $(OBJDIR)$(@:.test=.out)
+	$(PIN) $(PINFLAGS_DEBUG) -t $(OBJDIR)bphandler$(PINTOOL_SUFFIX) -- $(OBJDIR)bphandler_app$(EXE_SUFFIX) > \
+      $(OBJDIR)$(@:.test=.out) &
+	count=0; \
+	until $(GREP) 'target remote' $(OBJDIR)$(@:.test=.out) > /dev/null || $(BASHTEST) $$count -gt $(TLIMIT); \
+	    do sleep 1; count=`expr $$count + 1`; done
+	echo 'set remotetimeout $(TLIMIT)' > $(OBJDIR)$(@:.test=.gdbin)
+	$(GREP) 'target remote' $(OBJDIR)$(@:.test=.out) >> $(OBJDIR)$(@:.test=.gdbin)
+	cat $(@:.test=.gdb) >> $(OBJDIR)$(@:.test=.gdbin)
+	$(GDB) -batch -x $(OBJDIR)$(@:.test=.gdbin) -n $(OBJDIR)bphandler_app$(EXE_SUFFIX) > $(OBJDIR)$(@:.test=.gdbout)
 	$(PYCOMPARE) -p $(@:.test=.compare) -c $(OBJDIR)$(@:.test=.gdbout)
 	$(RM) -f $(OBJDIR)$(@:.test=.out) $(OBJDIR)$(@:.test=.gdbin) $(OBJDIR)$(@:.test=.gdbout)
 
@@ -603,6 +631,46 @@ launch-gdb.test: $(OBJDIR)callerapp$(EXE_SUFFIX) $(OBJDIR)launch-gdb-tool$(PINTO
 	$(PYCOMPARE) -p $(@:.test=.compare) -c $(OBJDIR)$(@:.test=.gdbout)
 	$(RM) -f $(OBJDIR)$(@:.test=.out) $(OBJDIR)$(@:.test=.gdbin) $(OBJDIR)$(@:.test=.gdbout)
 
+# This tests the -appdebug_server_port <PORT> option of PIN.
+# We pick an available TCP port randomly, then we run PIN with -appdebug_server_port specifying the random port
+# We expect to connect with GDB to the port we specified
+#
+gdb-fixed-port.test: $(OBJDIR)callerapp$(EXE_SUFFIX) $(OBJDIR)launch-gdb-tool$(PINTOOL_SUFFIX) $(OBJDIR)pick-random-port$(EXE_SUFFIX)
+	$(RM) -f $(OBJDIR)$(@:.test=.gdbin)
+	$(OBJDIR)pick-random-port$(EXE_SUFFIX) unused > $(OBJDIR)$(@:.test=.random)
+	$(PIN) $(PINFLAGS_DEBUG_RUNFREE) -appdebug_server_port `cat $(OBJDIR)$(@:.test=.random)` -t $(OBJDIR)launch-gdb-tool$(PINTOOL_SUFFIX) -timeout $(TLIMIT) \
+	  -o $(OBJDIR)$(@:.test=.gdbin) -- $(OBJDIR)callerapp$(EXE_SUFFIX) > $(OBJDIR)$(@:.test=.out) &
+	count=0; \
+	until $(GREP) 'target remote :'`cat $(OBJDIR)$(@:.test=.random)` $(OBJDIR)$(@:.test=.gdbin) > /dev/null 2>&1 || $(BASHTEST) $$count -gt $(TLIMIT); \
+	    do sleep 1; count=`expr $$count + 1`; done
+	cat $(@:.test=.gdb) >> $(OBJDIR)$(@:.test=.gdbin)
+	$(GDB) -batch -x $(OBJDIR)$(@:.test=.gdbin) -n $(OBJDIR)callerapp$(EXE_SUFFIX) > $(OBJDIR)$(@:.test=.gdbout) 2>&1
+	$(PYCOMPARE) -p $(@:.test=.compare) -c $(OBJDIR)$(@:.test=.gdbout)
+	$(RM) -f $(OBJDIR)$(@:.test=.out) $(OBJDIR)$(@:.test=.gdbin) $(OBJDIR)$(@:.test=.gdbout)
+
+# This tests the -appdebug_server_port <PORT> option of PIN when we.
+# provide a port which is already taken by another application
+# We expect PIN to fail because it won't acquire the port
+#
+gdb-fixed-port-used.test: $(OBJDIR)callerapp$(EXE_SUFFIX) $(OBJDIR)launch-gdb-tool$(PINTOOL_SUFFIX) $(OBJDIR)pick-random-port$(EXE_SUFFIX)
+	$(RM) -f $(OBJDIR)$(@:.test=.gdbin)
+	$(OBJDIR)pick-random-port$(EXE_SUFFIX) used > $(OBJDIR)$(@:.test=.random)
+	! ( $(PIN) $(PINFLAGS_DEBUG_RUNFREE) -appdebug_server_port `cat $(OBJDIR)$(@:.test=.random)` -t $(OBJDIR)launch-gdb-tool$(PINTOOL_SUFFIX) \
+	    -timeout $(TLIMIT) -o $(OBJDIR)$(@:.test=.gdbin) -- $(OBJDIR)callerapp$(EXE_SUFFIX) > $(OBJDIR)$(@:.test=.out) )
+	$(QGREP) "E:Unable to create debugger connection" $(OBJDIR)$(@:.test=.out)
+	$(RM) -f $(OBJDIR)$(@:.test=.out) $(OBJDIR)$(@:.test=.gdbin) $(OBJDIR)$(@:.test=.random)
+
+# This tests the -appdebug_server_port <PORT> option of PIN when we
+# provide an invalid TCP port number.
+# We expect PIN to fail because the TCP port number is invalid
+#
+gdb-fixed-bad-port.test: $(OBJDIR)callerapp$(EXE_SUFFIX) $(OBJDIR)launch-gdb-tool$(PINTOOL_SUFFIX) $(OBJDIR)pick-random-port$(EXE_SUFFIX)
+	$(RM) -f $(OBJDIR)$(@:.test=.gdbin)
+	! ( $(PIN) $(PINFLAGS_DEBUG_RUNFREE) -appdebug_server_port 100000 -t $(OBJDIR)launch-gdb-tool$(PINTOOL_SUFFIX) \
+	    -timeout $(TLIMIT) -o $(OBJDIR)$(@:.test=.gdbin) -- $(OBJDIR)callerapp$(EXE_SUFFIX) > $(OBJDIR)$(@:.test=.out) )
+	$(QGREP) "E:Invalid TCP server port: 100000" $(OBJDIR)$(@:.test=.out)
+	$(RM) -f $(OBJDIR)$(@:.test=.out) $(OBJDIR)$(@:.test=.gdbin)
+
 launch-gdb_const_context.test: $(OBJDIR)callerapp$(EXE_SUFFIX) $(OBJDIR)launch-gdb-tool$(PINTOOL_SUFFIX)
 	$(RM) -f $(OBJDIR)$(@:.test=.gdbin)
 	$(PIN) $(PINFLAGS_DEBUG_RUNFREE) -t $(OBJDIR)launch-gdb-tool$(PINTOOL_SUFFIX) -const_context 1 -timeout $(TLIMIT) \
@@ -720,6 +788,18 @@ pindb-start-fini.test: $(OBJDIR)start-fini-callback$(PINTOOL_SUFFIX) $(OBJDIR)si
 	$(DIFF) start-fini.reference $(OBJDIR)$(@:.test=.toolout)
 	$(RM) -f $(OBJDIR)$(@:.test=.toolout) $(OBJDIR)$(@:.test=.pindbin) $(OBJDIR)$(@:.test=.pindbout)
 
+stop-resume-when-suspended.test: $(OBJDIR)stop-resume-when-suspended$(PINTOOL_SUFFIX) $(OBJDIR)simple$(EXE_SUFFIX)
+	$(RM) -f $(OBJDIR)$(@:.test=.toolout) $(OBJDIR)$(@:.test=.pindbin) $(OBJDIR)$(@:.test=.pindbout)
+	echo "set pinargs $(PIN_USERFLAGS) -t $(OBJDIR)stop-resume-when-suspended$(PINTOOL_SUFFIX) \
+	    -o $(OBJDIR)$(@:.test=.toolout)" > $(OBJDIR)$(@:.test=.pindbin)
+	echo "run $(OBJDIR)simple$(EXE_SUFFIX)" >> $(OBJDIR)$(@:.test=.pindbin)
+	cat $(@:.test=.pindb) >> $(OBJDIR)$(@:.test=.pindbin)
+	$(PINDB_WITH_LIBPATH) --pin=$(BARE_PIN) --timeout=$(TLIMIT) --cpu=$(TARGET) --noprompt \
+	    $(PINDB_USERFLAGS) < $(OBJDIR)$(@:.test=.pindbin) > $(OBJDIR)$(@:.test=.pindbout)
+	$(DIFF) stop-resume-when-suspended.reference $(OBJDIR)$(@:.test=.toolout)
+	$(QGREP) "Sum is 55" $(OBJDIR)$(@:.test=.pindbout)
+	$(RM) -f $(OBJDIR)$(@:.test=.toolout) $(OBJDIR)$(@:.test=.pindbin) $(OBJDIR)$(@:.test=.pindbout)
+
 # Verify that PIN_InterceptDebuggingEvent() can intercept and squash breakpoints.
 #
 intercept-breakpoint.test: $(OBJDIR)intercept-app$(EXE_SUFFIX) $(OBJDIR)intercept-tool$(PINTOOL_SUFFIX)
@@ -828,7 +908,7 @@ interpreter-remove.test: $(OBJDIR)interpreter-remove$(PINTOOL_SUFFIX) $(OBJDIR)s
 	$(PIN) -appdebug -t $(OBJDIR)interpreter-remove$(PINTOOL_SUFFIX) -- $(OBJDIR)simple$(EXE_SUFFIX) > $(OBJDIR)$(@:.test=.out) &
 	count=0; \
 	until $(GREP) 'target remote' $(OBJDIR)$(@:.test=.out) > /dev/null || $(BASHTEST) $$count -gt $(TLIMIT); \
-		do sleep 1; count=`expr $$count + 1`; done
+	  do sleep 1; count=`expr $$count + 1`; done
 	echo 'set remotetimeout $(TLIMIT)' > $(OBJDIR)$(@:.test=.gdbin)
 	$(GREP) 'target remote' $(OBJDIR)$(@:.test=.out) >> $(OBJDIR)$(@:.test=.gdbin)
 	echo 'monitor bdio' >> $(OBJDIR)$(@:.test=.gdbin)
@@ -1119,6 +1199,7 @@ pindb-abrupt-disconnect.test: $(OBJDIR)simple$(EXE_SUFFIX)
 	cat $(@:.test=.pindb) >> $(OBJDIR)$(@:.test=.pindbin)
 	$(PINDB_WITH_LIBPATH) --pin=$(BARE_PIN) --timeout=$(TLIMIT) --cpu=$(TARGET) --noprompt \
 	    $(PINDB_USERFLAGS) < $(OBJDIR)$(@:.test=.pindbin) > $(OBJDIR)$(@:.test=.pindbout)
+	$(SYNC)
 	$(RM) -f $(OBJDIR)$(@:.test=.pin.log) $(OBJDIR)$(@:.test=.pindbin) $(OBJDIR)$(@:.test=.pindbin) \
 	      $(OBJDIR)$(@:.test=.pindbout)
 
@@ -1155,6 +1236,33 @@ gdb-detach-reattach.test: $(OBJDIR)reattach-loop$(EXE_SUFFIX)
 	$(PYCOMPARE) -p $(@:.test=-app.compare) -c $(OBJDIR)$(@:.test=.out)
 	$(RM) -f $(OBJDIR)$(@:.test=.out) $(OBJDIR)$(@:.test=.out) $(OBJDIR)$(@:.test=.port) $(OBJDIR)$(@:.test=-1.gdbin) \
 	      $(OBJDIR)$(@:.test=-1.gdbout) $(OBJDIR)$(@:.test=-2.gdbin) $(OBJDIR)$(@:.test=-2.gdbout)
+
+# Test that GDB can detach from Pin and then re-attach later.
+#
+gdb-detach-reattach-fixed-port.test: $(OBJDIR)reattach-loop$(EXE_SUFFIX) $(OBJDIR)pick-random-port$(EXE_SUFFIX)
+	$(RM) -f $(OBJDIR)$(@:.test=.out)
+	$(OBJDIR)pick-random-port$(EXE_SUFFIX) unused > $(OBJDIR)$(@:.test=.random)
+	$(PIN) $(PINFLAGS_DEBUG) -appdebug_server_port `cat $(OBJDIR)$(@:.test=.random)` -- \
+	    $(OBJDIR)reattach-loop$(EXE_SUFFIX) > $(OBJDIR)$(@:.test=.out) &
+	count=0; \
+	until $(GREP) 'target remote :'`cat $(OBJDIR)$(@:.test=.random)` \
+	    $(OBJDIR)$(@:.test=.out) > /dev/null || $(BASHTEST) $$count -gt $(TLIMIT); \
+	    do sleep 1; count=`expr $$count + 1`; done
+	$(GREP) 'target remote :'`cat $(OBJDIR)$(@:.test=.random)` $(OBJDIR)$(@:.test=.out) > $(OBJDIR)$(@:.test=.port)
+	echo 'set remotetimeout $(TLIMIT)' > $(OBJDIR)$(@:.test=-1.gdbin)
+	cat $(OBJDIR)$(@:.test=.port) >> $(OBJDIR)$(@:.test=-1.gdbin)
+	cat $(@:.test=-1.gdb) >> $(OBJDIR)$(@:.test=-1.gdbin)
+	$(GDB) -batch -x $(OBJDIR)$(@:.test=-1.gdbin) -n $(OBJDIR)reattach-loop$(EXE_SUFFIX) > $(OBJDIR)$(@:.test=-1.gdbout)
+	echo 'set remotetimeout $(TLIMIT)' > $(OBJDIR)$(@:.test=-2.gdbin)
+	cat $(OBJDIR)$(@:.test=.port) >> $(OBJDIR)$(@:.test=-2.gdbin)
+	cat $(@:.test=-2.gdb) >> $(OBJDIR)$(@:.test=-2.gdbin)
+	$(GDB) -batch -x $(OBJDIR)$(@:.test=-2.gdbin) -n $(OBJDIR)reattach-loop$(EXE_SUFFIX) > $(OBJDIR)$(@:.test=-2.gdbout)
+	$(PYCOMPARE) -p $(@:.test=-gdb-1.compare) -c $(OBJDIR)$(@:.test=-1.gdbout)
+	$(PYCOMPARE) -p $(@:.test=-gdb-2.compare) -c $(OBJDIR)$(@:.test=-2.gdbout)
+	$(PYCOMPARE) -p $(@:.test=-app.compare) -c $(OBJDIR)$(@:.test=.out)
+	$(RM) -f $(OBJDIR)$(@:.test=.out) $(OBJDIR)$(@:.test=.out) $(OBJDIR)$(@:.test=.port) $(OBJDIR)$(@:.test=-1.gdbin) \
+	    $(OBJDIR)$(@:.test=-1.gdbout) $(OBJDIR)$(@:.test=-2.gdbin) $(OBJDIR)$(@:.test=-2.gdbout) \
+	    $(OBJDIR)$(@:.test=.random)
 
 # Test that extended commands work using PinDB.  This also checks that the tool does _not_ receive
 # commands that start with the "pin " prefix.
@@ -1522,7 +1630,8 @@ pindb-simple-simultaneous-multi-serialize.test: $(OBJDIR)thread-$(OS_TYPE)$(EXE_
 pindb-simultaneous-toolbreak-attach.test: $(OBJDIR)thread-$(OS_TYPE)$(EXE_SUFFIX) $(OBJDIR)simultaneous-toolbreak$(PINTOOL_SUFFIX)
 	$(RM) -f $(OBJDIR)$(@:.test=.out)
 	$(PIN) $(PINFLAGS_DEBUG_RUNFREE) -t $(OBJDIR)simultaneous-toolbreak$(PINTOOL_SUFFIX) -sync_for_threads 4 \
-	  -wait_for_debugger -port $(OBJDIR)$(@:.test=.port) -- $(OBJDIR)thread-$(OS_TYPE)$(EXE_SUFFIX) -threads 4 > $(OBJDIR)$(@:.test=.out) &
+	  -wait_for_debugger -port $(OBJDIR)$(@:.test=.port) -- $(OBJDIR)thread-$(OS_TYPE)$(EXE_SUFFIX) -threads 4 \
+	    > $(OBJDIR)$(@:.test=.out) &
 	count=0; \
 	until $(GREP) 'Waiting for debugger to attach' $(OBJDIR)$(@:.test=.out) > /dev/null || $(BASHTEST) $$count -gt $(TLIMIT); \
 	    do sleep 1; count=`expr $$count + 1`; done
@@ -1530,7 +1639,8 @@ pindb-simultaneous-toolbreak-attach.test: $(OBJDIR)thread-$(OS_TYPE)$(EXE_SUFFIX
 	    --gdb-protocol=:`cat $(OBJDIR)$(@:.test=.port)` $(PINDB_USERFLAGS) < $(@:.test=.pindbin) > \
 	    $(OBJDIR)$(@:.test=.pindbout)
 	$(PYCOMPARE) -p $(@:.test=.compare) -c $(OBJDIR)$(@:.test=.pindbout)
-	$(RM) -f $(OBJDIR)$(@:.test=.pindbin) $(OBJDIR)$(@:.test=.pindbout) $(OBJDIR)$(@:.test=.address)
+	$(RM) -f $(OBJDIR)$(@:.test=.pindbin) $(OBJDIR)$(@:.test=.pindbout) $(OBJDIR)$(@:.test=.address) \
+	  $(OBJDIR)$(@:.test=.out) $(OBJDIR)$(@:.test=.port)
 
 # Test that we can use a custom command to change the register state of the target application,
 # and then use the "invalidate registers" API to invalidate any stale register data in the
@@ -1558,6 +1668,37 @@ app-pause-in-int-thread.test: $(OBJDIR)app-pause-in-int-thread-tool$(PINTOOL_SUF
 	  -- $(OBJDIR)app-pause-app$(EXE_SUFFIX) > $(OBJDIR)$(@:.test=.out)
 	$(CGREP) 'Threads stopped by internal thread' $(OBJDIR)$(@:.test=.out) | $(QGREP) "3"
 	$(RM) $(OBJDIR)$(@:.test=.out)
+
+check-if-thread-stopped.test: $(OBJDIR)thread-$(OS_TYPE)$(EXE_SUFFIX) $(OBJDIR)check-if-thread-stopped$(PINTOOL_SUFFIX)
+	echo "set pinargs $(PIN_USERFLAGS) -t $(OBJDIR)check-if-thread-stopped$(PINTOOL_SUFFIX) -threads 4" \
+	  -o $(OBJDIR)$(@:.test=.toolout) > $(OBJDIR)$(@:.test=.pindbin)
+	echo "run $(OBJDIR)thread-$(OS_TYPE)$(EXE_SUFFIX) -threads 4" >> $(OBJDIR)$(@:.test=.pindbin)
+	cat $(@:.test=.pindb) >> $(OBJDIR)$(@:.test=.pindbin)
+	$(PINDB_WITH_LIBPATH) --pin=$(BARE_PIN) --timeout=$(TLIMIT) --cpu=$(TARGET) --noprompt \
+	    $(PINDB_USERFLAGS) < $(OBJDIR)$(@:.test=.pindbin) > $(OBJDIR)$(@:.test=.pindbout)
+	$(PYCOMPARE) -p $(@:.test=.compare) -c $(OBJDIR)$(@:.test=.pindbout)
+	$(QGREP) "Finished" $(OBJDIR)$(@:.test=.toolout)
+	$(RM) -f $(OBJDIR)$(@:.test=.pindbin) $(OBJDIR)$(@:.test=.pindbout) $(OBJDIR)$(@:.test=.toolout)
+
+# Tests GDB extension of retrieving loaded shared libraries
+# Also, this test changes the base address of libc.so as seen
+# by GDB to 0xd00dead and checks that GDB reports the expected
+# base address.
+#
+gdb-svr4-libraries-extension.test: $(OBJDIR)dlopen-dlclose$(EXE_SUFFIX) $(OBJDIR)library-load-tool$(PINTOOL_SUFFIX)
+	$(RM) -f $(OBJDIR)$(@:.test=.out)
+	$(PIN) $(PINFLAGS_DEBUG) -t $(OBJDIR)library-load-tool$(PINTOOL_SUFFIX) -- \
+	    $(OBJDIR)dlopen-dlclose$(EXE_SUFFIX) `$(CXX) $(COMP_OBJ) /dev/null -print-file-name=libgcc_s.so` > $(OBJDIR)$(@:.test=.out) &
+	count=0; \
+	until $(GREP) 'target remote' $(OBJDIR)$(@:.test=.out) > /dev/null || $(BASHTEST) $$count -gt $(TLIMIT); \
+	    do sleep 1; count=`expr $$count + 1`; done
+	echo 'set remotetimeout $(TLIMIT)' > $(OBJDIR)$(@:.test=.gdbin)
+	$(GREP) 'target remote' $(OBJDIR)$(@:.test=.out) >> $(OBJDIR)$(@:.test=.gdbin)
+	cat $(@:.test=.gdb) >> $(OBJDIR)$(@:.test=.gdbin)
+	$(GDB) -batch -x $(OBJDIR)$(@:.test=.gdbin) -n $(OBJDIR)dlopen-dlclose$(EXE_SUFFIX) \
+	  > $(OBJDIR)$(@:.test=.gdbout) 2>&1
+	$(PYCOMPARE) -p $(@:.test=.compare) -c $(OBJDIR)$(@:.test=.gdbout)
+	$(RM) -f $(OBJDIR)$(@:.test=.out) $(OBJDIR)$(@:.test=.gdbin) $(OBJDIR)$(@:.test=.gdbout)
 
 
 ##############################################################
@@ -1589,6 +1730,9 @@ $(OBJDIR)set_xmm_scratches_for_ymmtest$(PINTOOL_SUFFIX): $(OBJDIR)set_xmm_scratc
 ###### Special applications' build rules ######
 
 $(OBJDIR)simple$(EXE_SUFFIX): simple.c
+	$(APP_CC) $(APP_CXXFLAGS_NOOPT) $(DBG_INFO_CXX_ALWAYS) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(DBG_INFO_LD_ALWAYS)
+
+$(OBJDIR)bphandler_app$(EXE_SUFFIX): bphandler_app.c
 	$(APP_CC) $(APP_CXXFLAGS_NOOPT) $(DBG_INFO_CXX_ALWAYS) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(DBG_INFO_LD_ALWAYS)
 
 $(OBJDIR)simple-static$(EXE_SUFFIX): simple.c
@@ -1703,9 +1847,6 @@ $(OBJDIR)stack-debugger$(OBJ_SUFFIX): $(TOOLS_ROOT)/ManualExamples/stack-debugge
 
 $(OBJDIR)debugger-shell$(OBJ_SUFFIX): $(TOOLS_ROOT)/InstLib/debugger-shell.cpp
 	$(CXX) $(TOOL_CXXFLAGS) $(COMP_OBJ)$@ $<
-
-$(OBJDIR)null-emulator-$(TARGET)$(OBJ_SUFFIX): null-emulator-$(TARGET).cpp
-	$(CXX) $(TOOL_CXXFLAGS) $(ENABLE_DEPRECATED) $(COMP_OBJ)$@ $<
 
 $(OBJDIR)start-fini-callback$(OBJ_SUFFIX): start-fini-callback.cpp
 	$(CXX) $(TOOL_CXXFLAGS) $(COMP_OBJ)$@ $<

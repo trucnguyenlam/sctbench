@@ -2,7 +2,7 @@
 .type AtomicIncrement, @function
 .global AtomicIncrement
 AtomicIncrement:
-    lea     numthreadsStarted, %rcx
+    lea     numthreadsStarted(%rip), %rcx
     incl     (%rcx)
     ret
 

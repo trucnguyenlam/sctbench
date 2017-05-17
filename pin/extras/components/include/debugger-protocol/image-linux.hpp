@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -34,6 +34,8 @@ END_LEGAL */
 
 #ifndef DEBUGGER_PROTOCOL_IMAGE_LINUX_HPP
 #define DEBUGGER_PROTOCOL_IMAGE_LINUX_HPP
+
+#include <vector>
 
 namespace DEBUGGER_PROTOCOL {
 
@@ -81,6 +83,18 @@ struct /*<UTILITY>*/ IMAGE_INFO_LINUX
     IMAGE_TYPE_LINUX _type;             ///< The image type.
     std::string _name;                  ///< Absolute pathname to the ELF file (UTF-8).
     FUND::ANYADDR _offset;              ///< Offset from ELF file's link-time address to it's loaded address.
+    FUND::ADDRINT _lm;                  ///< Pointer to the image's struct link_map
+    FUND::ADDRINT _l_ld;                ///< Points to the image's PT_DYNAMIC segment
+};
+
+/*!
+ * Images list in the target application for GDB.
+ * Complying with the SVR4 standard.
+ */
+struct /*<UTILITY>*/ SVR4_IMAGES_LIST_LINUX
+{
+    FUND::ADDRINT _main_lm;             ///< Pointer to the main image's struct link_map
+    std::vector<IMAGE_INFO_LINUX> _list;///< List of all loaded images
 };
 
 } // namespace

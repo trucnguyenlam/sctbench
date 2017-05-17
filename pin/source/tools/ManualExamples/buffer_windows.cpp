@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -170,7 +170,7 @@ VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,
     */
     if (KnobDoWriteToOutputFile)
     {
-        GetLock(&fileLock, 1);
+        PIN_GetLock(&fileLock, 1);
 
         struct MEMREF * reference=(struct MEMREF*)buf;
 
@@ -179,7 +179,7 @@ VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,
             if (reference->ea != 0)
                 ofile << tid << "   "  << reference->pc << "   " << reference->ea << endl;
         }
-        ReleaseLock(&fileLock);
+        PIN_ReleaseLock(&fileLock);
     }
 
     return buf;
@@ -189,9 +189,9 @@ VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,
 // This function is called when the application exits
 VOID Fini(INT32 code, VOID *v)
 {
-    GetLock(&fileLock, 1);
+    PIN_GetLock(&fileLock, 1);
     ofile.close();
-    ReleaseLock(&fileLock);
+    PIN_ReleaseLock(&fileLock);
 }
 
 /* ===================================================================== */
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
     }
 
     // Initialize the lock.
-    InitLock(&fileLock);
+    PIN_InitLock(&fileLock);
 
     // Open the output file.
     string filename = KnobOutputFile.Value();

@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -29,9 +30,9 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef VOID(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__SYSCALL__API.html#g3a481ce6651f7d491e78912bc628d5aa">LEVEL_PINCLIENT::SYSCALL_EXIT_CALLBACK</a> )(<a class="el" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> threadIndex, <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g3b24ec17730bcf65f7ff170f7ff49fba">SYSCALL_STANDARD</a> std, VOID *v)</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__SYSCALL__API.html#g34187bf56faa8bcf38abd61714015398">LEVEL_PINCLIENT::PIN_AddSyscallEntryFunction</a> (<a class="el" href="group__PIN__SYSCALL__API.html#g15a0626027cd595bd1bd2a516118240e">SYSCALL_ENTRY_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__SYSCALL__API.html#gb62f4c93284ca4219f53aa9c4ab4d545">LEVEL_PINCLIENT::PIN_AddSyscallEntryFunction</a> (<a class="el" href="group__PIN__SYSCALL__API.html#g15a0626027cd595bd1bd2a516118240e">SYSCALL_ENTRY_CALLBACK</a> fun, VOID *val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__SYSCALL__API.html#g6f0e1a4511f4fcd2cfa689ee2414439d">LEVEL_PINCLIENT::PIN_AddSyscallExitFunction</a> (<a class="el" href="group__PIN__SYSCALL__API.html#g3a481ce6651f7d491e78912bc628d5aa">SYSCALL_EXIT_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__SYSCALL__API.html#g8bf568a9177431df0939d478de94bb51">LEVEL_PINCLIENT::PIN_AddSyscallExitFunction</a> (<a class="el" href="group__PIN__SYSCALL__API.html#g3a481ce6651f7d491e78912bc628d5aa">SYSCALL_EXIT_CALLBACK</a> fun, VOID *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__SYSCALL__API.html#g0130f5b454974d69c69275680ded4a37">LEVEL_PINCLIENT::PIN_SetSyscallArgument</a> (<a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <a class="el" href="group__INS__BASIC__API__GEN__IA32.html#g3b24ec17730bcf65f7ff170f7ff49fba">SYSCALL_STANDARD</a> std, UINT32 argNum, ADDRINT val)</td></tr>
 
@@ -113,13 +114,13 @@ Call-back function after execution of a system call.<p>
   </tr>
 </table>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="g34187bf56faa8bcf38abd61714015398"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddSyscallEntryFunction" ref="g34187bf56faa8bcf38abd61714015398" args="(SYSCALL_ENTRY_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="gb62f4c93284ca4219f53aa9c4ab4d545"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddSyscallEntryFunction" ref="gb62f4c93284ca4219f53aa9c4ab4d545" args="(SYSCALL_ENTRY_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddSyscallEntryFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddSyscallEntryFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__SYSCALL__API.html#g15a0626027cd595bd1bd2a516118240e">SYSCALL_ENTRY_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -154,6 +155,7 @@ Register a notification function that is called immediately before execution of 
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>Value to pass to the function.</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API..</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows<br>
@@ -162,13 +164,13 @@ Register a notification function that is called immediately before execution of 
     </td>
   </tr>
 </table>
-<a class="anchor" name="g6f0e1a4511f4fcd2cfa689ee2414439d"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddSyscallExitFunction" ref="g6f0e1a4511f4fcd2cfa689ee2414439d" args="(SYSCALL_EXIT_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g8bf568a9177431df0939d478de94bb51"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddSyscallExitFunction" ref="g8bf568a9177431df0939d478de94bb51" args="(SYSCALL_EXIT_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddSyscallExitFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddSyscallExitFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__SYSCALL__API.html#g3a481ce6651f7d491e78912bc628d5aa">SYSCALL_EXIT_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -205,9 +207,10 @@ Register a notification function that is called immediately after execution of a
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>Value to pass to the function.</td></tr>
   </table>
 </dl>
-<dl compact><dt><b>Note:</b></dt><dd>In order to monitor all possible control transfers from the operating system to the user mode application, the tool has to register both a SYSCALL_EXIT_CALLBACK and a CONTEXT_CHANGE_CALLBACK callback functions. This can be done using the corresponding registration functions: <a class="el" href="group__PIN__SYSCALL__API.html#g6f0e1a4511f4fcd2cfa689ee2414439d">PIN_AddSyscallExitFunction()</a> and <a class="el" href="group__PIN__CONTROL.html#gdb70938ef31309447fe65a653667334a">PIN_AddContextChangeFunction()</a>.<br>
- When a system call returns to the application, the tool receives the SYSCALL_EXIT_CALLBACK notification. Usually, this callback immediately follows the corresponding SYSCALL_ENTRY_CALLBACK notification and there is no application code executed between these two events. However, some (Windows) system calls can be interrupted by a system event (APC, Windows callback, exception) before they return to the application. If this happens, the tool receives the corresponding CONTEXT_CHANGE_CALLBACK notification just before the (user mode) handler of the system event gets executed. Eventually, when the event handler and the interrupted system call are completed, the SYSCALL_EXIT_CALLBACK notification is delivered to the tool.<p>
-The pin client lock is obtained during the call of this API.</dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>In order to monitor all possible control transfers from the operating system to the user mode application, the tool has to register both a SYSCALL_EXIT_CALLBACK and a CONTEXT_CHANGE_CALLBACK callback functions. This can be done using the corresponding registration functions: <a class="el" href="group__PIN__SYSCALL__API.html#g8bf568a9177431df0939d478de94bb51">PIN_AddSyscallExitFunction()</a> and <a class="el" href="group__PIN__CONTROL.html#gfe475fc12b9060e8e45cbfccd7d592c8">PIN_AddContextChangeFunction()</a>.<br>
+ When a system call returns to the application, the tool receives the SYSCALL_EXIT_CALLBACK notification. Usually, this callback immediately follows the corresponding SYSCALL_ENTRY_CALLBACK notification and there is no application code executed between these two events. However, some (Windows) system calls can be interrupted by a system event (APC, Windows callback, exception) before they return to the application. If this happens, the tool receives the corresponding CONTEXT_CHANGE_CALLBACK notification just before the (user mode) handler of the system event gets executed. Eventually, when the event handler and the interrupted system call are completed, the SYSCALL_EXIT_CALLBACK notification is delivered to the tool.</dd></dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows<br>
  <b>CPU:</b> All<br>
@@ -359,7 +362,7 @@ Get the error code of the system call which is just returned with the specified 
 <p>
 Get the number (ID) of the system call to be executed in the specified context.<br>
  It is a user's responsibility to make sure that the specified context represents the state of a system call before execution. For example, this function can be safely used in the scope of <a class="el" href="group__PIN__SYSCALL__API.html#g15a0626027cd595bd1bd2a516118240e">SYSCALL_ENTRY_CALLBACK</a>, but not in a SYSCALL_EXIT_CALLBACK. Applying this function to an inappropriate context results in undefined behavior.<p>
-If you need the system call number in a SYSCALL_EXIT_CALLBACK, you should use a SYSCALL_ENTRY_CALLBACK to save the system call number into thread local storage so that you can get it from there in your SYSCALL_EXIT_CALLBACK. Beware, though of interruptable system calls, to handle those you will need to worry about other context changes (see the discussion in <a class="el" href="group__PIN__SYSCALL__API.html#g6f0e1a4511f4fcd2cfa689ee2414439d">PIN_AddSyscallExitFunction</a> ).<p>
+If you need the system call number in a SYSCALL_EXIT_CALLBACK, you should use a SYSCALL_ENTRY_CALLBACK to save the system call number into thread local storage so that you can get it from there in your SYSCALL_EXIT_CALLBACK. Beware, though of interruptable system calls, to handle those you will need to worry about other context changes (see the discussion in <a class="el" href="group__PIN__SYSCALL__API.html#g8bf568a9177431df0939d478de94bb51">PIN_AddSyscallExitFunction</a> ).<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>ctxt</em>&nbsp;</td><td>context before the system call execution </td></tr>
@@ -544,7 +547,7 @@ Set the number (ID) of the system call to be executed in the specified context.<
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

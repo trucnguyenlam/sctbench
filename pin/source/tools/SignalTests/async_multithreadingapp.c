@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -63,11 +63,14 @@ END_LEGAL */
 #define COUNT   10
 #define USLEEP_TIME 25000
 
+#define DEADLOCK_TIMEOUT 10
+
 typedef void (*PF)();
 
 volatile unsigned SigCount = 0;
 
 static void Handle(int);
+static void TimeoutHandler(int);
 static void *DoSysCallTillSignalsDone(void *);
 void DoToolAnalysis();
 void sig_hand(int);
@@ -96,7 +99,7 @@ int main()
         close(fd[1]);          // Close unused write end 
 
         struct timespec timeout;
-        timeout.tv_sec = 120;
+        timeout.tv_sec = 1200; //20 mins
         timeout.tv_nsec = 0;
         char buf[2];
         
@@ -150,6 +153,18 @@ int main()
             return 1;
         }
 
+        struct sigaction sigact_timeout;
+        sigact_timeout.sa_handler = TimeoutHandler;
+        sigact_timeout.sa_flags = 0;
+        sigfillset(&sigact_timeout.sa_mask);
+
+        if (sigaction(SIGALRM, &sigact_timeout, 0) == -1)
+        {
+            fprintf(stderr, "Child - Unable to set up timeout handler\n");
+            return 1;
+        }
+
+
         // Create a new thread that calls a system call in a loop
         if (pthread_create(&tid, 0, DoSysCallTillSignalsDone, 0) != 0)
         {
@@ -167,9 +182,11 @@ int main()
             fprintf(stderr, "Child - Unable to set up timer\n");
             return 1;
         }
-        
+       
         close(fd[1]); // send EOF to signal parent that timer is on
-        
+       
+        alarm(DEADLOCK_TIMEOUT);
+
         /*
         * Call an analysis function in a loop .
         */
@@ -199,8 +216,14 @@ static void Handle(int sig)
 {
     SigCount++;
     printf("Signal Count: %u\n", SigCount);
+    alarm(DEADLOCK_TIMEOUT);
 }
 
+static void TimeoutHandler(int a)
+{
+    printf("Deadlock timeout occured, it seems that PIN couldn't get the app and tool out of a deadlock situation. SigCount: %u\n", SigCount);
+    exit(1);
+}
 
 static void *DoSysCallTillSignalsDone(void *v)
 {

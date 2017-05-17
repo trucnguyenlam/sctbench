@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -30,12 +30,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
 #include "pin.H"
 #include <cstdio>
-#include <linux/unistd.h>
+#include <unistd.h>
 #include <sched.h>
 #include <cassert>
-#ifdef TARGET_ANDROID
 #include <sys/syscall.h>
-#endif
 
 FILE* master = NULL;
 FILE* generated = NULL;

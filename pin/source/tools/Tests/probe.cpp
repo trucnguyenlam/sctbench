@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -129,7 +129,7 @@ void Trace(TRACE trace, void * v)
 
 int main(INT32 argc, CHAR **argv)
 {
-    // On Mac, ImageLoad() works only after we call PIN_InitSymbols().
+    // On OS X*, ImageLoad() works only after we call PIN_InitSymbols().
     // This is not necessary on Linux, but doing it doesn't hurt.
     PIN_InitSymbols();
     

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -163,16 +163,16 @@ class APP_THREAD_REPRESENTITVE
 
     VOID IncrementNumOutstandingBuffers(THREADID tid) 
     { 
-        GetLock(&_numOutstandingBuffersLock, tid+1); 
+        PIN_GetLock(&_numOutstandingBuffersLock, tid+1);
         _numOutstandingBuffers++; 
-        ReleaseLock(&_numOutstandingBuffersLock);
+        PIN_ReleaseLock(&_numOutstandingBuffersLock);
     }
 
     VOID DecrementNumOutstandingBuffers(THREADID tid) 
     { 
-        GetLock(&_numOutstandingBuffersLock, tid+1); 
+        PIN_GetLock(&_numOutstandingBuffersLock, tid+1);
         _numOutstandingBuffers--; 
-        ReleaseLock(&_numOutstandingBuffersLock);
+        PIN_ReleaseLock(&_numOutstandingBuffersLock);
     }
 
     BOOL AllBuffersProcessed() {return (_numOutstandingBuffers==0);}
@@ -411,7 +411,7 @@ VOID ProcessBuffer(VOID *curBuf, VOID *endOfTraceInBuffer, APP_THREAD_REPRESENTI
 
 APP_THREAD_REPRESENTITVE::APP_THREAD_REPRESENTITVE(THREADID myTid) : _curBuffer(AllocateBuffer()), _myTid(myTid), _pointerToEndOfTraceInBuffer(NULL), _numOutstandingBuffers(0)
 {
-    InitLock(&_numOutstandingBuffersLock);
+    PIN_InitLock(&_numOutstandingBuffersLock);
     memset (_curBuffer, EMPTY_ENTRY, KnobNumBytesInBuffer.Value());
 }
 
@@ -488,6 +488,7 @@ char *  APP_THREAD_REPRESENTITVE::AllocateBuffer()
 
 BUFFER_LIST_MANAGER::BUFFER_LIST_MANAGER()
 {
+     PIN_InitLock(&_bufferListLock);
     _bufferSem = WIND::CreateSemaphore (NULL, 0, 0x7fffffff, NULL);
 }
 
@@ -505,9 +506,9 @@ VOID   BUFFER_LIST_MANAGER::PutBufferOnList(VOID *buf, VOID *endOfLastTraceInfBu
     bufferListElement.endOfLastTraceInfBuffer = endOfLastTraceInfBuffer;
     bufferListElement.appThreadRepresentitive = appThreadRepresentitive;
 
-    GetLock(&_bufferListLock, tid+1);
+    PIN_GetLock(&_bufferListLock, tid+1);
     _bufferList.push_back(bufferListElement);
-    ReleaseLock(&_bufferListLock);
+    PIN_ReleaseLock(&_bufferListLock);
     BOOL success = WIND::ReleaseSemaphore(_bufferSem, 1, NULL);
 }
 
@@ -533,13 +534,20 @@ VOID  BUFFER_LIST_MANAGER::GetBufferFromList(VOID **buf, VOID **endOfLastTraceIn
         _bufferListStatistics.UpdateCyclesWaitingForBuffer();
     }
 
-    GetLock(&_bufferListLock, tid+1);
-    BUFFER_LIST_ELEMENT &bufferListElement = (_bufferList.front());
-    *buf = bufferListElement.buf;
-    *endOfLastTraceInfBuffer = bufferListElement.endOfLastTraceInfBuffer;
-    *appThreadRepresentitive = bufferListElement.appThreadRepresentitive;
-    _bufferList.pop_front();
-    ReleaseLock(&_bufferListLock);
+	if (_bufferList.empty()) {
+		// Clear the buffer pointer for start
+		*buf = NULL;
+	}
+	else
+    {
+        PIN_GetLock(&_bufferListLock, tid+1);
+        BUFFER_LIST_ELEMENT &bufferListElement = (_bufferList.front());
+        *buf = bufferListElement.buf;
+        *endOfLastTraceInfBuffer = bufferListElement.endOfLastTraceInfBuffer;
+        *appThreadRepresentitive = bufferListElement.appThreadRepresentitive;
+        _bufferList.pop_front();
+        PIN_ReleaseLock(&_bufferListLock);
+    }
 }
 
 VOID BUFFER_LIST_MANAGER::SignalBufferSem()
@@ -858,6 +866,6 @@ int main(int argc, char * argv[])
     overallStatistics.Init();
     fflush (stdout);
     PIN_StartProgram();
-    
+
     return 0;
 }

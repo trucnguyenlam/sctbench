@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -70,7 +70,7 @@ void InitializeMe()
 
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     fprintf(out, "thread begin %d\n",threadid);
     numThreads++;
     if (threadid % 5 == 4) 
@@ -80,15 +80,15 @@ VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
         CODECACHE_FlushCache();
     }
     fflush(out);
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
     
 VOID ThreadFini(THREADID threadid, const CONTEXT *ctxt, INT32 code, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     fprintf(out, "thread end %d code %d\n",(int)threadid, (int)code);
     fflush(out);
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
     
 VOID FlushHappened()
@@ -109,7 +109,7 @@ VOID Fini(INT32 code, VOID *v)
 
 int main(INT32 argc, CHAR **argv)
 {
-    InitLock(&lock);
+    PIN_InitLock(&lock);
 
     InitializeMe();
     

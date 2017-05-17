@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -108,6 +108,20 @@ typedef unsigned long PROCESS;
 typedef void IMAGE_INFO;
 
 /*!
+ * Images list required by GDB (in System V R4 standard).
+ * Implemented only for Linux GDB.
+ *
+ */
+typedef void SVR4_IMAGES_LIST;
+
+/*!
+ * Image info required by GDB (in System V R4 standard).
+ * Implemented only for Linux GDB.
+ *
+ */
+typedef void SVR4_IMAGE_INFO;
+
+/*!
  * Identifies an O/S specific "event", according to the \e os parameter passed to
  * CreateBackEnd() or returned from IFRONTEND::GetBackEndOs().
  *
@@ -167,7 +181,9 @@ enum OS
     OS_LINUX32,
     OS_LINUX64,
     OS_WINDOWS32,
-    OS_WINDOWS64
+    OS_WINDOWS64,
+    OS_MAC32,
+    OS_MAC64
 };
 
 /*!
@@ -177,6 +193,9 @@ enum
 {
     REG_INVALID,
     REG_PC,         ///< The program counter.
+    REG_FP,         ///< The frame pointer.
+    REG_SP,         ///< The stack pointer.
+    REG_FLAGS,      ///< The flags.
     REG_END
 };
 
@@ -189,7 +208,8 @@ enum FRONTEND_TYPE
     FRONTEND_TYPE_GDB,                  ///< The GNU debugger.
     FRONTEND_TYPE_IDB,                  ///< The Intel debugger.
     FRONTEND_TYPE_VISUAL_STUDIO_VSDBG,  ///< Visual Studio via VSDBG.
-    FRONTEND_TYPE_VISUAL_STUDIO         ///< Visual Studio via native connection.
+    FRONTEND_TYPE_VISUAL_STUDIO,        ///< Visual Studio via native connection.
+    FRONTEND_TYPE_LLDB                  ///< The LLVM debugger.
 };
 
 /*!
@@ -316,9 +336,43 @@ enum BACKEND_FEATURE
      * The back-end supports the IPROCESS_INFO interface via
      * ICOMMANDS::GetInterface(INTERFACE_ID_PROCESS_INFO).
      */
-    BACKEND_FEATURE_PROCESS_INFO = (1<<10)
+    BACKEND_FEATURE_PROCESS_INFO = (1<<10),
+
+    /*!
+     * The back-end supports System V R4 libraries extension
+     */
+    BACKEND_FEATURE_SVR4_LIBRARIES = (1<<11)
 };
 typedef FUND::UINT64 BACKEND_FEATURES;  ///< Bit mask of BACKEND_FEATURE's.
+
+/*!
+ * Various properties for debugger transport connection
+ */
+struct /*<POD>*/ DEBUGGER_CONNECTION_PROPERTIES
+{
+    enum DEBUGGER_CONNECTION_TYPE
+    {
+        NONE,
+        TCP_SERVER,
+        TCP_CLIENT
+    };
+    /*!
+     * Underlying connection type for the debugger transport
+     */
+    DEBUGGER_CONNECTION_TYPE _type;
+
+    /*!
+     * TCP port of the debugger connection
+     * Available only on TCP_SERVER or TCP_CLIENT connection types
+     */
+    int _tcpPort;
+
+    /*!
+     * TCP host of the debugger connection
+     * Available only on TCP_CLIENT connection type
+     */
+    std::string _tcpHost;
+};
 
 /*!
  * Possible options for a communication endpoint.
@@ -342,7 +396,25 @@ enum ENDPOINT_OPTION
      * to accept a connection even from a different machine (i.e. using the
      * INADDR_ANY local address).
      */
-    ENDPOINT_OPTION_ALLOW_REMOTE_CLIENTS = (1<<1)
+    ENDPOINT_OPTION_ALLOW_REMOTE_CLIENTS = (1<<1),
+
+    /*!
+     * This options requires from the backend to always send the thread id in the
+     * reply packets.
+     */
+    ENDPOINT_OPTION_ALWAYS_SEND_THREAD = (1<<2),
+
+    /*!
+     * This option enables the backend to send textual representation of the stop
+     * reason in the packet.
+     */
+    ENDPOINT_OPTION_SEND_STOP_REASON = (1<<3),
+
+    /*!
+     * This option enables the backend to send unlimited size packets to the
+     * frontend.
+     */
+    ENDPOINT_OPTION_UNLIMITED_LENGTH_PACKETS = (1<<4)
 };
 typedef FUND::UINT64 ENDPOINT_OPTIONS;      ///< Bit mask of ENDPOINT_OPTION's.
 
@@ -361,7 +433,8 @@ enum INTERFACE_ID
     INTERFACE_ID_EVENT_INTERCEPTION,        ///< Back-end defines IEVENT_INTERCEPTION.
     INTERFACE_ID_IMAGE_EXTENSIONS,          ///< Back-end defines IIMAGE_EXTENSIONS.
     INTERFACE_ID_THREAD_EXTENSIONS,         ///< Back-end defines ITHREAD_EXTENSIONS.
-    INTERFACE_ID_PROCESS_INFO               ///< Back-end defines IPROCESS_INFO.
+    INTERFACE_ID_PROCESS_INFO,              ///< Back-end defines IPROCESS_INFO.
+    INTERFACE_ID_SVR4_LIBRARIES             ///< Back-end defines ISVR4_LIBRARIES.
 };
 
 /*!
@@ -565,6 +638,10 @@ struct /*<POD>*/ REG_DESCRIPTION
                                 ///<  of this register whenever the target program stops.
                                 ///<  This saves a protocol request if the front-end
                                 ///<  usually needs this register when the target stops.
+    const char* _name;          ///< The textual name of the register
+    int _gccId;            ///< The GCC/DWARF compiler registers number for this
+                                ///< register (used for EH frame and other compiler
+                                ///< information that is encoded in the executable files).
 };
 
 
@@ -840,6 +917,16 @@ public:
     virtual bool GetServerInfo(TCP_INFO *info) = 0;
 
     /*!
+     * Tell the backend to disable some features.
+     * Note that this must be called before the frontend was connected to
+     * this backend.
+     *
+     *  @param[out] maskFeatures   Mask of backend features to disable
+     *
+     */
+    virtual void MaskFeatures(BACKEND_FEATURES maskFeatures) = 0;
+
+    /*!
      * This method defines the register set used to communicate with the
      * front-end.  It must be called before calling HandleCommands().
      *
@@ -1096,11 +1183,12 @@ public:
  *  @param[in] type         The type of the back-end client.
  *  @param[in] features     A bitwise 'or' of features supported by this back-end.
  *  @param[in] options      A bitwise 'or' of options that affect the back-end.
+ *  @param[in] props        Debugger connection properties (depends on the debugger type).
  *
  * @return  A new debugger back-end object.
  */
 DEBUGGER_PROTOCOL_API IBACKEND *CreateBackEnd(bool isServer, OS os, BACKEND_TYPE type,
-    BACKEND_FEATURES features, ENDPOINT_OPTIONS options);
+    BACKEND_FEATURES features, ENDPOINT_OPTIONS options, const DEBUGGER_CONNECTION_PROPERTIES& props);
 
 
 /*!
@@ -1704,6 +1792,16 @@ public:
      */
     virtual bool GetThreadStopImage(THREAD thread, IMAGE *image) = 0;
 
+    /*!
+     * Gets the loaded images list of the application according to the SVR4 format.
+     *
+     *  @param[out] info        Receives the image list
+     *
+     * @return  TRUE on success.
+     *
+     */
+    virtual bool GetSvr4ImageList(SVR4_IMAGES_LIST *info) = 0;
+
 protected:
     virtual ~IIMAGE_EXTENSIONS() {} ///< Do not call delete on IIMAGE_EXTENSIONS.
 };
@@ -1787,6 +1885,30 @@ public:
      *      - Called during "run mode".
      */
     virtual bool GetProcessId(PROCESS *pid) = 0;
+
+    /*!
+     * Retrieves the address of the loader inside the target process memory layout.
+     *
+     * @param[out] addr    The address of the loader.
+     *
+     * @return  TRUE on success.
+     *
+     *  Returns FALSE if:
+     *      - Not supported (client interface doesn't exist).
+     */
+    virtual bool GetLoaderInfoAddr(FUND::ANYADDR *addr) = 0;
+
+    /*!
+     * Retrieves the target application architecture description.
+     *
+     * @param[out] desc    The description of the architecture (OS specific).
+     *
+     * @return  TRUE on success.
+     *
+     *  Returns FALSE if:
+     *      - Not supported (client interface doesn't exist).
+     */
+    virtual bool GetTargetApplicationArch(void **desc) = 0;
 
 protected:
     virtual ~IPROCESS_INFO() {} ///< Do not call delete on IPROCESS_INFO.

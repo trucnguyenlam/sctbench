@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -42,10 +42,10 @@ PIN_LOCK Lock;
 
 VOID Error(std::string where, THREADID tid, UINT32 r, ADDRINT expect, ADDRINT val)
 {
-    GetLock(&Lock, 1);
+    PIN_GetLock(&Lock, 1);
     Out << "Mismatch " << where << ": tid=" << std::dec << tid << " (G" << r << ")" <<
         ", Expect " << std::hex << expect << ", Got " << std::hex << val << std::endl;
-    ReleaseLock(&Lock);
+    PIN_ReleaseLock(&Lock);
 }
 
 VOID ThreadStart(THREADID tid, CONTEXT *ctxt, int flags, VOID *v)
@@ -134,8 +134,10 @@ VOID Fini(INT32 code, VOID *v)
 
 int main(INT32 argc, CHAR **argv)
 {
-    InitLock(&Lock);
+    PIN_InitLock(&Lock);
     PIN_Init(argc, argv);
+
+    PIN_InitLock(&Lock);
 
     Out.open(KnobOutputFile.Value().c_str());
 

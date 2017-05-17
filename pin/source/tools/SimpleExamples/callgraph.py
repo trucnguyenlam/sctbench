@@ -19,7 +19,7 @@ import bisect
 #######################################################################
 
 def Version():
-    (l,v,x) = string.split('$Revision: 1.5 $')
+    (l,v,x) = string.split('$Revision: 1.6 $')
     return v
 
 #######################################################################
@@ -30,8 +30,8 @@ def Usage():
     print "Usage: callgraph.py [OPTION]* symbol-file edge-profile"
     print
     print "OPTIONS:"
-    print "\t-m mode       chose output format:  vcg or test"
-    print "\t-u            if one routine invokes amother from multiple callsite, merge them into one edge"
+    print "\t-m mode       choose output format:  vcg or text"
+    print "\t-u            if one routine invokes another from multiple callsites, merge them into one edge"
     print "\t-c cutoff     set cutoff, edges with smaller counts will not be shown "
     print "\t-t threshold  set thresholds, routines with a call count above the threshold will be colored red"   
     print 
@@ -246,7 +246,8 @@ def DumpText(cutoff):
 def ProcessSymbols(lines):
 
     for l in lines:
-        (num,value,size,type,bind,vis,ndx,name) = string.split(l)
+        ll = string.split(l)
+        (num,value,size,type,bind,vis,ndx,name) = ll[:8]
         start = long(value,16)
         if ALL_RTN.has_key(start):
             name2 = ALL_RTN[start].name()
@@ -294,7 +295,7 @@ def FindRtnByAddress(addr, s):
 #######################################################################
 #  0x0000000000400366 0x0000000000402300         2182
 
-PatternEdge = re.compile(r'^\s*0x([0-9a-fA-F]+)\s+0x([0-9a-fA-F]+)\s+([a-zA-Z])\s+([0-9]+)\s*$')
+PatternEdge = re.compile(r'^\s*0x([0-9a-fA-F]+)\s+0x([0-9a-fA-F]+)\s+([a-zA-Z])\s+([0-9]+)\s+.*$')
 
 def ProcessEdgProfile(lines, unique_edgs_only):
     global MAX_ADDR
@@ -303,7 +304,7 @@ def ProcessEdgProfile(lines, unique_edgs_only):
     if version[0] != "EDGCOUNT":
         Error("input file  is not an edgcnt profile")
 
-    if version[1] != "3.0":
+    if version[1] != "4.0":
         Error("unsupported  profile version %s" % version[1])
         
     for l in lines[1:]:

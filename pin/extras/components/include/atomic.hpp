@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -43,7 +43,7 @@ END_LEGAL */
  *
  * All utilities have a C++ template interface, somewhat reminiscent of the STL.  As a result, they should
  * be easy to customize for use with your own data structures.  The ATOMIC library is currently supported
- * on both Linux and Windows, on IA-32, Intel 64, and IA-64 (Itanium) processors.
+ * on both Linux and Windows, on IA-32, Intel(R) 64, and Itanium(R) processors.
  *
  * Queues:
  *  - @ref ATOMIC::LIFO_CTR             "LIFO_CTR - Last-in-first-out queue"

@@ -55,24 +55,32 @@ LIB_ROOTS :=
 
 ###### Place OS-specific definitions here ######
 
-# Linux
-ifeq ($(TARGET_OS),linux)
+#Android
+ifeq ($(TARGET_OS), android)
     TEST_ROOTS += rt-locks
     TOOL_ROOTS += rt-locks-tool
     APP_ROOTS += rt-locks-app
 endif
 
-# TODO: These tests fail on Mac - fix and remove the following:
-ifeq ($(TARGET_OS),mac)
-    TEST_TOOL_ROOTS :=
-    TEST_ROOTS :=
-    SANITY_SUBSET :=
-    TOOL_ROOTS :=
-    SA_TOOL_ROOTS :=
-    APP_ROOTS :=
-    OBJECT_ROOTS :=
-    DLL_ROOTS :=
-    LIB_ROOTS :=
+# Linux
+ifeq ($(TARGET_OS),linux)
+    TEST_ROOTS += rt-locks
+    TOOL_ROOTS += rt-locks-tool
+    APP_ROOTS += rt-locks-app
+    ifeq ($(PROBE),1)
+        TEST_ROOTS += stress-client-lock
+        TOOL_ROOTS += stress-client-lock-tool
+        APP_ROOTS += stress-client-lock-app
+    endif
+endif
+
+###### Handle Exceptions here ######
+
+ifeq ($(TARGET_OS),android)
+# rt-locks is disabled on Android. Mantis: 3203. 
+    TEST_ROOTS := $(filter-out rt-locks, $(TEST_ROOTS))
+    TOOL_ROOTS := $(filter-out rt-locks-tool, $(TOOL_ROOTS))
+    APP_ROOTS := $(filter-out rt-locks-app, $(APP_ROOTS))
 endif
 
 
@@ -171,6 +179,14 @@ semaphore.test: $(OBJDIR)mt-worker$(EXE_SUFFIX) $(OBJDIR)lock-tester$(PINTOOL_SU
 trylocks.test: $(OBJDIR)mt-worker$(EXE_SUFFIX) $(OBJDIR)lock-tester$(PINTOOL_SUFFIX)
 	$(PIN) -t $(OBJDIR)lock-tester$(PINTOOL_SUFFIX) -test $(@:.test=) -- $(OBJDIR)mt-worker$(EXE_SUFFIX) -t 1
 
+# Stress the client lock.
+stress-client-lock.test: $(OBJDIR)stress-client-lock-app$(EXE_SUFFIX) $(OBJDIR)stress-client-lock-tool$(PINTOOL_SUFFIX)
+	$(PIN) -probe -t $(OBJDIR)stress-client-lock-tool$(PINTOOL_SUFFIX) \
+	  -- $(OBJDIR)stress-client-lock-app$(EXE_SUFFIX) > $(OBJDIR)$(@:.test=.out) 2>&1
+	$(CGREP) "started" $(OBJDIR)$(@:.test=.out) | $(QGREP) 50
+	$(CGREP) "finished" $(OBJDIR)$(@:.test=.out) | $(QGREP) 50
+	$(RM) $(OBJDIR)$(@:.test=.out)
+
 
 ##############################################################
 #
@@ -188,3 +204,6 @@ $(OBJDIR)mt-worker$(EXE_SUFFIX): mt-worker-$(OS_TYPE).cpp
 
 $(OBJDIR)rt-locks-app$(EXE_SUFFIX): rt-locks-app.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS)
+
+$(OBJDIR)stress-client-lock-app$(EXE_SUFFIX): stress-client-lock-app.cpp
+	$(APP_CXX) $(COMPONENT_INCLUDES) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LPATHS) $(APP_LIBS) $(APP_LIB_ATOMIC)

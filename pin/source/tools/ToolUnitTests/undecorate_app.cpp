@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -52,7 +52,7 @@ template<class B> class method1 : public B
     method1() {}
 };
 
-void foo()
+void Foo()
 {
     int i;
     volatile int *ip = (volatile int *)&i;
@@ -73,7 +73,7 @@ int main()
     a.method3("Foo");
     method(a);
 
-    foo();
+    Foo();
 
     return 0;
 }

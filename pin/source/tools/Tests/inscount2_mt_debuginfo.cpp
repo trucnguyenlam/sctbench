@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -98,9 +98,9 @@ VOID PIN_FAST_ANALYSIS_CALL docount(UINT32 c, THREADID tid, ADDRINT iAddr)
 
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     numThreads++;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
     
     ASSERT(numThreads <= MaxNumThreads, "Maximum number of threads exceeded\n");
 }
@@ -147,6 +147,8 @@ int main(int argc, char * argv[])
 
     // Initialize pin
     PIN_Init(argc, argv);
+
+    PIN_InitLock(&lock);
 
     // Initialize icount[]
     for (INT32 t = 0; t < MaxNumThreads; t++)

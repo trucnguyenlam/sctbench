@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -71,7 +71,7 @@ VOID * Jit_Malloc_IA32( CONTEXT * context, FUNCPTR_MALLOC orgFuncptr,
     VOID * ret;
     
     PIN_CallApplicationFunction( context, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, AFUNPTR(orgFuncptr),
+                                 CALLINGSTD_DEFAULT, AFUNPTR(orgFuncptr), NULL,
                                  PIN_PARG(void *), &ret,
                                  PIN_PARG(size_t), arg0,
                                  PIN_PARG_END() );

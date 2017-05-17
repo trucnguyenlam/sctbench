@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -30,7 +31,7 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef VOID(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__INST__API.html#gd83539eedf8c29f0603bcb61e8d1df33">LEVEL_PINCLIENT::INS_INSTRUMENT_CALLBACK</a> )(INS ins, VOID *v)</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__INST__API.html#ga80cd9a7905b82a86b9e31d9bf589dbe">LEVEL_PINCLIENT::INS_AddInstrumentFunction</a> (<a class="el" href="group__INS__INST__API.html#gd83539eedf8c29f0603bcb61e8d1df33">INS_INSTRUMENT_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__INST__API.html#gad5fd5cdd6c1cd37e57a1264e93b0435">LEVEL_PINCLIENT::INS_AddInstrumentFunction</a> (<a class="el" href="group__INS__INST__API.html#gd83539eedf8c29f0603bcb61e8d1df33">INS_INSTRUMENT_CALLBACK</a> fun, VOID *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__INS__INST__API.html#g446df8cbefd4950b78cba7c9e7346053">LEVEL_PINCLIENT::INS_InsertPredicatedCall</a> (INS ins, <a class="el" href="group__INST__ARGS.html#ga46cc1807fc61addd9afe69ee6736a21">IPOINT</a> ipoint, AFUNPTR funptr,...)</td></tr>
 
@@ -78,13 +79,13 @@ Call back function used to instrument instructions     </td>
   </tr>
 </table>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="ga80cd9a7905b82a86b9e31d9bf589dbe"></a><!-- doxytag: member="LEVEL_PINCLIENT::INS_AddInstrumentFunction" ref="ga80cd9a7905b82a86b9e31d9bf589dbe" args="(INS_INSTRUMENT_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="gad5fd5cdd6c1cd37e57a1264e93b0435"></a><!-- doxytag: member="LEVEL_PINCLIENT::INS_AddInstrumentFunction" ref="gad5fd5cdd6c1cd37e57a1264e93b0435" args="(INS_INSTRUMENT_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::INS_AddInstrumentFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::INS_AddInstrumentFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__INS__INST__API.html#gd83539eedf8c29f0603bcb61e8d1df33">INS_INSTRUMENT_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -118,6 +119,7 @@ Add a function used to instrument at instruction granularity <dl compact><dt><b>
     <tr><td valign="top"></td><td valign="top"><em>val</em>&nbsp;</td><td>passed as the second argument to the instrumentation function</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
@@ -440,7 +442,7 @@ Insert a call to funptr relative to an INS. If funptr returns a non-zero ADDRINT
     <tr><td valign="top"></td><td valign="top"><em>...</em>&nbsp;</td><td>List of arguments to pass funptr. See <a class="el" href="group__INST__ARGS.html#g7e2c955c99fa84246bb2bce1525b5681">IARG_TYPE</a>, terminated with IARG_END</td></tr>
   </table>
 </dl>
-If more than one call is inserted for the same instruction, the order is determined by <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56817abcd1a5a41e91ce8d6a388b706bba42">IARG_CALL_ORDER</a>. For more information, see <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a>.<p>
+If more than one call is inserted for the same instruction, the order is determined by <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56817abcd1a5a41e91ce8d6a388b706bba42">IARG_CALL_ORDER</a>. For more information, see <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a>. Note that if <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a> is used, Both "if" and "then" analysis calls must have the same order.<p>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> All<br>
@@ -520,7 +522,7 @@ If you need to know the instruction predicate inside the IF call, you should pas
     <tr><td valign="top"></td><td valign="top"><em>...</em>&nbsp;</td><td>List of arguments to pass funptr. See <a class="el" href="group__INST__ARGS.html#g7e2c955c99fa84246bb2bce1525b5681">IARG_TYPE</a>, terminated with IARG_END</td></tr>
   </table>
 </dl>
-If more than one call is inserted for the same instruction, the order is determined by <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56817abcd1a5a41e91ce8d6a388b706bba42">IARG_CALL_ORDER</a>. For more information, see <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a>.<p>
+If more than one call is inserted for the same instruction, the order is determined by <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56817abcd1a5a41e91ce8d6a388b706bba42">IARG_CALL_ORDER</a>. For more information, see <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a>. Note that if <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a> is used, Both "if" and "then" analysis calls must have the same order.<p>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> All<br>
@@ -645,7 +647,7 @@ Insert a call to funptr relative to an INS. The function is called only if the i
     <tr><td valign="top"></td><td valign="top"><em>...</em>&nbsp;</td><td>List of arguments to pass funptr. See <a class="el" href="group__INST__ARGS.html#g7e2c955c99fa84246bb2bce1525b5681">IARG_TYPE</a>, terminated with IARG_END</td></tr>
   </table>
 </dl>
-If more than one call is inserted for the same instruction, the order is determined by <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56817abcd1a5a41e91ce8d6a388b706bba42">IARG_CALL_ORDER</a>. For more information, see <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a>.<p>
+If more than one call is inserted for the same instruction, the order is determined by <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56817abcd1a5a41e91ce8d6a388b706bba42">IARG_CALL_ORDER</a>. For more information, see <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a>. Note that if <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a> is used, Both "if" and "then" analysis calls must have the same order.<p>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> All<br>
@@ -711,7 +713,7 @@ Insert a call to funptr relative to an INS. The function is called only if the i
     <tr><td valign="top"></td><td valign="top"><em>...</em>&nbsp;</td><td>List of arguments to pass funptr. See <a class="el" href="group__INST__ARGS.html#g7e2c955c99fa84246bb2bce1525b5681">IARG_TYPE</a>, terminated with IARG_END</td></tr>
   </table>
 </dl>
-If more than one call is inserted for the same instruction, the order is determined by <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56817abcd1a5a41e91ce8d6a388b706bba42">IARG_CALL_ORDER</a>. For more information, see <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a>.<p>
+If more than one call is inserted for the same instruction, the order is determined by <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56817abcd1a5a41e91ce8d6a388b706bba42">IARG_CALL_ORDER</a>. For more information, see <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a>. Note that if <a class="el" href="group__INST__ARGS.html#g70f950adfb17bcd687fe356ed198bd2e">CALL_ORDER</a> is used, Both "if" and "then" analysis calls must have the same order.<p>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> All<br>
@@ -719,7 +721,7 @@ If more than one call is inserted for the same instruction, the order is determi
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:16 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

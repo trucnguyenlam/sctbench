@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -53,6 +53,9 @@ using namespace std;
 KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool",
     "o", "jit_tool.out", "specify file name");
 
+KNOB<BOOL> KnobJustInitialNum(KNOB_MODE_WRITEONCE, "pintool",
+    "just_init", "0", "just test the initial thread number");
+
 ofstream TraceFile;
 /* ===================================================================== */
 
@@ -73,10 +76,10 @@ UINT32  threadCounter=0;
 PIN_LOCK lock;
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     TraceFile << "Thread counter is updated to " << dec <<  (threadCounter+1) << endl;
     ++threadCounter;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 /* 
@@ -85,15 +88,15 @@ VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 
 BOOL AllThreadsNotifed(unsigned int numOfThreads)
 {
-    GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     // Check that we don't have any extra thread
     assert(threadCounter <= numOfThreads);
     if (threadCounter == numOfThreads)
     {
-        ReleaseLock(&lock);
+        PIN_ReleaseLock(&lock);
         return TRUE;
     }
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
     return FALSE;
 }
 
@@ -115,7 +118,17 @@ VOID ImageLoad(IMG img, void *v)
     {
         RTN_Replace(rtn, AFUNPTR(OneThreadNotified));
     }
-}    
+}
+
+// This function is called when the application exits
+VOID Fini(INT32 code, VOID *v)
+{
+    // Write to a file since cout and cerr maybe closed by the application
+    TraceFile << "Fini was called" << endl;
+
+    TraceFile.close();
+}
+
 /* ===================================================================== */
 
 int main(int argc, CHAR *argv[])
@@ -127,15 +140,22 @@ int main(int argc, CHAR *argv[])
         return Usage();
     }
 
-    InitLock(&lock);
+    PIN_InitLock(&lock);
 
     TraceFile.open(KnobOutputFile.Value().c_str());
     TraceFile << hex;
     TraceFile.setf(ios::showbase);
 
+    if (KnobJustInitialNum) {
+        TraceFile << "Initial thread counter: " << PIN_GetInitialThreadCount() << endl;
+        TraceFile.close();
+        PIN_ExitProcess(0);
+    }
+
 
     IMG_AddInstrumentFunction(ImageLoad, 0);
     PIN_AddThreadStartFunction(ThreadStart, 0);
+    PIN_AddFiniFunction(Fini, 0);
     PIN_StartProgram();
     
     return 0;

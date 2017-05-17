@@ -283,14 +283,14 @@ class PredictorLocalInfo {
 
   typedef std::list<EntryType> EntryList;
   typedef std::map<thread_id_t, EntryList> EntryMap;
-  typedef std::tr1::unordered_set<PairType,
+  typedef std::unordered_set<PairType,
                                   PairTypeHash,
                                   PairTypeEqual> PairSet;
-  typedef std::tr1::unordered_map<DynEvent,
+  typedef std::unordered_map<DynEvent,
                                   DynRange,
                                   DynEventHash,
                                   DynEventEqual> DynEventRangeMap;
-  typedef std::tr1::unordered_map<DynEvent,
+  typedef std::unordered_map<DynEvent,
                                   DynEventRangeMap,
                                   DynEventHash,
                                   DynEventEqual> DynEventMap;
@@ -341,7 +341,7 @@ class PredictorDeadlockInfo {
     }
   };
 
-  typedef std::tr1::unordered_set<PairType,PairTypeHash,PairTypeEqual> PairSet;
+  typedef std::unordered_set<PairType,PairTypeHash,PairTypeEqual> PairSet;
 
   PairSet pair_db_;
 
@@ -431,7 +431,7 @@ class Predictor : public Analyzer {
                    Inst *inst, size_t size, address_t addr);
 
  private:
-  typedef std::tr1::unordered_map<address_t, PredictorMeta *> MetaMap;
+  typedef std::unordered_map<address_t, PredictorMeta *> MetaMap;
 
   PredictorMemMeta *GetMemMeta(address_t iaddr);
   PredictorMutexMeta *GetMutexMeta(address_t iaddr);

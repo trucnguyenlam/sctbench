@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -77,7 +77,11 @@ int main(int argc, char **argv)
 void run_again(char **argv)
 {
     char *ld_preload_val = getenv("LD_PRELOAD");
+#ifdef TARGET_ANDROID
+    char ld_preload_new_val[] = "libm.so";
+#else
     char ld_preload_new_val[] = "libm.so.6";
+#endif
 
     setenv ("LD_PRELOAD", ld_preload_new_val,1);
 

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -37,6 +37,9 @@ END_LEGAL */
 #include "pin.H"
 #include <map>
 
+
+KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE,  "pintool",
+    "o", "inscount_per_image.out", "specify file name for inscount_per_image output");
 
 KNOB<BOOL> KnobCountExecutedInstructions(KNOB_MODE_WRITEONCE, "pintool",
     "count_exceuted_instructions", "1", "count executed instructions");
@@ -269,9 +272,6 @@ VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 
 int main(int argc, char * argv[])
 {
-    
-    outFile = fopen(".\\inscount_per_image.out", "w");
-
     for (UINT32 i=0; i<MaxNumThreads; i++)
     {
         unknownModuleInfo.numExecutedPerThread[i] = 0;
@@ -282,7 +282,10 @@ int main(int argc, char * argv[])
     
     // Initialize pin
     PIN_Init(argc, argv);
-    
+
+    // Initialize the output stream
+    outFile = fopen(KnobOutputFile.Value().c_str(), "w");
+
     // Register ImageLoad to be called when an image is loaded
     IMG_AddInstrumentFunction(ImageLoad, 0);
 

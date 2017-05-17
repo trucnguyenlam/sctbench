@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -58,7 +58,7 @@ VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
     int two=2;
     
     PIN_CallApplicationFunction( ctxt, threadid,
-                                 CALLINGSTD_DEFAULT, (AFUNPTR)pf_Add,
+                                 CALLINGSTD_DEFAULT, (AFUNPTR)pf_Add, NULL,
                                  PIN_PARG(int), &sum,
                                  PIN_PARG(int), one,
                                  PIN_PARG(int), two,
@@ -80,7 +80,7 @@ VOID ThreadFini(THREADID threadid, const CONTEXT *ctxt, INT32 code, VOID *v)
     int four=4;
     
     PIN_CallApplicationFunction( const_cast<CONTEXT *>(ctxt), threadid,
-                                 CALLINGSTD_DEFAULT, (AFUNPTR)pf_Add,
+                                 CALLINGSTD_DEFAULT, (AFUNPTR)pf_Add, NULL,
                                  PIN_PARG(int), &sum,
                                  PIN_PARG(int), three,
                                  PIN_PARG(int), four,
@@ -120,7 +120,7 @@ VOID ImageLoad(IMG img, VOID *v)
 
 int main(INT32 argc, CHAR **argv)
 {
-    InitLock(&lock);
+    PIN_InitLock(&lock);
 
     out = fopen("thread_callback.out", "w");
     numThreads = 1;

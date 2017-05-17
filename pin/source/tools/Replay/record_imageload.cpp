@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -209,7 +209,7 @@ static VOID PrintImageList()
         int nRtns;
 
         CountImageSecsAndRtns (img, &nSecs, &nRtns);
-        fprintf (trace, "   L  %-40s %2d [0x%lx:0x%lx] offset 0x%lx %2d SECs %4d RTNs\n", IMG_Name(img).c_str(), IMG_Id(img),
+        fprintf (trace, "   L  %-40s [0x%lx:0x%lx] offset 0x%lx %2d SECs %4d RTNs\n", IMG_Name(img).c_str(),
                  (unsigned long)IMG_LowAddress(img), (unsigned long)IMG_HighAddress(img), (unsigned long)IMG_LoadOffset(img), nSecs, nRtns);
     }    
 }
@@ -217,14 +217,14 @@ static VOID PrintImageList()
 // Trace an image load event
 static VOID TraceImageLoad(IMG img, VOID *v)
 {
-    fprintf(trace, "[%2d]+ %-40s %2d\n", imageCount++, IMG_Name(img).c_str(), IMG_Id(img));
+    fprintf(trace, "[%2d]+ %-40s\n", imageCount++, IMG_Name(img).c_str());
     PrintImageList();
 }
 
 // Trace an image unload event
 static VOID TraceImageUnload(IMG img, VOID *v)
 {
-    fprintf(trace, "[%2d]- %-40s %2d\n", imageCount--, IMG_Name(img).c_str(), IMG_Id(img));
+    fprintf(trace, "[%2d]- %-40s\n", imageCount--, IMG_Name(img).c_str());
     PrintImageList();
 }
 

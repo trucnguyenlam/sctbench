@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -23,6 +24,9 @@
   </ul></div>
 <h1>Controlling and Initializing</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
+<tr><td colspan="2"><br><h2>Classes</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCALL__APPLICATION__FUNCTION__PARAM.html">CALL_APPLICATION_FUNCTION_PARAM</a></td></tr>
+
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef VOID(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gbe792b6e32e9bbb19d51a1f352743a82">LEVEL_PINCLIENT::FORK_PROBE_MODE_CALLBACK</a> )(UINT32 childPid, VOID *v)</td></tr>
 
@@ -110,15 +114,15 @@
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g03f417057aac38bb39103bcaabef6f72">LEVEL_PINCLIENT::PIN_AddForkFunctionProbed</a> (<a class="el" href="group__PIN__CONTROL.html#gb6974c15e664605870435c05a1bf33bd">FPOINT</a> point, <a class="el" href="group__PIN__CONTROL.html#gbe792b6e32e9bbb19d51a1f352743a82">FORK_PROBE_MODE_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g1e0ca5fc45108b0610ad773bc56117f5">LEVEL_PINCLIENT::PIN_AddForkFunctionProbed</a> (<a class="el" href="group__PIN__CONTROL.html#gb6974c15e664605870435c05a1bf33bd">FPOINT</a> point, <a class="el" href="group__PIN__CONTROL.html#gbe792b6e32e9bbb19d51a1f352743a82">FORK_PROBE_MODE_CALLBACK</a> fun, VOID *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#ga6749650a8dce7151075fcc9345f7bd9">LEVEL_PINCLIENT::PIN_InitSymbols</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g6a86d823a691298dbe8b9ca73f328761">LEVEL_PINCLIENT::PIN_InitSymbolsAlt</a> (<a class="el" href="group__PIN__CONTROL.html#ga8378cf542c080182b597101ee265983">SYMBOL_INFO_MODE</a> mode)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g7e45677714ab29a8d249f772de89f170">LEVEL_PINCLIENT::PIN_AddFollowChildProcessFunction</a> (<a class="el" href="group__CHILD__PROCESS__API.html#gcb01db8476fb5a6b4d86f09a336fe15f">FOLLOW_CHILD_PROCESS_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g4f667d78b5533ec07b15ef4df0d7a78e">LEVEL_PINCLIENT::PIN_AddFollowChildProcessFunction</a> (<a class="el" href="group__CHILD__PROCESS__API.html#gcb01db8476fb5a6b4d86f09a336fe15f">FOLLOW_CHILD_PROCESS_CALLBACK</a> fun, VOID *val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g02803b27d4a5c1ea27d07abeff4b7116">LEVEL_PINCLIENT::PIN_AddInternalExceptionHandler</a> (<a class="el" href="group__PIN__CONTROL.html#gb3550c0044899834614bc73245f90743">INTERNAL_EXCEPTION_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g183ea6e8b331b719338c56d39760e273">LEVEL_PINCLIENT::PIN_AddInternalExceptionHandler</a> (<a class="el" href="group__PIN__CONTROL.html#gb3550c0044899834614bc73245f90743">INTERNAL_EXCEPTION_CALLBACK</a> fun, VOID *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g22e1f539c7159c1bc9a2aac8f8803e81">LEVEL_PINCLIENT::PIN_TryStart</a> (<a class="el" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid, <a class="el" href="group__PIN__CONTROL.html#gb3550c0044899834614bc73245f90743">INTERNAL_EXCEPTION_CALLBACK</a> fun, VOID *val)</td></tr>
 
@@ -136,13 +140,15 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#ga4d21b5ab38ba60932969d0d37e4f5de">LEVEL_PINCLIENT::PIN_UnlockClient</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g3d341cb1f0ce6c150d0b3047e6a7930e">LEVEL_PINCLIENT::PIN_CallApplicationFunction</a> (const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <a class="el" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid, <a class="el" href="group__PROTO__API.html#g54651b96181be964a6a914420a4e021c">CALLINGSTD_TYPE</a> cstype, AFUNPTR origFunPtr,...)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g5280354edd95efc19a837617ff63ba51">LEVEL_PINCLIENT::PIN_CallApplicationFunction</a> (const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <a class="el" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid, <a class="el" href="group__PROTO__API.html#g54651b96181be964a6a914420a4e021c">CALLINGSTD_TYPE</a> cstype, AFUNPTR origFunPtr, <a class="el" href="structCALL__APPLICATION__FUNCTION__PARAM.html">CALL_APPLICATION_FUNCTION_PARAM</a> *param,...)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">LEVEL_PINCLIENT::PIN_AddFiniFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gcc77dcacc144b3894f5f0fc13360cdec">FINI_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">LEVEL_PINCLIENT::PIN_AddFiniFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gcc77dcacc144b3894f5f0fc13360cdec">FINI_CALLBACK</a> fun, VOID *val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g6b3bfbcdcbf17e0b48c9fb1e38acfd04">LEVEL_PINCLIENT::PIN_AddFiniUnlockedFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gcc77dcacc144b3894f5f0fc13360cdec">FINI_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g69016c0c2ddfd1e8bec50e6ab4ab46b1">LEVEL_PINCLIENT::PIN_AddFiniUnlockedFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gcc77dcacc144b3894f5f0fc13360cdec">FINI_CALLBACK</a> fun, VOID *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g5ae6f03e5b5cd137cceee6d735aa7b04">LEVEL_PINCLIENT::PIN_AddFetchFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gf26c93895c15754aa02c56d41f81f5f4">FETCH_CALLBACK</a> fun, VOID *val)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g1d14c23857e14e0a0dca38a3621e035f">LEVEL_PINCLIENT::PIN_FetchCode</a> (void *copyBuf, const VOID *address, size_t maxSize, <a class="el" href="group__EXCEPTION__API.html#gdd29f27899c5a5f3e140bbe3af31759f">EXCEPTION_INFO</a> *pExceptInfo)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gcae8a563efbe6d5f2eff743d718e5ce0">LEVEL_PINCLIENT::PIN_AddOutOfMemoryFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gde47352f7f71df0632aa847aae16a274">OUT_OF_MEMORY_CALLBACK</a> fun, VOID *val)</td></tr>
 
@@ -150,29 +156,29 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CONTROL.html#g0411d789e6ec1dbfa0cdf936e91544ab">MEMORY_ADDR_TRANS_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g7bd534f9a12e20477ed018b8c3aad531">LEVEL_PINCLIENT::PIN_GetMemoryAddressTransFunction</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g451060f5e998243df750ac16720cadcf">LEVEL_PINCLIENT::PIN_AddDetachFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gbf9966c96960a9de9bccd39a6b6d6fd7">DETACH_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g4c85e2907788d57d10241d4f8b86a170">LEVEL_PINCLIENT::PIN_AddDetachFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gbf9966c96960a9de9bccd39a6b6d6fd7">DETACH_CALLBACK</a> fun, VOID *val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gdb1a5f5589efab9dd67bafe7cf5c37a3">LEVEL_PINCLIENT::PIN_AddDetachFunctionProbed</a> (<a class="el" href="group__PIN__CONTROL.html#gc0db898ddefe4b25ed1737176ce7c1ef">DETACH_PROBED_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gda020c86d21d2c795662ce573c5ca798">LEVEL_PINCLIENT::PIN_AddDetachFunctionProbed</a> (<a class="el" href="group__PIN__CONTROL.html#gc0db898ddefe4b25ed1737176ce7c1ef">DETACH_PROBED_CALLBACK</a> fun, VOID *val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gd990464123111fae4a3e575039b11af7">LEVEL_PINCLIENT::PIN_AddThreadStartFunction</a> (<a class="el" href="group__PIN__CONTROL.html#g299a24d8e05412410b32b75b51564081">THREAD_START_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g0549831d0b423aea93768b1bc491938b">LEVEL_PINCLIENT::PIN_AddThreadStartFunction</a> (<a class="el" href="group__PIN__CONTROL.html#g299a24d8e05412410b32b75b51564081">THREAD_START_CALLBACK</a> fun, VOID *val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gf2a8bb20cd2e70ca10e4b9a4471e171e">LEVEL_PINCLIENT::PIN_AddThreadAttachProbedFunction</a> (<a class="el" href="group__PIN__CONTROL.html#g73e6d9480c1690536f9a5ed8b14b426c">THREAD_ATTACH_PROBED_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g9530fbf65d6222a8bc8862abcea26d44">LEVEL_PINCLIENT::PIN_AddThreadAttachProbedFunction</a> (<a class="el" href="group__PIN__CONTROL.html#g73e6d9480c1690536f9a5ed8b14b426c">THREAD_ATTACH_PROBED_CALLBACK</a> fun, VOID *val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gb4824768ab296b76b63d1679c8f6d8d0">LEVEL_PINCLIENT::PIN_AddThreadDetachProbedFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gadb876e9e1ba64a65f73bd87fc9e3c50">THREAD_DETACH_PROBED_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g348443e6950c5791902323f98dfb9b82">LEVEL_PINCLIENT::PIN_AddThreadDetachProbedFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gadb876e9e1ba64a65f73bd87fc9e3c50">THREAD_DETACH_PROBED_CALLBACK</a> fun, VOID *val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g3017af7e44f9c1926bd903a186064472">LEVEL_PINCLIENT::PIN_AddApplicationStartFunction</a> (<a class="el" href="group__PIN__CONTROL.html#g0f271c9545b0d1b159827e718d1b7f74">APPLICATION_START_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g4e2be141dc01c0af5120c9394b33f121">LEVEL_PINCLIENT::PIN_AddApplicationStartFunction</a> (<a class="el" href="group__PIN__CONTROL.html#g0f271c9545b0d1b159827e718d1b7f74">APPLICATION_START_CALLBACK</a> fun, VOID *val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g2d6c3eea4ebe3e76baed4481b079e3b1">LEVEL_PINCLIENT::PIN_AddThreadFiniFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gaf37c586368c5230ff7fba6c2bfebd01">THREAD_FINI_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gc3f2c06e525bd0f23e8aa55f801989df">LEVEL_PINCLIENT::PIN_AddThreadFiniFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gaf37c586368c5230ff7fba6c2bfebd01">THREAD_FINI_CALLBACK</a> fun, VOID *val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gdb70938ef31309447fe65a653667334a">LEVEL_PINCLIENT::PIN_AddContextChangeFunction</a> (<a class="el" href="group__PIN__CONTROL.html#g78a7c9eeb76f7c94dbfc382ba6a213d1">CONTEXT_CHANGE_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gfe475fc12b9060e8e45cbfccd7d592c8">LEVEL_PINCLIENT::PIN_AddContextChangeFunction</a> (<a class="el" href="group__PIN__CONTROL.html#g78a7c9eeb76f7c94dbfc382ba6a213d1">CONTEXT_CHANGE_CALLBACK</a> fun, VOID *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g6a0c20f386b88de45925e3434c52e4ff">LEVEL_PINCLIENT::PIN_InterceptSignal</a> (INT32 sig, <a class="el" href="group__PIN__CONTROL.html#g2f00e98cd79f80c871f8ac193f9c1ba8">INTERCEPT_SIGNAL_CALLBACK</a> fun, VOID *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g048709607373930698fb578b7150815d">LEVEL_PINCLIENT::PIN_UnblockSignal</a> (INT32 sig, BOOL enable)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g34db6607a35ac556c2342c7352a47435">LEVEL_PINCLIENT::PIN_AddProbesInsertedFunction</a> (<a class="el" href="group__PIN__CONTROL.html#g8d5ecf0344c6faa23c1ee38437538f6c">PROBES_INSERTED_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g05e7e1b3ff0d9b1656dc71a3e861269e">LEVEL_PINCLIENT::PIN_AddProbesInsertedFunction</a> (<a class="el" href="group__PIN__CONTROL.html#g8d5ecf0344c6faa23c1ee38437538f6c">PROBES_INSERTED_CALLBACK</a> fun, VOID *val)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gd7da7a3f8249e8708524ee4b35f6e9ce">LEVEL_PINCLIENT::PIN_AddForkFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gb6974c15e664605870435c05a1bf33bd">FPOINT</a> point, <a class="el" href="group__PIN__CONTROL.html#g81f4a1b953b4806f7db51c881f71e80f">FORK_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#ga141366d36aec81e19f4576de1c3f2e4">LEVEL_PINCLIENT::PIN_AddForkFunction</a> (<a class="el" href="group__PIN__CONTROL.html#gb6974c15e664605870435c05a1bf33bd">FPOINT</a> point, <a class="el" href="group__PIN__CONTROL.html#g81f4a1b953b4806f7db51c881f71e80f">FORK_CALLBACK</a> fun, VOID *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gaee2fe5932a3cc759d9968820be6e15d">LEVEL_PINCLIENT::PIN_RemoveInstrumentation</a> ()</td></tr>
 
@@ -192,11 +198,19 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">CHAR *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gf54dbae6665a47abdc2f7054f2cd6b6e">LEVEL_PINCLIENT::PIN_VmFullPath</a> ()</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">const CHAR *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gb788a5b83d7412f1310dc64b40af6e13">LEVEL_PINCLIENT::PIN_ToolFullPath</a> ()</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g1e6d08632dccfcd10aec3fbdd2562899">LEVEL_PINCLIENT::PIN_SafeCopy</a> (VOID *dst, const VOID *src, size_t size)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">size_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g5f752650fe59150f3ba7afd2af936c2a">LEVEL_PINCLIENT::PIN_SafeCopyEx</a> (VOID *dst, const VOID *src, size_t size, <a class="el" href="group__EXCEPTION__API.html#gdd29f27899c5a5f3e140bbe3af31759f">EXCEPTION_INFO</a> *pExceptInfo)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gc738674dfc1a59b17f6af2da7ae083f4">LEVEL_PINCLIENT::PIN_IsActionPending</a> (<a class="el" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">UINT32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gc033d720b9d6ccbfc0d5b87d3b083ebb">LEVEL_PINCLIENT::PIN_GetInitialThreadCount</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#gc15ee36f1352f316aedb01f3c875ff8b">LEVEL_PINCLIENT::PIN_CheckReadAccess</a> (VOID *addr)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PIN__CONTROL.html#g0c6eafad5ef60643bab9426ff4355245">LEVEL_PINCLIENT::PIN_CheckWriteAccess</a> (VOID *addr)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -410,7 +424,7 @@ Call back function that Pin will use to fetch code bytes to be jitted.<p>
     <td>
 
 <p>
-Call back function when application exits. It is called after all the per thread fini functions were called (registered via <a class="el" href="group__PIN__CONTROL.html#g2d6c3eea4ebe3e76baed4481b079e3b1">PIN_AddThreadFiniFunction</a>). This function may be called on any application thread or internal thread spawned by the tool.<p>
+Call back function when application exits. It is called after all the per thread fini functions were called (registered via <a class="el" href="group__PIN__CONTROL.html#gc3f2c06e525bd0f23e8aa55f801989df">PIN_AddThreadFiniFunction</a>). This function may be called on any application thread or internal thread spawned by the tool.<p>
 <dl compact><dt><b>Note:</b></dt><dd>It is prohibited to access the TLS in this callback.</dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
@@ -537,9 +551,9 @@ Call back function when the tool intercepts a signal with <a class="el" href="gr
     <td>
 
 <p>
-Handler (call-back) function when pin/tool generates internal exception. This function can be registered via <a class="el" href="group__PIN__CONTROL.html#g02803b27d4a5c1ea27d07abeff4b7116">PIN_AddInternalExceptionHandler()</a> or <a class="el" href="group__PIN__CONTROL.html#g22e1f539c7159c1bc9a2aac8f8803e81">PIN_TryStart()</a>. This function becomes active only after APPLICATION_START_CALLBACK notification is delivered. Any internal exception prior to this event can't be handled.<p>
+Handler (call-back) function when pin/tool generates internal exception. This function can be registered via <a class="el" href="group__PIN__CONTROL.html#g183ea6e8b331b719338c56d39760e273">PIN_AddInternalExceptionHandler()</a> or <a class="el" href="group__PIN__CONTROL.html#g22e1f539c7159c1bc9a2aac8f8803e81">PIN_TryStart()</a>. This function becomes active only after APPLICATION_START_CALLBACK notification is delivered. Any internal exception prior to this event can't be handled.<p>
 If the exception occurred while analysis routine is executed, it is legal to modify the execution control path using functions such as <a class="el" href="group__EXCEPTION__API.html#g40302a79ed756094abf1af155b6d3a0b">PIN_RaiseException()</a> or <a class="el" href="group__CONTEXT__API.html#gc12dbb3ebd227f71a9644733f6faa116">PIN_ExecuteAt()</a>. In this case, any per-thread INTERNAL_EXCEPTION_CALLBACK function registered via <a class="el" href="group__PIN__CONTROL.html#g22e1f539c7159c1bc9a2aac8f8803e81">PIN_TryStart()</a> will be unregistered automatically (similar semantics to <a class="el" href="group__PIN__CONTROL.html#g865588e1c8ec27149ab627aecabfd4c1">PIN_TryEnd()</a> for all registered notifications)<p>
-<dl compact><dt><b>Note:</b></dt><dd>It is unsupported to call <a class="el" href="group__PIN__CONTROL.html#g3d341cb1f0ce6c150d0b3047e6a7930e">PIN_CallApplicationFunction()</a> in the scope of this callback</dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>It is unsupported to call <a class="el" href="group__PIN__CONTROL.html#g5280354edd95efc19a837617ff63ba51">PIN_CallApplicationFunction()</a> in the scope of this callback</dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>tid</em>&nbsp;</td><td>The Pin thread ID of the thread that generated the exception. </td></tr>
@@ -939,13 +953,13 @@ First debug symbols if available, otherwise export symbols (Windows only) </td><
   </tr>
 </table>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="g3017af7e44f9c1926bd903a186064472"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddApplicationStartFunction" ref="g3017af7e44f9c1926bd903a186064472" args="(APPLICATION_START_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g4e2be141dc01c0af5120c9394b33f121"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddApplicationStartFunction" ref="g4e2be141dc01c0af5120c9394b33f121" args="(APPLICATION_START_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddApplicationStartFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddApplicationStartFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#g0f271c9545b0d1b159827e718d1b7f74">APPLICATION_START_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -980,8 +994,8 @@ When pin attaches to a running process, this notification function is called on 
  No new threads can be created by the application at this time.<p>
 When Pin starts running a program, it calls into the tool several times in the following order:<br>
  1. Calls the tool's main() function.<br>
- 2. If the tool set up a notification with <a class="el" href="group__IMG__BASIC__API.html#gb0ad0d50126fd5ddcfee28005c681049">IMG_AddInstrumentFunction()</a>, Pin calls this call-back for each image that is already loaded in the application's address space at the point when Pin attaches to it.<br>
- 3. Calls any notification call-backs set up with <a class="el" href="group__PIN__CONTROL.html#g3017af7e44f9c1926bd903a186064472">PIN_AddApplicationStartFunction()</a>.<br>
+ 2. If the tool set up a notification with <a class="el" href="group__IMG__BASIC__API.html#g4867c865fcf260951b7d750aaaaa0007">IMG_AddInstrumentFunction()</a>, Pin calls this call-back for each image that is already loaded in the application's address space at the point when Pin attaches to it.<br>
+ 3. Calls any notification call-backs set up with <a class="el" href="group__PIN__CONTROL.html#g4e2be141dc01c0af5120c9394b33f121">PIN_AddApplicationStartFunction()</a>.<br>
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
@@ -989,6 +1003,7 @@ When Pin starts running a program, it calls into the tool several times in the f
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>Value to pass to the function.</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
  <b>O/S</b>: Windows, Linux<br>
@@ -997,13 +1012,13 @@ When Pin starts running a program, it calls into the tool several times in the f
     </td>
   </tr>
 </table>
-<a class="anchor" name="gdb70938ef31309447fe65a653667334a"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddContextChangeFunction" ref="gdb70938ef31309447fe65a653667334a" args="(CONTEXT_CHANGE_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="gfe475fc12b9060e8e45cbfccd7d592c8"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddContextChangeFunction" ref="gfe475fc12b9060e8e45cbfccd7d592c8" args="(CONTEXT_CHANGE_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddContextChangeFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddContextChangeFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#g78a7c9eeb76f7c94dbfc382ba6a213d1">CONTEXT_CHANGE_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -1038,6 +1053,7 @@ Register a notification function that is called immediately before the applicati
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>Value to pass to the function.</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows<br>
@@ -1046,13 +1062,13 @@ Register a notification function that is called immediately before the applicati
     </td>
   </tr>
 </table>
-<a class="anchor" name="g451060f5e998243df750ac16720cadcf"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddDetachFunction" ref="g451060f5e998243df750ac16720cadcf" args="(DETACH_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g4c85e2907788d57d10241d4f8b86a170"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddDetachFunction" ref="g4c85e2907788d57d10241d4f8b86a170" args="(DETACH_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddDetachFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddDetachFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#gbf9966c96960a9de9bccd39a6b6d6fd7">DETACH_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -1089,6 +1105,7 @@ This function is called one time for the process. It may be called by any thread
     <tr><td valign="top"></td><td valign="top"><em>val</em>&nbsp;</td><td>Value to be passed to fun when it is called</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux<br>
@@ -1097,13 +1114,13 @@ This function is called one time for the process. It may be called by any thread
     </td>
   </tr>
 </table>
-<a class="anchor" name="gdb1a5f5589efab9dd67bafe7cf5c37a3"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddDetachFunctionProbed" ref="gdb1a5f5589efab9dd67bafe7cf5c37a3" args="(DETACH_PROBED_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="gda020c86d21d2c795662ce573c5ca798"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddDetachFunctionProbed" ref="gda020c86d21d2c795662ce573c5ca798" args="(DETACH_PROBED_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddDetachFunctionProbed           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddDetachFunctionProbed           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#gc0db898ddefe4b25ed1737176ce7c1ef">DETACH_PROBED_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -1140,6 +1157,7 @@ Register a notification function that is called immediately after Pin relinquish
     <tr><td valign="top"></td><td valign="top"><em>val</em>&nbsp;</td><td>Value to be passed to fun when it is called</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> Probe<br>
  <b>O/S</b>: Windows, Linux<br>
@@ -1198,13 +1216,13 @@ Pin cannot automatically detect self-modifying code (SMC) when a tool uses this 
     </td>
   </tr>
 </table>
-<a class="anchor" name="gd5efea3f1ee5611af535e22f35bce145"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddFiniFunction" ref="gd5efea3f1ee5611af535e22f35bce145" args="(FINI_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g49a870141067fb2a4ae0c8fd09a04ccb"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddFiniFunction" ref="g49a870141067fb2a4ae0c8fd09a04ccb" args="(FINI_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddFiniFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddFiniFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#gcc77dcacc144b3894f5f0fc13360cdec">FINI_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -1239,6 +1257,7 @@ Call func immediately before the application exits. The function is not an instr
     <tr><td valign="top"></td><td valign="top"><em>val</em>&nbsp;</td><td>Value to be passed to fun when it is called</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
@@ -1247,13 +1266,13 @@ Call func immediately before the application exits. The function is not an instr
     </td>
   </tr>
 </table>
-<a class="anchor" name="g6b3bfbcdcbf17e0b48c9fb1e38acfd04"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddFiniUnlockedFunction" ref="g6b3bfbcdcbf17e0b48c9fb1e38acfd04" args="(FINI_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g69016c0c2ddfd1e8bec50e6ab4ab46b1"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddFiniUnlockedFunction" ref="g69016c0c2ddfd1e8bec50e6ab4ab46b1" args="(FINI_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddFiniUnlockedFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddFiniUnlockedFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#gcc77dcacc144b3894f5f0fc13360cdec">FINI_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -1282,13 +1301,14 @@ Call func immediately before the application exits. The function is not an instr
 
 <p>
 Register a function to be called when the application is about to exit. The registered function will be executed in a thread that does not hold any thread synchronization lock in Pin. It means that this callback function can be executed concurrently with other Pin callbacks and APIs.<br>
- All callbacks registered by this function will be executed before any callback registered by the <a class="el" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction()</a> function.<p>
+ All callbacks registered by this function will be executed before any callback registered by the <a class="el" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction()</a> function.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>fun</em>&nbsp;</td><td>Callback function to be registered </td></tr>
     <tr><td valign="top"></td><td valign="top"><em>val</em>&nbsp;</td><td>Value to be passed to fun when it is called</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
@@ -1297,13 +1317,13 @@ Register a function to be called when the application is about to exit. The regi
     </td>
   </tr>
 </table>
-<a class="anchor" name="g7e45677714ab29a8d249f772de89f170"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddFollowChildProcessFunction" ref="g7e45677714ab29a8d249f772de89f170" args="(FOLLOW_CHILD_PROCESS_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g4f667d78b5533ec07b15ef4df0d7a78e"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddFollowChildProcessFunction" ref="g4f667d78b5533ec07b15ef4df0d7a78e" args="(FOLLOW_CHILD_PROCESS_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddFollowChildProcessFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddFollowChildProcessFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__CHILD__PROCESS__API.html#gcb01db8476fb5a6b4d86f09a336fe15f">FOLLOW_CHILD_PROCESS_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -1339,6 +1359,7 @@ NOTE: Only one callback can be registered<p>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>Value to pass to the function</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
  <b>O/S</b>: Windows, Linux, MacOS<br>
@@ -1347,13 +1368,13 @@ NOTE: Only one callback can be registered<p>
     </td>
   </tr>
 </table>
-<a class="anchor" name="gd7da7a3f8249e8708524ee4b35f6e9ce"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddForkFunction" ref="gd7da7a3f8249e8708524ee4b35f6e9ce" args="(FPOINT point, FORK_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="ga141366d36aec81e19f4576de1c3f2e4"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddForkFunction" ref="ga141366d36aec81e19f4576de1c3f2e4" args="(FPOINT point, FORK_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddForkFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddForkFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#gb6974c15e664605870435c05a1bf33bd">FPOINT</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>point</em>, </td>
@@ -1395,6 +1416,7 @@ Register a notification handler that is called when the application forks a new 
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>v</em>&nbsp;</td><td>Value passed as final parameter to call-back.</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 If the fork function fails, the FPOINT_AFTER_IN_PARENT function, if it exists, is still called.<p>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
@@ -1404,13 +1426,13 @@ If the fork function fails, the FPOINT_AFTER_IN_PARENT function, if it exists, i
     </td>
   </tr>
 </table>
-<a class="anchor" name="g03f417057aac38bb39103bcaabef6f72"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddForkFunctionProbed" ref="g03f417057aac38bb39103bcaabef6f72" args="(FPOINT point, FORK_PROBE_MODE_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g1e0ca5fc45108b0610ad773bc56117f5"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddForkFunctionProbed" ref="g1e0ca5fc45108b0610ad773bc56117f5" args="(FPOINT point, FORK_PROBE_MODE_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddForkFunctionProbed           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddForkFunctionProbed           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#gb6974c15e664605870435c05a1bf33bd">FPOINT</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>point</em>, </td>
@@ -1452,6 +1474,7 @@ Register a notification handler that is called when the application forks a new 
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>v</em>&nbsp;</td><td>Value passed as final parameter to call-back.</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 If the fork function fails, the FPOINT_AFTER_IN_PARENT function, if it exists, is still called.<p>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> Probe<br>
@@ -1461,13 +1484,13 @@ If the fork function fails, the FPOINT_AFTER_IN_PARENT function, if it exists, i
     </td>
   </tr>
 </table>
-<a class="anchor" name="g02803b27d4a5c1ea27d07abeff4b7116"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddInternalExceptionHandler" ref="g02803b27d4a5c1ea27d07abeff4b7116" args="(INTERNAL_EXCEPTION_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g183ea6e8b331b719338c56d39760e273"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddInternalExceptionHandler" ref="g183ea6e8b331b719338c56d39760e273" args="(INTERNAL_EXCEPTION_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddInternalExceptionHandler           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddInternalExceptionHandler           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#gb3550c0044899834614bc73245f90743">INTERNAL_EXCEPTION_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -1503,6 +1526,7 @@ Register a global (not per-thread) notification handler function that is called 
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>Value to pass to the function.</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Windows<br>
@@ -1620,13 +1644,13 @@ A tool can register only one notification function.<br>
     </td>
   </tr>
 </table>
-<a class="anchor" name="g34db6607a35ac556c2342c7352a47435"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddProbesInsertedFunction" ref="g34db6607a35ac556c2342c7352a47435" args="(PROBES_INSERTED_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g05e7e1b3ff0d9b1656dc71a3e861269e"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddProbesInsertedFunction" ref="g05e7e1b3ff0d9b1656dc71a3e861269e" args="(PROBES_INSERTED_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddProbesInsertedFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddProbesInsertedFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#g8d5ecf0344c6faa23c1ee38437538f6c">PROBES_INSERTED_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -1662,6 +1686,7 @@ Register a notification function that is called when Pin has inserted all probes
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>Value to pass to the function.</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> Probe<br>
  <b>O/S</b>: Linux, Windows<br>
@@ -1670,13 +1695,13 @@ Register a notification function that is called when Pin has inserted all probes
     </td>
   </tr>
 </table>
-<a class="anchor" name="gf2a8bb20cd2e70ca10e4b9a4471e171e"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddThreadAttachProbedFunction" ref="gf2a8bb20cd2e70ca10e4b9a4471e171e" args="(THREAD_ATTACH_PROBED_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g9530fbf65d6222a8bc8862abcea26d44"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddThreadAttachProbedFunction" ref="g9530fbf65d6222a8bc8862abcea26d44" args="(THREAD_ATTACH_PROBED_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddThreadAttachProbedFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddThreadAttachProbedFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#g73e6d9480c1690536f9a5ed8b14b426c">THREAD_ATTACH_PROBED_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -1705,7 +1730,7 @@ Register a notification function that is called when Pin has inserted all probes
 
 <p>
 This API is useful when Pin is run in probe mode and attaches to a running process. Tools may use this API to register a notification that is called by each application thread.<p>
-After Pin attaches to the process, Pin first notifies the tool of any images that are loaded (see <a class="el" href="group__IMG__BASIC__API.html#gb0ad0d50126fd5ddcfee28005c681049">IMG_AddInstrumentFunction()</a>) and then notifies the tool that initialization is complete (see <a class="el" href="group__PIN__CONTROL.html#g3017af7e44f9c1926bd903a186064472">PIN_AddApplicationStartFunction()</a>). After that, each thread in the application calls the notification set up by <a class="el" href="group__PIN__CONTROL.html#gf2a8bb20cd2e70ca10e4b9a4471e171e">PIN_AddThreadAttachProbedFunction()</a>. After each thread returns from this notification, it resumes execution in the application code.<p>
+After Pin attaches to the process, Pin first notifies the tool of any images that are loaded (see <a class="el" href="group__IMG__BASIC__API.html#g4867c865fcf260951b7d750aaaaa0007">IMG_AddInstrumentFunction()</a>) and then notifies the tool that initialization is complete (see <a class="el" href="group__PIN__CONTROL.html#g4e2be141dc01c0af5120c9394b33f121">PIN_AddApplicationStartFunction()</a>). After that, each thread in the application calls the notification set up by <a class="el" href="group__PIN__CONTROL.html#g9530fbf65d6222a8bc8862abcea26d44">PIN_AddThreadAttachProbedFunction()</a>. After each thread returns from this notification, it resumes execution in the application code.<p>
 Note, this notification happens only for threads that exist in the process at the time that Pin attaches. It does not happen for threads that are created in the process after Pin is already attached.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
@@ -1713,6 +1738,7 @@ Note, this notification happens only for threads that exist in the process at th
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>Value to pass to the function.</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> Probe<br>
  <b>O/S</b>: Linux<br>
@@ -1721,13 +1747,13 @@ Note, this notification happens only for threads that exist in the process at th
     </td>
   </tr>
 </table>
-<a class="anchor" name="gb4824768ab296b76b63d1679c8f6d8d0"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddThreadDetachProbedFunction" ref="gb4824768ab296b76b63d1679c8f6d8d0" args="(THREAD_DETACH_PROBED_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g348443e6950c5791902323f98dfb9b82"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddThreadDetachProbedFunction" ref="g348443e6950c5791902323f98dfb9b82" args="(THREAD_DETACH_PROBED_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddThreadDetachProbedFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddThreadDetachProbedFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#gadb876e9e1ba64a65f73bd87fc9e3c50">THREAD_DETACH_PROBED_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -1763,6 +1789,7 @@ Note, this notification happens only for threads that exist in the process at th
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>Value to pass to the function.</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> Probe<br>
  <b>O/S</b>: Linux<br>
@@ -1771,13 +1798,13 @@ Note, this notification happens only for threads that exist in the process at th
     </td>
   </tr>
 </table>
-<a class="anchor" name="g2d6c3eea4ebe3e76baed4481b079e3b1"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddThreadFiniFunction" ref="g2d6c3eea4ebe3e76baed4481b079e3b1" args="(THREAD_FINI_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="gc3f2c06e525bd0f23e8aa55f801989df"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddThreadFiniFunction" ref="gc3f2c06e525bd0f23e8aa55f801989df" args="(THREAD_FINI_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddThreadFiniFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddThreadFiniFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#gaf37c586368c5230ff7fba6c2bfebd01">THREAD_FINI_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -1813,6 +1840,7 @@ The notification call-back will often happen on the physical thread that is exit
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>Value to pass to the function.</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
@@ -1821,13 +1849,13 @@ The notification call-back will often happen on the physical thread that is exit
     </td>
   </tr>
 </table>
-<a class="anchor" name="gd990464123111fae4a3e575039b11af7"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddThreadStartFunction" ref="gd990464123111fae4a3e575039b11af7" args="(THREAD_START_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g0549831d0b423aea93768b1bc491938b"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddThreadStartFunction" ref="g0549831d0b423aea93768b1bc491938b" args="(THREAD_START_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddThreadStartFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddThreadStartFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CONTROL.html#g299a24d8e05412410b32b75b51564081">THREAD_START_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -1862,6 +1890,7 @@ Register a notification function that is called when a thread starts executing i
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>Value to pass to the function.</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
@@ -1905,7 +1934,7 @@ Register a notification function that is called when a thread starts executing i
 
 <p>
 Initiate Pin attach request in probe mode. If Pin was not detached (using <a class="el" href="group__PIN__CONTROL.html#g12d2f1c80491b151ce004ba459c5695e">PIN_DetachProbed()</a>) this function will be ignored.<br>
- The given notification function will be called immediately after Pin regain control of the application. It is expected that in the scope of this callback, the tool will register callbacks (e.g. <a class="el" href="group__IMG__BASIC__API.html#gb0ad0d50126fd5ddcfee28005c681049">IMG_AddInstrumentFunction()</a>) and will reconfigure itself (if needed). In order to change tool's KNOB value, use <a class="el" href="group__KNOB__BASIC.html">KNOB: Basics</a><p>
+ The given notification function will be called immediately after Pin regain control of the application. It is expected that in the scope of this callback, the tool will register callbacks (e.g. <a class="el" href="group__IMG__BASIC__API.html#g4867c865fcf260951b7d750aaaaa0007">IMG_AddInstrumentFunction()</a>) and will reconfigure itself (if needed). In order to change tool's KNOB value, use <a class="el" href="group__KNOB__BASIC.html">KNOB: Basics</a><p>
 <dl compact><dt><b>Note:</b></dt><dd>Pin's state can't be reconfigured in the scope of the callback function (don't use <a class="el" href="group__PIN__CONTROL.html#g078bed712e6822f3b42a7b4815ba5c0a">PIN_Init()</a>, <a class="el" href="group__PIN__CONTROL.html#ga6749650a8dce7151075fcc9345f7bd9">PIN_InitSymbols()</a>, <a class="el" href="group__PIN__CONTROL.html#g7de96e728655962e8ecb4cfe49bd6c2c">PIN_StartProgramProbed()</a> etc.)</dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
@@ -1921,7 +1950,7 @@ Initiate Pin attach request in probe mode. If Pin was not detached (using <a cla
     </td>
   </tr>
 </table>
-<a class="anchor" name="g3d341cb1f0ce6c150d0b3047e6a7930e"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_CallApplicationFunction" ref="g3d341cb1f0ce6c150d0b3047e6a7930e" args="(const CONTEXT *ctxt, THREADID tid, CALLINGSTD_TYPE cstype, AFUNPTR origFunPtr,...)" --><p>
+<a class="anchor" name="g5280354edd95efc19a837617ff63ba51"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_CallApplicationFunction" ref="g5280354edd95efc19a837617ff63ba51" args="(const CONTEXT *ctxt, THREADID tid, CALLINGSTD_TYPE cstype, AFUNPTR origFunPtr, CALL_APPLICATION_FUNCTION_PARAM *param,...)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1953,6 +1982,12 @@ Initiate Pin attach request in probe mode. If Pin was not detached (using <a cla
         <tr>
           <td class="md" nowrap align="right"></td>
           <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="structCALL__APPLICATION__FUNCTION__PARAM.html">CALL_APPLICATION_FUNCTION_PARAM</a> *&nbsp;</td>
+          <td class="mdname" nowrap> <em>param</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
           <td class="md" nowrap>&nbsp;</td>
           <td class="mdname" nowrap> <em>...</em></td>
         </tr>
@@ -1974,14 +2009,15 @@ Initiate Pin attach request in probe mode. If Pin was not detached (using <a cla
 
 <p>
 This API allows a tool to call a function inside the application. The function is executed under control of Pin's JIT compiler, and the application code is instrumented normally. Tools should not make direct calls to application functions when Pin is in JIT mode.<p>
-<a class="el" href="group__PIN__CONTROL.html#g3d341cb1f0ce6c150d0b3047e6a7930e">PIN_CallApplicationFunction()</a> can be called from a replacement routine or an analysis routine, but not from a call-back. Note that this API can result in recursive execution in the tool since the called application function is also instrumented.<p>
-One usage model for this API is to "wrap" an application function, executing analysis code before the function is called and after it returns. To do this, use <a class="el" href="group__RTN__BASIC__API.html#gdba66dc89d3e71ce4413aa55eb3d450f">RTN_ReplaceSignature()</a> to replace the application function, use <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56812a8d49dccc99d1dfaeb26d8b3e583505">IARG_ORIG_FUNCPTR</a> to pass the original function pointer to the replacement routine, and use <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b568152f3e4ae9dfb93f4691d7342ee937c4d">IARG_CONST_CONTEXT</a> to pass the register state. You can then call back on the original function from your replacement routine with <a class="el" href="group__PIN__CONTROL.html#g3d341cb1f0ce6c150d0b3047e6a7930e">PIN_CallApplicationFunction()</a>. Note, however, that the overhead of <a class="el" href="group__PIN__CONTROL.html#g3d341cb1f0ce6c150d0b3047e6a7930e">PIN_CallApplicationFunction()</a> can be high, so it is more efficient to use *_InsertCall() instead if possible.<p>
+<a class="el" href="group__PIN__CONTROL.html#g5280354edd95efc19a837617ff63ba51">PIN_CallApplicationFunction()</a> can be called from a replacement routine or an analysis routine, but not from a call-back. Note that this API can result in recursive execution in the tool since the called application function is also instrumented.<p>
+One usage model for this API is to "wrap" an application function, executing analysis code before the function is called and after it returns. To do this, use <a class="el" href="group__RTN__BASIC__API.html#gdba66dc89d3e71ce4413aa55eb3d450f">RTN_ReplaceSignature()</a> to replace the application function, use <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56812a8d49dccc99d1dfaeb26d8b3e583505">IARG_ORIG_FUNCPTR</a> to pass the original function pointer to the replacement routine, and use <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b568152f3e4ae9dfb93f4691d7342ee937c4d">IARG_CONST_CONTEXT</a> to pass the register state. You can then call back on the original function from your replacement routine with <a class="el" href="group__PIN__CONTROL.html#g5280354edd95efc19a837617ff63ba51">PIN_CallApplicationFunction()</a>. Note, however, that the overhead of <a class="el" href="group__PIN__CONTROL.html#g5280354edd95efc19a837617ff63ba51">PIN_CallApplicationFunction()</a> can be high, so it is more efficient to use *_InsertCall() instead if possible.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>ctxt</em>&nbsp;</td><td>The application register state to use when calling the function. Pin changes the register state in order to pass arguments to the function, but the <em>ctxt</em> parameter isn't changed. </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>tid</em>&nbsp;</td><td>The Pin id of the current thread (see <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b5681d04f1eb185e914f0f11a839e2c26cbd8">IARG_THREAD_ID</a>). </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>cstype</em>&nbsp;</td><td>The calling standard used for calling this function (CALLINGSTD_DEFAULT recommended). </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>origFunPtr</em>&nbsp;</td><td>The entry point of the application function. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>param</em>&nbsp;</td><td>Additional parameters to define the exact behavior of this function invocation (or NULL for using the defaults). See <a class="el" href="structCALL__APPLICATION__FUNCTION__PARAM.html">CALL_APPLICATION_FUNCTION_PARAM</a> . </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>...</em>&nbsp;</td><td>List of function argument type and size.</td></tr>
   </table>
 </dl>
@@ -1989,6 +2025,87 @@ See <a class="el" href="group__PROTO__API.html#gae8aea17c700049aa39c32c370874f47
 <dl compact><dt><b>Note:</b></dt><dd>The vm lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT only<br>
  <b>O/S</b>: Linux and Windows<br>
+ <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="gc15ee36f1352f316aedb01f3c875ff8b"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_CheckReadAccess" ref="gc15ee36f1352f316aedb01f3c875ff8b" args="(VOID *addr)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">BOOL LEVEL_PINCLIENT::PIN_CheckReadAccess           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">VOID *&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>addr</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Given an address, this API checks whether the memory page which contains this address has a read access protection.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>addr</em>&nbsp;</td><td>memory address</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>True if the memory page which contains the given address has a read access protection, false otherwise.</dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd><a class="el" href="group__PIN__CONTROL.html#gc15ee36f1352f316aedb01f3c875ff8b">PIN_CheckReadAccess()</a> should not be called before the application has been started. For instance, it cannot be called in an Image load callback. Unexpected results will occur.</dd></dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
+ <b>O/S</b>: Linux, Windows &amp; OS X*<br>
+ <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="g0c6eafad5ef60643bab9426ff4355245"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_CheckWriteAccess" ref="g0c6eafad5ef60643bab9426ff4355245" args="(VOID *addr)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">BOOL LEVEL_PINCLIENT::PIN_CheckWriteAccess           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">VOID *&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>addr</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Given an address, this API checks whether the memory page which contains this address has a write access protection.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>addr</em>&nbsp;</td><td>memory address</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>True if the memory page which contains the given address has a write access protection, false otherwise.</dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd><a class="el" href="group__PIN__CONTROL.html#g0c6eafad5ef60643bab9426ff4355245">PIN_CheckWriteAccess()</a> should not be called before the application has been started. For instance, it cannot be called in an Image load callback. Unexpected results will occur.<p>
+PIN_CheckWriteAccess assume that if a memory page has a write access protection it also has a read</dd></dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
+ <b>O/S</b>: Linux, Windows &amp; OS X*<br>
  <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
  </dd></dl>
     </td>
@@ -2020,11 +2137,11 @@ See <a class="el" href="group__PROTO__API.html#gae8aea17c700049aa39c32c370874f47
 <p>
 Pin relinquishes control of the application and the original un-instrumented code is executed.<p>
 On Linux, the function may be invoked from analysis, instrumentation or callback routines. It may be executed by any thread, including threads spawned by the Pintool which are invisible to the Pin VM.<p>
-On Windows and Mac Os, the function must be invoked from an analysis routine. Invoking the function from instrumentation routines could cause Pin to misbehave. See Tests/detach.C for an example of its use.<p>
+On Windows and OS X*, the function must be invoked from an analysis routine. Invoking the function from instrumentation routines could cause Pin to misbehave. See Tests/detach.C for an example of its use.<p>
 The request for detach is considered by Pin as asynchronous. This means that Pin will perform the detach procedure at a point which it considers convenient to do so. From the user's perspective, instrumentation, analysis or callback routines might still be executed after calling <a class="el" href="group__PIN__CONTROL.html#g0f3537980bb5ab3b0411a83426a32370">PIN_Detach()</a>. In practice, <a class="el" href="group__PIN__CONTROL.html#g0f3537980bb5ab3b0411a83426a32370">PIN_Detach()</a> simply registers the request to the Pin VM and exits immediately i.e. the function does not wait for detach to complete.<p>
 Once Pin starts the detach procedure, it can't be blocked, and will not run forever. It is not possible to detach one thread. All threads will run natively after <a class="el" href="group__PIN__CONTROL.html#g0f3537980bb5ab3b0411a83426a32370">PIN_Detach()</a>. During detach, Pin doesn't free memory used for Pin objects. This memory will be used during re-attach.<p>
 During the detach procedure Pin runs an auxiliary process, which communicates with the running application process via debug interface. The auxiliary process is temporary and will exit immediately when the detach procedure is completed. For the user, this means that a debugger cannot be attached to the application process during detach.<p>
-Use <a class="el" href="group__PIN__CONTROL.html#g451060f5e998243df750ac16720cadcf">PIN_AddDetachFunction()</a> to receive a notification just prior to detach. The callback will be received after all the threads are stopped inside the VM and no more instrumentation functions, analysis routines or callbacks will be called.<br>
+Use <a class="el" href="group__PIN__CONTROL.html#g4c85e2907788d57d10241d4f8b86a170">PIN_AddDetachFunction()</a> to receive a notification just prior to detach. The callback will be received after all the threads are stopped inside the VM and no more instrumentation functions, analysis routines or callbacks will be called.<br>
  Note: at this point, the auxiliary process mentioned above is still attached to the application process.<p>
 <dl compact><dt><b>Note:</b></dt><dd>The vm and client locks are obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
@@ -2058,7 +2175,7 @@ Use <a class="el" href="group__PIN__CONTROL.html#g451060f5e998243df750ac16720cad
     <td>
 
 <p>
-Initiate Pin detach request in probe mode. In the scope of this operation, Pin removes all probes set by Pin &amp; tool, The user can get a notification when the detach operation has been completed (via callback registration using <a class="el" href="group__PIN__CONTROL.html#gdb1a5f5589efab9dd67bafe7cf5c37a3">PIN_AddDetachFunctionProbed()</a>). On Linux, the user can get additional per-thread callbacks just prior to probes removal. (via callback registration using <a class="el" href="group__PIN__CONTROL.html#gb4824768ab296b76b63d1679c8f6d8d0">PIN_AddThreadDetachProbedFunction()</a>).These callbacks will be given for each thread in its native context. If Pin has already detached (using <a class="el" href="group__PIN__CONTROL.html#g12d2f1c80491b151ce004ba459c5695e">PIN_DetachProbed()</a>), or if Pin has not fully started yet (the notification function registered by <a class="el" href="group__PIN__CONTROL.html#g3017af7e44f9c1926bd903a186064472">PIN_AddApplicationStartFunction()</a> was not yet delivered to the tool), this function will be ignored.<br>
+Initiate Pin detach request in probe mode. In the scope of this operation, Pin removes all probes set by Pin &amp; tool, The user can get a notification when the detach operation has been completed (via callback registration using <a class="el" href="group__PIN__CONTROL.html#gda020c86d21d2c795662ce573c5ca798">PIN_AddDetachFunctionProbed()</a>). On Linux, the user can get additional per-thread callbacks just prior to probes removal. (via callback registration using <a class="el" href="group__PIN__CONTROL.html#g348443e6950c5791902323f98dfb9b82">PIN_AddThreadDetachProbedFunction()</a>).These callbacks will be given for each thread in its native context. If Pin has already detached (using <a class="el" href="group__PIN__CONTROL.html#g12d2f1c80491b151ce004ba459c5695e">PIN_DetachProbed()</a>), or if Pin has not fully started yet (the notification function registered by <a class="el" href="group__PIN__CONTROL.html#g4e2be141dc01c0af5120c9394b33f121">PIN_AddApplicationStartFunction()</a> was not yet delivered to the tool), this function will be ignored.<br>
 <p>
 <dl compact><dt><b>Note:</b></dt><dd>Even though Pin removes all probes, replacement functions can still be active (for example, if the replacement function is still located on the call stack of one of the threads). It is the tool responsibility to handle these scenarios.<br>
 <p>
@@ -2066,6 +2183,102 @@ The vm and pin client locks are obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> Probe<br>
  <b>O/S</b>: Windows, Linux<br>
  <b>CPU:</b> IA32, Intel64<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="g1d14c23857e14e0a0dca38a3621e035f"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_FetchCode" ref="g1d14c23857e14e0a0dca38a3621e035f" args="(void *copyBuf, const VOID *address, size_t maxSize, EXCEPTION_INFO *pExceptInfo)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">size_t LEVEL_PINCLIENT::PIN_FetchCode           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">void *&nbsp;</td>
+          <td class="mdname" nowrap> <em>copyBuf</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>const VOID *&nbsp;</td>
+          <td class="mdname" nowrap> <em>address</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>size_t&nbsp;</td>
+          <td class="mdname" nowrap> <em>maxSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="group__EXCEPTION__API.html#gdd29f27899c5a5f3e140bbe3af31759f">EXCEPTION_INFO</a> *&nbsp;</td>
+          <td class="mdname" nowrap> <em>pExceptInfo</em></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+A function to fetch the code raw bytes.<p>
+This function should be used when the tool needs the raw bytes of instructions and the tool is using a code fetcher function that translates the original code address to an actual code address.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>copyBuf</em>&nbsp;</td><td>destination buffer </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>address</em>&nbsp;</td><td>address to copy from </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>maxSize</em>&nbsp;</td><td>number of bytes to copy </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>pExceptInfo</em>&nbsp;</td><td>pointer to the structure that receives the exception information</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
+ <b>O/S</b>: Linux, Windows &amp; MacOS<br>
+ <b>CPU:</b> All<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="gc033d720b9d6ccbfc0d5b87d3b083ebb"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_GetInitialThreadCount" ref="gc033d720b9d6ccbfc0d5b87d3b083ebb" args="()" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">UINT32 LEVEL_PINCLIENT::PIN_GetInitialThreadCount           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+This function is useful when the tool that use attach is doing some initial work that needs the number of threads at the time of the attach.<p>
+<dl compact><dt><b>Returns:</b></dt><dd>Number of threads at the time of the attach, in all other cases it will return one. It is not implemented for Windows with attach.</dd></dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT/Probe<br>
+ <b>O/S</b>: Linux<br>
+ <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
  </dd></dl>
     </td>
   </tr>
@@ -2340,7 +2553,7 @@ Some restrictions apply when using IARG_CONTEXT. See <a class="el" href="group__
 
 <p>
 Establish an interceptor function for signals delivered to the application. Tools should never call sigaction() directly to handle signals. The interceptor function is called whenever the application receives the requested signal, regardless of whether the application has a handler for that signal. The tool's handler can then decide whether the signal should be forwarded to the application.<p>
-There are two intended usage models for this API, which are both advanced features. If your tool merely needs to be notified of signals that are sent to the application, use <a class="el" href="group__PIN__CONTROL.html#gdb70938ef31309447fe65a653667334a">PIN_AddContextChangeFunction()</a> instead.<p>
+There are two intended usage models for this API, which are both advanced features. If your tool merely needs to be notified of signals that are sent to the application, use <a class="el" href="group__PIN__CONTROL.html#gfe475fc12b9060e8e45cbfccd7d592c8">PIN_AddContextChangeFunction()</a> instead.<p>
 In one usage model, a tool can take over ownership of a signal in order to use the signal as an asynchronous communication mechanism to the outside world. For example, if a tool intercepts SIGUSR1, a user of the tool could send this signal and tell the tool to do something. In this usage model, the tool may want to call <a class="el" href="group__PIN__CONTROL.html#g048709607373930698fb578b7150815d">PIN_UnblockSignal()</a> so that it will receive the signal even if the application attempts to block it.<p>
 In the second usage model, the tool may need to "squash" certain signals that the application generates. For example, a tool that forces speculative execution in the application may want to intercept and squash exceptions generated in the speculative code.<p>
 A tool can set only one "intercept" handler for a particular signal, so a new handler overwrites any previous handler for the same signal. To disable a handler, pass a NULL function pointer.<p>
@@ -2558,7 +2771,7 @@ Some Pin API functions may only be called when the thread is holding this lock. 
     <td>
 
 <p>
-Invalidates all the Fini callback functions registered via <a class="el" href="group__PIN__CONTROL.html#gd5efea3f1ee5611af535e22f35bce145">PIN_AddFiniFunction</a>; Fini callbacks will no longer be called before the application exits.<p>
+Invalidates all the Fini callback functions registered via <a class="el" href="group__PIN__CONTROL.html#g49a870141067fb2a4ae0c8fd09a04ccb">PIN_AddFiniFunction</a>; Fini callbacks will no longer be called before the application exits.<p>
 Must be called prior to invoking <a class="el" href="group__PIN__CONTROL.html#g0f3537980bb5ab3b0411a83426a32370">PIN_Detach</a> if the tool has previously registered Fini callbacks and libc.so is not yet loaded into memory yet for a dynamically linked binary.<p>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
@@ -2797,6 +3010,38 @@ The <a class="el" href="group__PIN__CONTROL.html#g7de96e728655962e8ecb4cfe49bd6c
     </td>
   </tr>
 </table>
+<a class="anchor" name="gb788a5b83d7412f1310dc64b40af6e13"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_ToolFullPath" ref="gb788a5b83d7412f1310dc64b40af6e13" args="()" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">const CHAR* LEVEL_PINCLIENT::PIN_ToolFullPath           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Returns full path of main Pin tool binary image, encoded in UTF8 (superset of ASCII), this is supported for Windows (only for locales encoded in UTF8)<p>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
+ <b>O/S</b>: Windows<br>
+ <b>CPU:</b> All<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
 <a class="anchor" name="g865588e1c8ec27149ab627aecabfd4c1"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_TryEnd" ref="g865588e1c8ec27149ab627aecabfd4c1" args="(THREADID tid)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
@@ -2878,7 +3123,7 @@ Unregister the last registered notification function (registered via <a class="e
 <p>
 Register a per-thread notification handler function that is called upon receipt of an internal exception in pin or the tool in the context of the calling thread. Use <a class="el" href="group__PIN__CONTROL.html#g865588e1c8ec27149ab627aecabfd4c1">PIN_TryEnd()</a> in order to remove the registered handler from the context of the calling thread (do it in the same function scope). The user can register up to MAX_IEH_CALLBACKS per-thread notification functions.<br>
  This function can be used in any thread, including any internal thread spawned by the tool.<p>
-<dl compact><dt><b>Note:</b></dt><dd>It is unsupported to call <a class="el" href="group__PIN__CONTROL.html#g3d341cb1f0ce6c150d0b3047e6a7930e">PIN_CallApplicationFunction()</a> in the scope of <a class="el" href="group__PIN__CONTROL.html#g22e1f539c7159c1bc9a2aac8f8803e81">PIN_TryStart()</a> / <a class="el" href="group__PIN__CONTROL.html#g865588e1c8ec27149ab627aecabfd4c1">PIN_TryEnd()</a> pair.<br>
+<dl compact><dt><b>Note:</b></dt><dd>It is unsupported to call <a class="el" href="group__PIN__CONTROL.html#g5280354edd95efc19a837617ff63ba51">PIN_CallApplicationFunction()</a> in the scope of <a class="el" href="group__PIN__CONTROL.html#g22e1f539c7159c1bc9a2aac8f8803e81">PIN_TryStart()</a> / <a class="el" href="group__PIN__CONTROL.html#g865588e1c8ec27149ab627aecabfd4c1">PIN_TryEnd()</a> pair.<br>
 </dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
@@ -3011,7 +3256,7 @@ Returns full path of Pin binary invoked, encoded in UTF8 (superset of ASCII), th
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

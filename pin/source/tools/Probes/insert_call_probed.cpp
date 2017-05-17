@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -110,7 +110,7 @@ VOID ImageLoad(IMG img, VOID *v)
         printf("Found annotations: \n");
         for (UINT32 i = 0; i < num; i++)
         {
-            ADDRINT addr = ann[i].addr;
+            ADDRINT addr = ann[i].addr + IMG_LoadOffset(img);
             ADDRINT val = ann[i].value;
             printf("\t%p %p\t", Addrint2VoidStar(addr), Addrint2VoidStar(val));
             if (PIN_IsSafeForProbedInsertion(addr))

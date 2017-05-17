@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -133,7 +133,7 @@ VOID Trace(TRACE trace, VOID *v){
 VOID * BufferFull(BUFFER_ID bid, THREADID tid, const CONTEXT *ctxt, VOID *buf,
                   UINT64 numElements, VOID *v)
 {
-    GetLock(&fileLock, 1);
+    PIN_GetLock(&fileLock, 1);
 
     ASSERTX(buf == PIN_GetThreadData(buf_key, tid));
     
@@ -145,7 +145,7 @@ VOID * BufferFull(BUFFER_ID bid, THREADID tid, const CONTEXT *ctxt, VOID *buf,
                 reference->size, reference->load);   
     }
     fflush(outfile);
-    ReleaseLock(&fileLock);
+    PIN_ReleaseLock(&fileLock);
 
     return buf;
 }
@@ -160,10 +160,10 @@ VOID * BufferFull(BUFFER_ID bid, THREADID tid, const CONTEXT *ctxt, VOID *buf,
 VOID Fini(INT32 code, VOID *v)
 {
 
-    GetLock(&fileLock, 1);
+    PIN_GetLock(&fileLock, 1);
     fclose(outfile);
     printf("outfile closed\n");
-    ReleaseLock(&fileLock);
+    PIN_ReleaseLock(&fileLock);
 }
 
 void ThreadStart(THREADID tid, CONTEXT * context, int flags, void * v)
@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    InitLock(&fileLock);
+    PIN_InitLock(&fileLock);
 
     // add an instrumentation function
     TRACE_AddInstrumentFunction(Trace, 0);

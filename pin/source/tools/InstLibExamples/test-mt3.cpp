@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -94,7 +94,7 @@ class THREAD_STATE_T
     }
 };
 
-pthread_mutex_t mutex;
+pthread_mutex_t my_mutex;
 
 extern "C" void work1() {
     int i;
@@ -176,7 +176,7 @@ int main(int argc, char** argv, char** envp)
     pthread_t* thread = new pthread_t[nthreads];
     int r;
 
-    r = pthread_mutex_init(&mutex, 0);
+    r = pthread_mutex_init(&my_mutex, 0);
     assert(r==0);
     
     r = pthread_attr_init(&attr);
@@ -192,10 +192,10 @@ int main(int argc, char** argv, char** envp)
         assert(r==0);
     }
 
-    r = pthread_mutex_lock(&mutex);
+    r = pthread_mutex_lock(&my_mutex);
     assert(r==0);
     cout << "I'm in the main thread!" << endl;
-    r = pthread_mutex_unlock(&mutex);
+    r = pthread_mutex_unlock(&my_mutex);
     assert(r==0);
  
     for(int i=0;i<nthreads;i++) {

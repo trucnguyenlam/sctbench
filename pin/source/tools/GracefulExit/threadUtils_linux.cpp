@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -31,9 +31,9 @@ END_LEGAL */
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/syscall.h>
 #include "threadUtils.h"
-
 
 /**************************************************
  * Type definitions                               *
@@ -59,6 +59,7 @@ pthread_mutex_t numThreadsLock;     // This lock is used for synchronizing acces
  **************************************************/
 void GetLock(pthread_mutex_t* mutex);
 void ReleaseLock(pthread_mutex_t* mutex);
+static void TimeoutHandler(int a);
 
 
 /**************************************************
@@ -136,6 +137,17 @@ void EnterSafeCancellationPoint() {
     }
 }
 
+void SetTimeout() {
+    struct sigaction sigact_timeout;
+    sigact_timeout.sa_handler = TimeoutHandler;
+    sigact_timeout.sa_flags = 0;
+
+    if (sigaction(SIGALRM, &sigact_timeout, 0) == -1) {
+        Print("Unable to set up timeout handler\n");
+        ErrorExit(RES_UNEXPECTED_EXIT);
+    }
+    alarm(TIMEOUT);
+}
 
 /**************************************************
  * Static functions implementation                *
@@ -154,4 +166,9 @@ void ReleaseLock(pthread_mutex_t* mutex) {
 
 void DoYield() {
     sched_yield();
+}
+
+void TimeoutHandler(int a) {
+    Print("Application is running more than 10 minutes. It might be hanged. Killing it");
+    ErrorExit(RES_EXIT_TIMEOUT);
 }

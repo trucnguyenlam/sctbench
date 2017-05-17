@@ -54,10 +54,20 @@ LIB_ROOTS :=
 
 ###### Place OS-specific definitions here ######
 
+# Android
+ifeq ($(TARGET_OS),android)
+    TEST_ROOTS += modify_ldt load_far_pointer gcc_thread_local_vars
+    APP_ROOTS += modify_ldt load_far_pointer gcc_thread_local_vars_app
+    ifeq ($(TARGET),ia32)
+        TEST_ROOTS += set_thread_area1 set_thread_area2 set_thread_area3 fixed_base_reg
+        APP_ROOTS += set_thread_area1 set_thread_area2 set_thread_area3 fixed_base_reg
+    endif
+endif
+
 # Linux
 ifeq ($(TARGET_OS),linux)
-    TEST_ROOTS += modify_ldt load_far_pointer
-    APP_ROOTS += modify_ldt load_far_pointer
+    TEST_ROOTS += modify_ldt load_far_pointer gcc_thread_local_vars
+    APP_ROOTS += modify_ldt load_far_pointer gcc_thread_local_vars_app
     ifeq ($(TARGET),ia32)
         TEST_ROOTS += set_thread_area1 set_thread_area2 set_thread_area3 fixed_base_reg
         APP_ROOTS += set_thread_area1 set_thread_area2 set_thread_area3 fixed_base_reg
@@ -114,6 +124,11 @@ fixed_base_reg.test: $(OBJDIR)fixed_base_reg$(EXE_SUFFIX)
 	$(PIN) -- $(OBJDIR)fixed_base_reg$(EXE_SUFFIX) > $(OBJDIR)fixed_base_reg.pin.out 2>&1
 	$(DIFF) $(OBJDIR)fixed_base_reg.out $(OBJDIR)fixed_base_reg.pin.out
 	$(RM) $(OBJDIR)fixed_base_reg.out $(OBJDIR)fixed_base_reg.pin.out
+
+gcc_thread_local_vars.test: $(OBJDIR)gcc_thread_local_vars_app$(EXE_SUFFIX) 
+	$(PIN) -- $(OBJDIR)gcc_thread_local_vars_app$(EXE_SUFFIX) > $(OBJDIR)gcc_thread_local_vars.log
+	$(DIFF) $(OBJDIR)gcc_thread_local_vars.log gcc_thread_local_vars.reference
+	$(RM) $(OBJDIR)gcc_thread_local_vars.log
 
 
 ##############################################################

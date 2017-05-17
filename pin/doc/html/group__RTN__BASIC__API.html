@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -47,17 +48,23 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">const string &amp;&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#gb274bf5dadf6f1ae3259715ae161ebd1">LEVEL_PINCLIENT::RTN_Name</a> (RTN x)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#g696ccffb0bff15b1565216aa0e7813f3">LEVEL_PINCLIENT::RTN_IsArtificial</a> (RTN x)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">SYM&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#gb3c8e4196812c16e0072311ccf31b198">LEVEL_PINCLIENT::RTN_Sym</a> (RTN x)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">AFUNPTR&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#g5b6998f250d54f5b1dcc4f65837add7a">LEVEL_PINCLIENT::RTN_Funptr</a> (RTN x)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">INT32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#g6831172f1bcd6f8226af5f3c1a409cbd">LEVEL_PINCLIENT::RTN_Id</a> (RTN x)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">UINT32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#g2021004b76379a3e40db22743b50dbeb">LEVEL_PINCLIENT::RTN_Id</a> (RTN x)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#g8622a6ba858eb8d55df4e006eb165e57">LEVEL_PINCLIENT::RTN_AddInstrumentFunction</a> (<a class="el" href="group__RTN__BASIC__API.html#g36aaf349284bbf9d5dede36061572e1b">RTN_INSTRUMENT_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#g50b3794c06a99774ed62abec8ad3b173">LEVEL_PINCLIENT::RTN_AddInstrumentFunction</a> (<a class="el" href="group__RTN__BASIC__API.html#g36aaf349284bbf9d5dede36061572e1b">RTN_INSTRUMENT_CALLBACK</a> fun, VOID *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">USIZE&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#gaac677a394e97b62b31ff222ffe4c32a">LEVEL_PINCLIENT::RTN_Range</a> (RTN rtn)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">USIZE&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#g80ec28fada91863f90c590ea8b6d0b9e">LEVEL_PINCLIENT::RTN_Size</a> (RTN rtn)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">RTN&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#g8a6de80acafcce3573ec8f572989cc6e">LEVEL_PINCLIENT::RTN_IFuncResolver</a> (RTN rtn)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">RTN&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#ga50fd585a35c89fbb920b4c643cc9e4e">LEVEL_PINCLIENT::RTN_IFuncImplementation</a> (RTN rtn)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">string&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#g2d23a45cffdac00f7efa403b05c85bc4">LEVEL_PINCLIENT::RTN_FindNameByAddress</a> (ADDRINT address)</td></tr>
 
@@ -83,7 +90,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">RTN&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#g394372fdee2823655d7e5eb1742e5ffa">LEVEL_PINCLIENT::RTN_CreateAt</a> (ADDRINT address, string name)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#ga698f1be08bcc9a9625e4cbcd945254e">LEVEL_PINCLIENT::DeleteRtnCheckHistory</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#gb36b828dc06d754e79780245d938dc7b">LEVEL_PINCLIENT::RTN_IsDynamic</a> (RTN rtn)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__RTN__BASIC__API.html#g59b4507c13286cfad2195de5659a1783">LEVEL_PINCLIENT::RTN_IsSafeForProbedInsertion</a> (RTN rtn)</td></tr>
 
@@ -117,10 +124,10 @@ A RTN represents the functions/routines/procedures typically produced by a compi
  APIs from this group are available in any thread, including any internal thread spawned by the tool.<p>
 Iteration idioms:<p>
 <div class="fragment"><pre class="fragment">  <span class="comment">// Forward pass over all routines in a section</span>
-  <span class="keywordflow">for</span>( RTN rtn= <a class="code" href="group__SEC__BASIC__API.html#g3015a2dd44717006bca05e459b344b42">SEC_RtnHead</a>(sec); <a class="code" href="group__RTN__BASIC__API.html#g2883b22d046e8c6c5ac303465dfa4ed6">RTN_Valid</a>(rtn); rtn = <a class="code" href="group__RTN__BASIC__API.html#gf21d0d3fd6851e83e42827f09c03a4e7">RTN_Next</a>(rtn) )
+  <span class="keywordflow">for</span>( RTN rtn= <a class="code" href="group__SEC__BASIC__API.html#g1a81afab78e506eb52b3c4d5fa81584d">SEC_RtnHead</a>(sec); <a class="code" href="group__RTN__BASIC__API.html#g2883b22d046e8c6c5ac303465dfa4ed6">RTN_Valid</a>(rtn); rtn = <a class="code" href="group__RTN__BASIC__API.html#gf21d0d3fd6851e83e42827f09c03a4e7">RTN_Next</a>(rtn) )
 
   <span class="comment">// Reverse pass over all routines in a section</span>
-  <span class="keywordflow">for</span>( RTN rtn= <a class="code" href="group__SEC__BASIC__API.html#g798f584b3afc00e1d697188acba09dd3">SEC_RtnTail</a>(sec); <a class="code" href="group__RTN__BASIC__API.html#g2883b22d046e8c6c5ac303465dfa4ed6">RTN_Valid</a>(rtn); rtn = <a class="code" href="group__RTN__BASIC__API.html#g9c78a0482f0f81a0ddfa844954a84dc9">RTN_Prev</a>(rtn) )
+  <span class="keywordflow">for</span>( RTN rtn= <a class="code" href="group__SEC__BASIC__API.html#gdc3ffead016cff9464a1f83de95d8356">SEC_RtnTail</a>(sec); <a class="code" href="group__RTN__BASIC__API.html#g2883b22d046e8c6c5ac303465dfa4ed6">RTN_Valid</a>(rtn); rtn = <a class="code" href="group__RTN__BASIC__API.html#g9c78a0482f0f81a0ddfa844954a84dc9">RTN_Prev</a>(rtn) )
 </pre></div> <hr><h2>Typedef Documentation</h2>
 <a class="anchor" name="g36aaf349284bbf9d5dede36061572e1b"></a><!-- doxytag: member="LEVEL_PINCLIENT::RTN_INSTRUMENT_CALLBACK" ref="g36aaf349284bbf9d5dede36061572e1b" args=")(RTN rtn, VOID *v)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
@@ -172,44 +179,17 @@ Doing probed instrumentation Pin inserts a jumper in the first bytes of the inst
 <li>the size is known</li><li>there is no jumps outside function and</li><li>the routine does not contain indirect jumps</li></ul>
 <p>
 The routine relocation may destabilize the application since ability to propagate exceptions is not preserved. Doing static analysis Pin also does not see additional entry points in the routine code.<p>
-In PROBE_MODE_ALLOW_RELOCATION mode Pin tries to keep the instrumented routine in place, and considers relocation when "in-place" instrumentation is impossible. In PROBE_MODE_DEFAULT the relocation is not allowed. Routine relocation is not supported on Windows and IA-64.     </td>
+In PROBE_MODE_ALLOW_RELOCATION mode Pin tries to keep the instrumented routine in place, and considers relocation when "in-place" instrumentation is impossible. In PROBE_MODE_DEFAULT the relocation is not allowed. Routine relocation is not supported on Windows.     </td>
   </tr>
 </table>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="ga698f1be08bcc9a9625e4cbcd945254e"></a><!-- doxytag: member="LEVEL_PINCLIENT::DeleteRtnCheckHistory" ref="ga698f1be08bcc9a9625e4cbcd945254e" args="()" --><p>
+<a class="anchor" name="g50b3794c06a99774ed62abec8ad3b173"></a><!-- doxytag: member="LEVEL_PINCLIENT::RTN_AddInstrumentFunction" ref="g50b3794c06a99774ed62abec8ad3b173" args="(RTN_INSTRUMENT_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::DeleteRtnCheckHistory           </td>
-          <td class="md" valign="top">(&nbsp;</td>
-          <td class="mdname1" valign="top" nowrap>          </td>
-          <td class="md" valign="top">&nbsp;)&nbsp;</td>
-          <td class="md" nowrap></td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing="5" cellpadding="0" border="0">
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-Clear history of routine check     </td>
-  </tr>
-</table>
-<a class="anchor" name="g8622a6ba858eb8d55df4e006eb165e57"></a><!-- doxytag: member="LEVEL_PINCLIENT::RTN_AddInstrumentFunction" ref="g8622a6ba858eb8d55df4e006eb165e57" args="(RTN_INSTRUMENT_CALLBACK fun, VOID *val)" --><p>
-<table class="mdTable" cellpadding="2" cellspacing="0">
-  <tr>
-    <td class="mdRow">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::RTN_AddInstrumentFunction           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::RTN_AddInstrumentFunction           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__RTN__BASIC__API.html#g36aaf349284bbf9d5dede36061572e1b">RTN_INSTRUMENT_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -243,6 +223,7 @@ Add a function used to instrument at routine granularity <dl compact><dt><b>Para
     <tr><td valign="top"></td><td valign="top"><em>val</em>&nbsp;</td><td>Passed as the second argument to the instrumentation function</td></tr>
   </table>
 </dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> All<br>
@@ -412,11 +393,13 @@ The address should point to code (an executable section or segment). Since the w
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>address</em>&nbsp;</td><td>The start address of the new routine </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>name</em>&nbsp;</td><td>The assigned name of the new routine</td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>name</em>&nbsp;</td><td>The assigned name of the new routine </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>isIFunc</em>&nbsp;</td><td>True if the symbol's type which corresponds to the new routine location is ifunc symbol.</td></tr>
   </table>
 </dl>
-<dl compact><dt><b>Returns:</b></dt><dd>RTN object The routine object is valid if the address fails into code section and there is no another routine object which starts at the same address.</dd></dl>
-<dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
+<dl compact><dt><b>Returns:</b></dt><dd>RTN object The routine object is valid if the address fails into code section.</dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API. <p>
+If there is another routine object which starts at the same address this function replaces its name.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> All<br>
@@ -504,7 +487,8 @@ The address should point to code (an executable section or segment). Since the w
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>Handle to the RTN found. If not found returns <a class="el" href="group__RTN__BASIC__API.html#g4946397af2bfbe1825aeca264e4bc4de">RTN_Invalid()</a></dd></dl>
-<dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.<p>
+In case this function is an Ifunc the return value will be the RTN that holds the implementation of that ifunc (Notice! this RTN can be on another image. If the resolver function is needed use <a class="el" href="group__RTN__BASIC__API.html#g8a6de80acafcce3573ec8f572989cc6e">RTN_IFuncResolver()</a>.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> All<br>
@@ -537,7 +521,8 @@ The address should point to code (an executable section or segment). Since the w
     <td>
 
 <p>
-Return the name of a function. If more than one name is associated with this address, the first name found is returned. <dl compact><dt><b>Parameters:</b></dt><dd>
+Return the name of a function. If more than one name is associated with this address, the first name found is returned.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>Address</em>&nbsp;</td><td>Memory address that corresponds to the RTN </td></tr>
   </table>
@@ -584,13 +569,13 @@ an rtn to a funptr<p>
     </td>
   </tr>
 </table>
-<a class="anchor" name="g6831172f1bcd6f8226af5f3c1a409cbd"></a><!-- doxytag: member="LEVEL_PINCLIENT::RTN_Id" ref="g6831172f1bcd6f8226af5f3c1a409cbd" args="(RTN x)" --><p>
+<a class="anchor" name="g2021004b76379a3e40db22743b50dbeb"></a><!-- doxytag: member="LEVEL_PINCLIENT::RTN_Id" ref="g2021004b76379a3e40db22743b50dbeb" args="(RTN x)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">INT32 LEVEL_PINCLIENT::RTN_Id           </td>
+          <td class="md" nowrap valign="top">UINT32 LEVEL_PINCLIENT::RTN_Id           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top">RTN&nbsp;</td>
           <td class="mdname1" valign="top" nowrap> <em>x</em>          </td>
@@ -612,6 +597,72 @@ an rtn to a funptr<p>
 Pin assigns each routine a unique ID. The ID is globally unique, i.e. an ID will not appear in two images. If the same routine name exists in two different images (i.e. they are in different addresses), each will have a different ID. If an image is unloaded and then reloaded, the routines within it will most likely have different IDs than before. <dl compact><dt><b>Returns:</b></dt><dd>Unique ID for the routine.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
+ <b>CPU:</b> All<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="ga50fd585a35c89fbb920b4c643cc9e4e"></a><!-- doxytag: member="LEVEL_PINCLIENT::RTN_IFuncImplementation" ref="ga50fd585a35c89fbb920b4c643cc9e4e" args="(RTN rtn)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">RTN LEVEL_PINCLIENT::RTN_IFuncImplementation           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">RTN&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>rtn</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Returns:</b></dt><dd>The implementation function that this ifunc points to</dd></dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
+ <b>O/S</b>: Linux<br>
+ <b>CPU:</b> All<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="g8a6de80acafcce3573ec8f572989cc6e"></a><!-- doxytag: member="LEVEL_PINCLIENT::RTN_IFuncResolver" ref="g8a6de80acafcce3573ec8f572989cc6e" args="(RTN rtn)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">RTN LEVEL_PINCLIENT::RTN_IFuncResolver           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">RTN&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>rtn</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Returns:</b></dt><dd>The resolver function that led to this implementation (ifunc)</dd></dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
+ <b>O/S</b>: Linux<br>
  <b>CPU:</b> All<br>
  </dd></dl>
     </td>
@@ -944,6 +995,74 @@ Note that Pin finds the INSs of the RTN through static discovery, so Pin does <e
 <p>
 <dl compact><dt><b>Returns:</b></dt><dd>RTN value that indicates no valid image</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
+ <b>O/S</b>: Linux, Windows &amp; MacOS<br>
+ <b>CPU:</b> All<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="g696ccffb0bff15b1565216aa0e7813f3"></a><!-- doxytag: member="LEVEL_PINCLIENT::RTN_IsArtificial" ref="g696ccffb0bff15b1565216aa0e7813f3" args="(RTN x)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">BOOL LEVEL_PINCLIENT::RTN_IsArtificial           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">RTN&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>x</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+An artificial RTN is an RTN which was introduced by PIN for internal management and does not really represent an actual routine in the application. For example, PIN might cover code pieces that are not associated with symbols with artificial RTNs in order to meet the requirement that all code must be covered with RTNs.<p>
+<dl compact><dt><b>Returns:</b></dt><dd>TRUE if RTN is artificial.</dd></dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
+ <b>O/S</b>: Linux, Windows &amp; MacOS<br>
+ <b>CPU:</b> All<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="gb36b828dc06d754e79780245d938dc7b"></a><!-- doxytag: member="LEVEL_PINCLIENT::RTN_IsDynamic" ref="gb36b828dc06d754e79780245d938dc7b" args="(RTN rtn)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">BOOL LEVEL_PINCLIENT::RTN_IsDynamic           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">RTN&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>rtn</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Returns:</b></dt><dd>TRUE if the routine is dynamically created</dd></dl>
+A routine can be marked as dynamically created using Jit Profiling API only.<p>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> All<br>
  </dd></dl>
@@ -1363,7 +1482,7 @@ Open the given rtn. This must be called before <a class="el" href="group__RTN__B
 
 <p>
 Replace a routine in the application (<em>replacedRtn</em>) by another function defined in the Pin tool (<em>replacementFun</em>). The replacement function is not instrumented. The signature of the replacement function must be exactly the same as the replaced application routine. However, see <a class="el" href="group__RTN__BASIC__API.html#gdba66dc89d3e71ce4413aa55eb3d450f">RTN_ReplaceSignature()</a>, which allows you to have a different signature.<p>
-This API returns a function pointer to the replaced application routine's entry point, which allows the replacement function to call back to the original routine. If you do this, be sure to call the original routine via <a class="el" href="group__PIN__CONTROL.html#g3d341cb1f0ce6c150d0b3047e6a7930e">PIN_CallApplicationFunction()</a>. Directly calling the application's function pointer from the replacement function may result in a crash.<p>
+This API returns a function pointer to the replaced application routine's entry point, which allows the replacement function to call back to the original routine. If you do this, be sure to call the original routine via <a class="el" href="group__PIN__CONTROL.html#g5280354edd95efc19a837617ff63ba51">PIN_CallApplicationFunction()</a>. Directly calling the application's function pointer from the replacement function may result in a crash.<p>
 This API works in JIT mode, so you must start the application with <a class="el" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram()</a>.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
@@ -1532,7 +1651,7 @@ Use RTN_IsSafeForProbedReplacementEx(rtn, mode) to determine if a function is a 
 <p>
 Replace a routine in the application (<em>replacedRtn</em>) by another function defined in the Pin tool (<em>replacementFun</em>). The replacement function is not instrumented. The signature of the replacement function can be different from the replaced application routine's signature, which allows the tool to pass more (or fewer) parameters than were passed to the original application routine.<p>
 The <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b56812a8d49dccc99d1dfaeb26d8b3e583505">IARG_ORIG_FUNCPTR</a> argument is especially useful because it allows the replacement function to call back to the original routine. Other useful arguments are <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b5681c82efb4d44af4401e73fc01b7ac1c3c3">IARG_FUNCARG_ENTRYPOINT_VALUE</a>, which allows you to pass a parameter from the original routine to the replacement function, and <a class="el" href="group__INST__ARGS.html#gg7e2c955c99fa84246bb2bce1525b5681f007683926859b1cfd7c10c66a3555e2">IARG_PROTOTYPE</a>, which allows you define the prototype of the original routine. The IARG_PROTOTYPE argument is recommended whenever you use IARG_FUNCARG_ENTRYPOINT_VALUE. It is required if the original routine has any parameters that are not simple integral or pointer values.<p>
-If your replacement function calls back to the original application routine, be sure to do so via <a class="el" href="group__PIN__CONTROL.html#g3d341cb1f0ce6c150d0b3047e6a7930e">PIN_CallApplicationFunction()</a>. Directly calling the application's function pointer from the replacement function may result in a crash.<p>
+If your replacement function calls back to the original application routine, be sure to do so via <a class="el" href="group__PIN__CONTROL.html#g5280354edd95efc19a837617ff63ba51">PIN_CallApplicationFunction()</a>. Directly calling the application's function pointer from the replacement function may result in a crash.<p>
 This API works in JIT mode, so you must start the application with <a class="el" href="group__PIN__CONTROL.html#gdfaa67ec042ca4a007869b9d2cc080b9">PIN_StartProgram()</a>.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
@@ -1804,7 +1923,7 @@ Use RTN_IsSafeForProbeReplacementEx() to determine if a function is a suitable c
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

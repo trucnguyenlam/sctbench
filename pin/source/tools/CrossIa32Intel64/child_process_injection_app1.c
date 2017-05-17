@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -47,10 +47,11 @@ int main(int argc, char * argv[])
     pid_t pid = fork();
     if (pid == 0)
     {
-        char *childArgvArray[2];
+        char *childArgvArray[3];
         char * s = (char *)("/usr/bin/chfn");
         childArgvArray[0] = (char *)s;
         childArgvArray[1] = (char *)("--help");
+        childArgvArray[2] = NULL;
         /*
          * Pin injection should fail since it doesn't have permission to the child process 
          * (since this application has been given the setuid attribute).

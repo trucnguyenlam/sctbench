@@ -88,14 +88,6 @@ ifdef WRL_BUILD # This is defined on the WRL build system.
     APP_ROOTS :=
 endif
 
-ifeq ($(TARGET_OS),linux)
-    ifeq ($(ICC),1)
-        TEST_ROOTS :=
-        TOOL_ROOTS :=
-        APP_ROOTS :=
-    endif
-endif
-
 
 ##############################################################
 #
@@ -145,7 +137,7 @@ win_unicode.test: $(OBJDIR)$(OS_TYPE)_unicode_test_launcher$(EXE_SUFFIX) $(OBJDI
 # so we don't add any linker flags to the build command line (they are not necessary anyway).
 $(OBJDIR)unix_unicode$(EXE_SUFFIX): unix_unicode.cpp $(OBJDIR)unix_unicode_test_launcher$(EXE_SUFFIX)
 	$(OBJDIR)unix_unicode_test_launcher$(EXE_SUFFIX) make $(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(DBG_INFO_CXX_ALWAYS) \
-	$(COMP_EXE)$@ $<
+	$(COMP_EXE)$@ $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(DBG_INFO_LD_ALWAYS) $<
 
 # The unicode test application on Windows is kept in the source control in binary form because
 # some cygwin/ssh issues prevent us from compiling with /Zi (debug info). So all we need to do

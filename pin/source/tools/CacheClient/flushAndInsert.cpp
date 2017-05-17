@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -35,7 +35,7 @@ END_LEGAL */
 //      flush. It can be used to identify long-lived traces in a program.
 //      Note: you must limit the code cache size to trigger flushes
 //  Sample usage:
-//    pin -xyzzy -limit_code_cache 131072 -t flushAndInsert -- /bin/ls
+//    pin -xyzzy -cc_memory_size 131072 -t flushAndInsert -- /bin/ls
 
 #include "pin.H"
 #include "portability.H"

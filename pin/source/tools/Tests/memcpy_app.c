@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -34,9 +34,12 @@ int main()
 {
     char buff0[100];
     char buff1[]="My buffer source";
-    
+
     memcpy(&buff0[0],&buff1[0],strlen(buff1));
     memcpy(&buff0[0],&buff1[0],strlen(buff1));
+
+    memmove(&buff0[0],&buff1[0],strlen(buff1));
+    memmove(&buff0[0],&buff1[0],strlen(buff1));
 
     return 0;
 }

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -48,7 +48,7 @@ UINT32 memoryIndexRegCount = 0;
 
 VOID CountsUpdate(INS ins)
 {
-    if (INS_FullRegRContain(ins, REG_EAX)) fullRegRContainCount++;
+    if (INS_FullRegRContain(ins, REG_EAX) && XED_CATEGORY_WIDENOP != INS_Category(ins)) fullRegRContainCount++;
     if (INS_IsInterrupt(ins)) interruptCount++;
     if (INS_IsRDTSC(ins)) rdtscCount++;
     if (INS_IsSysret(ins)) sysretCount++;
@@ -61,7 +61,7 @@ VOID CountsUpdate(INS ins)
         INS_GetFarPointer(ins, segment, displacement);
         TEST(segment == 0xabcd && displacement == 0x14, "INS_GetFarPointer failed");
     }
-    if (INS_MemoryIndexReg(ins) != REG_INVALID()) memoryIndexRegCount++;
+    if (INS_MemoryIndexReg(ins) != REG_INVALID() && XED_CATEGORY_WIDENOP != INS_Category(ins)) memoryIndexRegCount++;
 }
 
 VOID Rtn(RTN rtn, VOID * v)

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -145,9 +145,9 @@ UINT32 numThreads = 0;
 
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     numThreads++;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
     
     ASSERT(numThreads <= MaxNumThreads, "Maximum number of threads exceeded\n");
 }
@@ -226,7 +226,8 @@ VOID Trace(TRACE trace, VOID *v)
     ASSERTX(SEC_Valid(sec));
     
     const IMG img = SEC_Img(sec);
-    ASSERTX(IMG_Valid(img));
+    if (!IMG_Valid(img))
+        return;
     
     if ( KnobNoSharedLibs.Value() && IMG_Type(img) == IMG_TYPE_SHAREDLIB)
         return;
@@ -336,6 +337,9 @@ int main(int argc, CHAR *argv[])
     {
         return Usage();
     }
+
+    PIN_InitLock(&lock);
+
     MaxNumThreads = KnobMaxThreads.Value();
     out = new std::ofstream(KnobOutputFile.Value().c_str());
 

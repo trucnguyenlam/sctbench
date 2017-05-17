@@ -30,8 +30,10 @@
 # st2   - used for testing the FPU values
 # xmm0  - used for testing the sse values
 # ymm1  - used for testing the avx values
-.global ChangeRegsWrapper
+#ifndef TARGET_MAC
 .type ChangeRegsWrapper,  @function
+#endif
+.global ChangeRegsWrapper
 ChangeRegsWrapper:
     # Save the necessary GPRs
     push    %eax
@@ -82,8 +84,10 @@ ChangeRegsWrapper:
 
 # void ChangeRegs();
 # For register usage see ChangeRegsWrapper above.
-.global ChangeRegs
+#ifndef TARGET_MAC
 .type ChangeRegs,  @function
+#endif
+.global ChangeRegs
 ChangeRegs:
     # TEST: load the new value to ebx
     mov     gprval, %ebx
@@ -100,8 +104,10 @@ ChangeRegs:
     ret
 
 # void ExecuteAt();
-.global ExecuteAt
+#ifndef TARGET_MAC
 .type ExecuteAt,  @function
+#endif
+.global ExecuteAt
 ExecuteAt:
     ret
 
@@ -109,8 +115,10 @@ ExecuteAt:
 # Save the necessary registers to memory.
 # The tool will then compare the value stored in memory to the ones it expects to find.
 # For register usage see ChangeRegsWrapper above.
-.global SaveRegsToMem
+#ifndef TARGET_MAC
 .type SaveRegsToMem,  @function
+#endif
+.global SaveRegsToMem
 SaveRegsToMem:
     # TEST: store the new value of ebx
     mov     %ebx, agprval

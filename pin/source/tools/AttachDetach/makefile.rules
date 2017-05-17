@@ -12,6 +12,7 @@
 #
 ##############################################################
 
+
 ###### Place all generic definitions here ######
 
 # This defines tests which run tools of the same name.  This is simply for convenience to avoid
@@ -56,22 +57,27 @@ LIB_ROOTS :=
 
 # Android
 ifeq ($(TARGET_OS),android)
-    TEST_ROOTS += attach_jit_android verify_sigmask_jit_android attach_and_execv blocked_threads verify_fpstate \
-                  attach_in_sighandler attach_in_sighandler1 pause_msg pause_msg1 attach_twice_android attach_denied \
-                  detach instr_detach anls_detach tls_check_detach detach_in_sighandler detach_in_sighandler1
-    TOOL_ROOTS += jit_tool jit_detach_tool jit_instr_detach jit_anls_detach tls_check_tool simple_tool
-    APP_ROOTS += mt_attach_android verify_sigmask_android short_func_app mt_blocked mt_detach mt_thread tls_app_$(TARGET) \
-                 threadOrder verify_fpstate_app attach_in_sighandler_app detach_in_sighandler_app mt_attach_and_execv \
-                 pause_msg_app detach_probed_app hello_world detach_probed_wait_child_app
-    DLL_ROOTS += my_dll my_dll_1                 
+    TEST_ROOTS += attach_auxv_access attach_jit_android verify_sigmask_jit_android attach_and_execv blocked_threads \
+                  verify_fpstate attach_in_sighandler attach_in_sighandler1 pause_msg pause_msg1 attach_twice_android \
+                  attach_denied detach instr_detach anls_detach tls_check_detach detach_in_sighandler detach_in_sighandler1\
+                  attach_thread_count_jit_android attach_mt_fini_android detach_on_blocking_syscall
+    TOOL_ROOTS += attach_auxv_access jit_tool jit_detach_tool jit_instr_detach jit_anls_detach tls_check_tool simple_tool
+    APP_ROOTS += attach_auxv_access_app mt_attach_android verify_sigmask_android short_func_app mt_blocked mt_detach \
+                 mt_thread tls_app_$(TARGET) threadOrder verify_fpstate_app mt_attach_and_execv attach_in_sighandler_app \
+                 detach_in_sighandler_app pause_msg_app detach_probed_app hello_world detach_probed_wait_child_app \
+                 detach_on_blocking_syscall
+    DLL_ROOTS += my_dll my_dll_1
+    OBJECT_ROOTS += fp_save_restore
     ifeq ($(PROBE),1)
+        TEST_TOOL_ROOTS += change_mask
         TEST_ROOTS += attach_probe_android short_func_instrumentation thread_order detach_probed reattach_probed \
                       reattach_verify_sigmask reattach_fork reattach_read_write detach_probed_wait_child \
                       launchReattachThreadDetachCallbacks attachReattachThreadDetachCallbacks
         TOOL_ROOTS += probe_tool short_func_tool detach_probed_tool reattach_probed_tool threadOrder_tool \
                       reattachThreadDetachCallbacks_tool
-        APP_ROOTS += mt_fork_app launchReattachThreadDetachCallbacks_app attachReattachThreadDetachCallbacks_app my_exe \
-                     read_write_app reattach_probed_app reattach_verify_sigmask_app
+        APP_ROOTS +=  attachReattachThreadDetachCallbacks_app mt_fork_app my_exe read_write_app \
+                      launchReattachThreadDetachCallbacks_app reattach_probed_app reattach_verify_sigmask_app \
+                      change_mask_app
     endif
 endif
 
@@ -79,21 +85,27 @@ endif
 ifeq ($(TARGET_OS),linux)
     TEST_ROOTS += attach_jit verify_sigmask_jit attach_and_execv blocked_threads verify_fpstate attach_in_sighandler \
                   attach_in_sighandler1 pause_msg pause_msg1 attach_twice attach_denied detach instr_detach anls_detach \
-                  tls_check_detach detach_in_sighandler detach_in_sighandler1
+                  tls_check_detach detach_in_sighandler detach_in_sighandler1 attach_thread_count_jit attach_mt_fini \
+                  detach_syscall
     TOOL_ROOTS += jit_tool jit_detach_tool jit_instr_detach jit_anls_detach tls_check_tool simple_tool
     APP_ROOTS += mt_attach verify_sigmask short_func_app mt_blocked mt_detach mt_thread tls_app_$(TARGET) threadOrder \
                  verify_fpstate_app attach_in_sighandler_app detach_in_sighandler_app mt_attach_and_execv pause_msg_app \
-                 detach_probed_app hello_world detach_probed_wait_child_app
-    DLL_ROOTS += my_dll my_dll_1                 
+                 detach_probed_app hello_world detach_probed_wait_child_app detach_syscall_app
+    DLL_ROOTS += my_dll my_dll_1
+    OBJECT_ROOTS += fp_save_restore
     ifeq ($(PROBE),1)
-        # Temporarly disable the test:"reattach_fork" 
-        TEST_ROOTS += attach_probe short_func_instrumentation thread_order detach_probed reattach_probed \
+        TEST_TOOL_ROOTS += change_mask
+        TEST_ROOTS += attach_probe short_func_instrumentation thread_order detach_probed reattach_probed reattach_fork \
                       reattach_verify_sigmask reattach_read_write detach_probed_wait_child \
-                      launchReattachThreadDetachCallbacks attachReattachThreadDetachCallbacks
+                      launchReattachThreadDetachCallbacks attachReattachThreadDetachCallbacks\
+                      zombie_main_thread_command_line_attach zombie_main_thread_api_attach \
+                      zombie_secondary_thread_command_line_attach zombie_secondary_thread_api_attach
         TOOL_ROOTS += probe_tool short_func_tool detach_probed_tool reattach_probed_tool threadOrder_tool \
-                      reattachThreadDetachCallbacks_tool
+                      reattachThreadDetachCallbacks_tool reattachZombie_tool
         APP_ROOTS += mt_fork_app launchReattachThreadDetachCallbacks_app attachReattachThreadDetachCallbacks_app my_exe \
-                     read_write_app reattach_probed_app reattach_verify_sigmask_app
+                     read_write_app reattach_probed_app reattach_verify_sigmask_app change_mask_app secondary_attach_app \
+                     secondary_command_line_app main_attach_app main_command_line_app
+        OBJECT_ROOTS += zombie_utils
     endif
 endif
 
@@ -108,6 +120,14 @@ endif
 
 ###### Handle exceptions here ######
 
+# TODO: These tests fail - fix and remove the following:
+ifeq ($(ICC),1)
+    ifeq ($(TARGET_OS),windows)
+        TEST_TOOL_ROOTS := $(filter-out w_attach_tool2, $(TEST_TOOL_ROOTS))
+        TEST_ROOTS := $(filter-out w_attach_tool2_detach_reattach_stress, $(TEST_ROOTS))
+    endif
+endif
+
 # KNC does not support SSE, therefore don't test the following on that platform.
 ifeq ($(TARGET),mic)
     TEST_ROOTS := $(filter-out verify_fpstate attach_in_sighandler attach_in_sighandler1 detach_in_sighandler \
@@ -118,30 +138,44 @@ endif
 # TODO: These tests hang - fix and remove the following:
 # See Mantis 2961
 ifeq ($(TARGET),mic)
-    TEST_ROOTS := $(filter-out attach_jit verify_sigmask_jit attach_twice, $(TEST_ROOTS))
+    TEST_ROOTS := $(filter-out attach_jit verify_sigmask_jit attach_twice attach_mt_fini, $(TEST_ROOTS))
 endif
 
 # TODO: These tests fail - fix and remove the following:
-# verify_fpstate_app - has compilation issues.
-# attach_denied is disabled because it causes the Android device to crash and reboot. 
-# reattach tests are disabled - see mantis 2946.  
 ifeq ($(TARGET_OS),android)
-    TEST_ROOTS := $(filter-out launchReattachThreadDetachCallbacks attach_denied launchReattachImageLoadCallbacks \
-                               attachReattachImageLoadCallbacks attachReattachThreadDetachCallbacks reattach_probed \
-                               reattach_verify_sigmask reattach_fork reattach_read_write, $(TEST_ROOTS))
-    TOOL_ROOTS := $(filter-out reattach_probed_tool, $(TOOL_ROOTS))
-    APP_ROOTS := $(filter-out reattach_probed_app verify_fpstate_app launchReattachThreadDetachCallbacks_app \
-                              launchReattachImageLoadCallbacks_app attachReattachImageLoadCallbacks_app \
-                              attachReattachThreadDetachCallbacks_app reattach_verify_sigmask reattach_probed_app, \
-                              $(APP_ROOTS))
+    ifeq ($(TARGET),ia32)
+        # attach_denied is disabled because it causes the Android device to crash and reboot. 
+        # reattach tests are disabled - see mantis 2946.
+        # See Mantis 2907 for: thread_order, verify_fpstate, short_func_instrumentation, attach_probe_android
+        # See Mantis 3063 for: change_mask
+        TEST_TOOL_ROOTS := $(filter-out change_mask, $(TEST_TOOL_ROOTS))
+        TEST_ROOTS := $(filter-out launchReattachThreadDetachCallbacks attach_denied attachReattachThreadDetachCallbacks \
+                                   reattach_probed reattach_verify_sigmask reattach_fork reattach_read_write thread_order \
+                                   short_func_instrumentation attach_probe_android detach, $(TEST_ROOTS))
+        TOOL_ROOTS := $(filter-out reattach_probed_tool, $(TOOL_ROOTS))
+        APP_ROOTS := $(filter-out reattach_probed_app launchReattachThreadDetachCallbacks_app reattach_verify_sigmask \
+                                  attachReattachThreadDetachCallbacks_app reattach_probed_app, $(APP_ROOTS))
+    endif
+    ifeq ($(TARGET),intel64)
+        # The application for the [at|de]tach_in_sighandler tests fails even without Pin.
+        # Disabling the test pending further investigation. See mantis 3336.
+        TEST_ROOTS := $(filter-out attach_in_sighandler detach_in_sighandler, $(TEST_ROOTS))
+    endif
+endif
+
+# Mantis 2882 - reattach_fork
+# Mantis 3000 - zombie_main_thread_api_attach
+ifeq ($(TARGET_OS),linux)
+    TEST_ROOTS := $(filter-out reattach_fork zombie_main_thread_api_attach, $(TEST_ROOTS))
 endif
 
 # TODO: These tests fail - fix and remove the following:
+# See Mantises: 3007, 2688, 1987, 2511, 2196, 3023
 ifeq ($(TARGET_OS),windows)
-    ifeq ($(ICC),1)
-        TEST_TOOL_ROOTS := $(filter-out w_attach_tool2, $(TEST_TOOL_ROOTS))
-        TEST_ROOTS := $(filter-out w_attach_tool2_detach_reattach_stress, $(TEST_ROOTS))
-    endif
+    TEST_TOOL_ROOTS := $(filter-out w_attach_tool1 w_attach_tool2 w_attach_tool3 w_attach_tool4 w_attach_tool5, \
+                                    $(TEST_TOOL_ROOTS))
+    TEST_ROOTS := $(filter-out w_attach_tool1_ror w_attach_tool1_service w_attach_tool2_detach_reattach_stress, \
+                               $(TEST_ROOTS))
 endif
 
 
@@ -150,6 +184,7 @@ endif
 # Test recipes
 #
 ##############################################################
+
 
 ###### Finalize sanity here ######
 
@@ -246,7 +281,7 @@ launchReattachThreadDetachCallbacks.test: $(OBJDIR)launchReattachThreadDetachCal
 	$(CGREP) "Thread detach  notification at session 2" $(OBJDIR)launchReattachThreadDetachCallbacks.out | $(QGREP) 22
 	$(RM) $(OBJDIR)launchReattachThreadDetachCallbacks.out
 
-attachReattachThreadDetachCallbacks.test:: $(OBJDIR)attachReattachThreadDetachCallbacks_app$(EXE_SUFFIX) $(OBJDIR)$(DLL_PREFIX)my_dll$(DLL_SUFFIX) $(OBJDIR)$(DLL_PREFIX)my_dll_1$(DLL_SUFFIX) $(OBJDIR)reattachThreadDetachCallbacks_tool$(PINTOOL_SUFFIX)
+attachReattachThreadDetachCallbacks.test: $(OBJDIR)attachReattachThreadDetachCallbacks_app$(EXE_SUFFIX) $(OBJDIR)$(DLL_PREFIX)my_dll$(DLL_SUFFIX) $(OBJDIR)$(DLL_PREFIX)my_dll_1$(DLL_SUFFIX) $(OBJDIR)reattachThreadDetachCallbacks_tool$(PINTOOL_SUFFIX)
 	$(SET_DLL_PATH) $(OBJDIR)attachReattachThreadDetachCallbacks_app$(EXE_SUFFIX) $(PIN) \
 	  $(OBJDIR)reattachThreadDetachCallbacks_tool$(PINTOOL_SUFFIX) $(OBJDIR)attachReattachThreadDetachCallbacks.out \
 	    $(OBJDIR)$(DLL_PREFIX)my_dll$(DLL_SUFFIX) $(OBJDIR)$(DLL_PREFIX)my_dll_1$(DLL_SUFFIX)
@@ -254,37 +289,68 @@ attachReattachThreadDetachCallbacks.test:: $(OBJDIR)attachReattachThreadDetachCa
 	$(CGREP) "Thread detach  notification at session 1" $(OBJDIR)attachReattachThreadDetachCallbacks.out | $(QGREP) 22
 	$(CGREP) "Thread start  notification at session 2" $(OBJDIR)attachReattachThreadDetachCallbacks.out | $(QGREP) 22
 	$(CGREP) "Thread detach  notification at session 2" $(OBJDIR)attachReattachThreadDetachCallbacks.out | $(QGREP) 22
-	$(RM) $(OBJDIR)attachReattachThreadDetachCallbacks.out	
+	$(RM) $(OBJDIR)attachReattachThreadDetachCallbacks.out
 
-# This test is currently disabled since it does not work properly.
-#change_mask.test: $(OBJDIR)change_mask$(PINTOOL_SUFFIX) $(OBJDIR)change_mask_app$(EXE_SUFFIX)
-#	$(OBJDIR)change_mask_app$(EXE_SUFFIX) $(PIN) $(OBJDIR)change_mask$(PINTOOL_SUFFIX)
-#	$(GREP) -e '^22*1*1' signal_list.txt
-#	$(RM) -f signal_list.txt
+change_mask.test: $(OBJDIR)change_mask$(PINTOOL_SUFFIX) $(OBJDIR)change_mask_app$(EXE_SUFFIX)
+	$(OBJDIR)change_mask_app$(EXE_SUFFIX) $(PIN) $(OBJDIR)change_mask$(PINTOOL_SUFFIX)
+	$(QGREP) -e '^22[12]1111111$$' signal_list.txt
+	$(RM) -f signal_list.txt
 
 attach_jit.test: $(OBJDIR)mt_attach$(EXE_SUFFIX) $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) send_signals.sh
-	$(OBJDIR)mt_attach$(EXE_SUFFIX) -th_num 6 -pin $(PIN) -pinarg -t $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) -o $(OBJDIR)attach_jit.out
+	$(OBJDIR)mt_attach$(EXE_SUFFIX) -th_num 6 -pin $(PIN) -pinarg -t $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) \
+	  -o $(OBJDIR)attach_jit.out
 	#check that all 6 threads are attached
 	$(GREP) "Thread counter" $(OBJDIR)attach_jit.out | $(QGREP) 6
 	$(RM) -f $(OBJDIR)attach_jit.out pin.log
 
-attach_jit_android.test: $(OBJDIR)mt_attach_android$(EXE_SUFFIX) $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) send_signals.sh
-	$(OBJDIR)mt_attach_android$(EXE_SUFFIX) -th_num 6 -pin $(PIN) -pinarg -t $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) -o $(OBJDIR)attach_jit.out
+attach_thread_count_jit.test: $(OBJDIR)mt_attach$(EXE_SUFFIX) $(OBJDIR)jit_tool$(PINTOOL_SUFFIX)
+	$(OBJDIR)mt_attach$(EXE_SUFFIX) -th_num 6 -pin $(PIN) -pinarg -t $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) \
+	  -o $(OBJDIR)attach_thread_count_jit.out -just_init
+	#check that all 6 threads are attached
+	$(GREP) "Initial thread counter" $(OBJDIR)attach_thread_count_jit.out | $(QGREP) 6
+	$(RM) -f $(OBJDIR)attach_thread_count_jit.out pin.log
+    
+attach_jit_android.test: $(OBJDIR)mt_attach_android$(EXE_SUFFIX) $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) send_signals_android.sh
+	$(OBJDIR)mt_attach_android$(EXE_SUFFIX) -th_num 6 -pin $(PIN) -pinarg -t $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) \
+	  -o $(OBJDIR)attach_jit.out
 	#check that all 6 threads are attached
 	$(GREP) "Thread counter" $(OBJDIR)attach_jit.out | $(QGREP) 6
 	$(RM) -f $(OBJDIR)attach_jit.out pin.log
 
+attach_thread_count_jit_android.test: $(OBJDIR)mt_attach_android$(EXE_SUFFIX) $(OBJDIR)jit_tool$(PINTOOL_SUFFIX)
+	$(OBJDIR)mt_attach_android$(EXE_SUFFIX) -th_num 6 -pin $(PIN) -pinarg -t $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) \
+	  -o $(OBJDIR)attach_thread_count_jit_android.out -just_init
+	#check that all 6 threads are attached
+	$(GREP) "Initial thread counter" $(OBJDIR)attach_thread_count_jit_android.out | $(QGREP) 6
+	$(RM) -f $(OBJDIR)attach_thread_count_jit_android.out pin.log
+    
 attach_twice.test: $(OBJDIR)mt_attach$(EXE_SUFFIX) $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) send_signals.sh
 	$(OBJDIR)mt_attach$(EXE_SUFFIX) -th_num 1 -attach_twice -pin $(PIN) -pinarg -logfile $(OBJDIR)attach_twice.log \
 	  -t $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) -o $(OBJDIR)attach_twice.out
 	$(QGREP) "Pin is already attached" $(OBJDIR)attach_twice.log
 	$(RM) -f $(OBJDIR)attach_twice.out $(OBJDIR)attach_twice.log
 
-attach_twice_android.test: $(OBJDIR)mt_attach_android$(EXE_SUFFIX) $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) send_signals.sh
+attach_twice_android.test: $(OBJDIR)mt_attach_android$(EXE_SUFFIX) $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) send_signals_android.sh
 	$(OBJDIR)mt_attach_android$(EXE_SUFFIX) -th_num 1 -attach_twice -pin $(PIN) -pinarg -logfile $(OBJDIR)attach_twice.log \
 	  -t $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) -o $(OBJDIR)attach_twice.out
 	$(QGREP) "Pin is already attached" $(OBJDIR)attach_twice.log
 	$(RM) -f $(OBJDIR)attach_twice.out $(OBJDIR)attach_twice.log
+
+attach_mt_fini.test: $(OBJDIR)mt_attach$(EXE_SUFFIX) $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) send_signals.sh
+	$(RM) -f $(OBJDIR)attach_mt_fini.out
+	$(OBJDIR)mt_attach$(EXE_SUFFIX) -th_num 2 -pin $(PIN) -keep_threads -pinarg -t $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) \
+	  -o $(OBJDIR)attach_mt_fini.out
+	#check Fini function was called
+	$(GREP) "Fini was called" $(OBJDIR)attach_mt_fini.out
+	$(RM) -f $(OBJDIR)attach_mt_fini.out
+
+attach_mt_fini_android.test: $(OBJDIR)mt_attach_android$(EXE_SUFFIX) $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) send_signals_android.sh
+	$(RM) -f $(OBJDIR)attach_mt_fini.out
+	$(OBJDIR)mt_attach_android$(EXE_SUFFIX) -th_num 2 -pin $(PIN) -keep_threads -pinarg -t $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) \
+	  -o $(OBJDIR)attach_mt_fini.out
+	#check Fini function was called
+	$(GREP) "Fini was called" $(OBJDIR)attach_mt_fini.out
+	$(RM) -f $(OBJDIR)attach_mt_fini.out
 
 attach_probe.test: $(OBJDIR)mt_attach$(EXE_SUFFIX) send_signals.sh $(OBJDIR)probe_tool$(PINTOOL_SUFFIX)
 	$(OBJDIR)mt_attach$(EXE_SUFFIX) -th_num 8 -pin $(PIN) -pinarg \
@@ -299,6 +365,15 @@ attach_probe_android.test: $(OBJDIR)mt_attach_android$(EXE_SUFFIX) send_signals.
 	$(GREP) "Thread counter" $(OBJDIR)attach_probe.out | $(QGREP) 8
 	$(QGREP) "Application Start Callback" $(OBJDIR)attach_probe.out
 	$(RM) $(OBJDIR)attach_probe.out    
+
+attach_auxv_access.test: $(OBJDIR)attach_auxv_access_app$(EXE_SUFFIX) $(OBJDIR)attach_auxv_access$(PINTOOL_SUFFIX)
+	echo "cd `pwd`; export LD_LIBRARY_PATH=$$LD_LIBRARY_PATH; \
+          $(OBJDIR)attach_auxv_access_app$(EXE_SUFFIX) -pin $(PIN) -pinarg \
+	  -t $(OBJDIR)attach_auxv_access$(PINTOOL_SUFFIX) -o $(OBJDIR)attach_auxv_access.out \
+	  > $(OBJDIR)attach_auxv_access.err 2>&1" > su_input
+	su < su_input
+	$(DIFF) $(OBJDIR)attach_auxv_access.out attach_auxv_access.reference || $(QGREP) "ERROR" $(OBJDIR)attach_auxv_access.err
+	$(RM) $(OBJDIR)attach_auxv_access.out $(OBJDIR)attach_auxv_access.err
 
 verify_sigmask_jit.test: $(OBJDIR)verify_sigmask$(EXE_SUFFIX) $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) send_signals.sh
 	$(OBJDIR)verify_sigmask$(EXE_SUFFIX) -pin $(PIN) -pinarg \
@@ -331,11 +406,16 @@ detach.test: $(OBJDIR)mt_detach$(EXE_SUFFIX) $(OBJDIR)jit_detach_tool$(PINTOOL_S
 	  -t $(OBJDIR)jit_detach_tool$(PINTOOL_SUFFIX) -o $(OBJDIR)detach.out
 	$(RM) $(OBJDIR)detach.out
 
-instr_detach.test: $(OBJDIR)mt_thread$(EXE_SUFFIX) $(OBJDIR)jit_instr_detach$(PINTOOL_SUFFIX)
-	$(PIN) -t $(OBJDIR)jit_instr_detach$(PINTOOL_SUFFIX) -- $(OBJDIR)mt_thread$(EXE_SUFFIX)
+detach_on_blocking_syscall.test: $(OBJDIR)detach_on_blocking_syscall$(EXE_SUFFIX) $(OBJDIR)jit_detach_tool$(PINTOOL_SUFFIX)
+	$(PIN) -t $(OBJDIR)jit_detach_tool$(PINTOOL_SUFFIX) -o $(OBJDIR)detach_on_blocking_syscall.out -- $<
+	$(RM) $(OBJDIR)detach_on_blocking_syscall.out
 
-anls_detach.test: %.test : $(OBJDIR)mt_thread $(OBJDIR)jit_anls_detach${PINTOOL_SUFFIX}
-	$(PIN) -t $(OBJDIR)jit_anls_detach${PINTOOL_SUFFIX} -- $(OBJDIR)mt_thread
+instr_detach.test: $(OBJDIR)mt_thread$(EXE_SUFFIX) $(OBJDIR)jit_instr_detach$(PINTOOL_SUFFIX)
+	$(PIN) -t $(OBJDIR)jit_instr_detach$(PINTOOL_SUFFIX) -o $(OBJDIR)instr_detach.out -- $(OBJDIR)mt_thread$(EXE_SUFFIX)
+	$(RM) $(OBJDIR)instr_detach.out
+
+anls_detach.test: %.test : $(OBJDIR)mt_thread$(EXE_SUFFIX) $(OBJDIR)jit_anls_detach$(PINTOOL_SUFFIX)
+	$(PIN) -t $(OBJDIR)jit_anls_detach$(PINTOOL_SUFFIX) -- $(OBJDIR)mt_thread$(EXE_SUFFIX)
 
 tls_check_detach.test: $(OBJDIR)tls_app_$(TARGET)$(EXE_SUFFIX) $(OBJDIR)tls_check_tool$(PINTOOL_SUFFIX)
 	$(PIN) -t $(OBJDIR)tls_check_tool$(PINTOOL_SUFFIX) \
@@ -357,7 +437,7 @@ detach_probed.test: $(OBJDIR)detach_probed_app$(EXE_SUFFIX) $(OBJDIR)detach_prob
 detach_probed_wait_child.test: $(OBJDIR)detach_probed_wait_child_app$(EXE_SUFFIX) $(OBJDIR)detach_probed_tool$(PINTOOL_SUFFIX)
 	$(PIN) -t $(OBJDIR)detach_probed_tool$(PINTOOL_SUFFIX) -- $(OBJDIR)detach_probed_wait_child_app$(EXE_SUFFIX)
 
-reattach_probed.test: $(OBJDIR)reattach_probed_app$(EXE_SUFFIX) $(OBJDIR)reattach_probed_tool$(PINTOOL_SUFFIX)
+reattach_probed.test: $(OBJDIR)reattach_probed_app$(EXE_SUFFIX) $(OBJDIR)reattach_probed_tool$(PINTOOL_SUFFIX) $(OBJDIR)$(DLL_PREFIX)my_dll$(DLL_SUFFIX)
 	$(SET_DLL_PATH) $(PIN) -t $(OBJDIR)reattach_probed_tool$(PINTOOL_SUFFIX) -o $(OBJDIR)reattach_probed_tool.out \
 	    -- $(OBJDIR)reattach_probed_app$(EXE_SUFFIX)
 	$(QGREP) PASSED $(OBJDIR)reattach_probed_tool.out
@@ -409,7 +489,7 @@ detach_in_sighandler1.test: $(OBJDIR)detach_in_sighandler_app$(EXE_SUFFIX) $(OBJ
 pause_msg.test: $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) $(OBJDIR)pause_msg_app$(EXE_SUFFIX)
 	$(OBJDIR)pause_msg_app$(EXE_SUFFIX) -pin $(PIN) -pinarg -pause_tool 1 \
 	  -t $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) -o $(OBJDIR)pause_msg.log > $(OBJDIR)pause_msg.out 2>&1
-	$(QGREP) "Pausing to attach" $(OBJDIR)pause_msg.out
+	$(QGREP) "Pausing for 1 seconds to attach" $(OBJDIR)pause_msg.out
 	$(QGREP) "Resuming" $(OBJDIR)pause_msg.out
 	$(RM) $(OBJDIR)pause_msg.out $(OBJDIR)pause_msg.log
 
@@ -417,7 +497,7 @@ pause_msg.test: $(OBJDIR)jit_tool$(PINTOOL_SUFFIX) $(OBJDIR)pause_msg_app$(EXE_S
 pause_msg1.test: $(OBJDIR)hello_world$(EXE_SUFFIX) $(OBJDIR)simple_tool$(PINTOOL_SUFFIX)
 	$(PIN) -pause_tool 1 -t $(OBJDIR)simple_tool$(PINTOOL_SUFFIX) \
 	  -- $(OBJDIR)hello_world$(EXE_SUFFIX) > $(OBJDIR)pause_msg1.out 2>&1
-	$(QGREP) "Pausing to attach" $(OBJDIR)pause_msg1.out
+	$(QGREP) "Pausing for 1 seconds to attach" $(OBJDIR)pause_msg1.out
 	$(QGREP) "Resuming" $(OBJDIR)pause_msg1.out
 	$(RM) $(OBJDIR)pause_msg1.out
 
@@ -431,6 +511,42 @@ attach_denied.test:
 	$(QGREP) "<type>53</type>" $(OBJDIR)attach_denied.out
 	$(RM) $(OBJDIR)attach_denied.out
 
+zombie_main_thread_command_line_attach.test: $(OBJDIR)main_command_line_app$(EXE_SUFFIX) $(OBJDIR)reattach_probed_tool$(PINTOOL_SUFFIX)
+	$(OBJDIR)main_command_line_app$(EXE_SUFFIX) $(PIN) $(OBJDIR)reattach_probed_tool$(PINTOOL_SUFFIX) \
+	  $(OBJDIR)zombie_main_thread_command_line_attach.out > $(OBJDIR)zombie_main_thread_command_line_attach.out
+	$(QGREP) "The main thread of the application is a zombie thread. Pin can't attach to an application which its main thread is a zombie thread" \
+	  $(OBJDIR)zombie_main_thread_command_line_attach.out
+	$(RM) $(OBJDIR)zombie_main_thread_command_line_attach.out
+
+zombie_main_thread_api_attach.test: $(OBJDIR)main_attach_app$(EXE_SUFFIX) $(OBJDIR)$(DLL_PREFIX)my_dll$(DLL_SUFFIX) $(OBJDIR)reattachZombie_tool$(PINTOOL_SUFFIX) 
+	$(OBJDIR)main_attach_app$(EXE_SUFFIX) $(PIN) $(OBJDIR)reattachZombie_tool$(PINTOOL_SUFFIX) \
+	  $(OBJDIR)$(DLL_PREFIX)my_dll$(DLL_SUFFIX) $(OBJDIR)zombie_main_thread_api_attach.out > $(OBJDIR)zombie_main_thread_api_attach.out
+	@# Sleep for 1 minutes in order to prevent a scenario where the grep command is executed before the error 
+	@# message is written into the log file.
+	sleep 1 
+	$(QGREP) "The main thread of the application is a zombie thread. Pin can't attach to an application which its main thread is a zombie thread" \
+      $(OBJDIR)zombie_main_thread_api_attach.out 
+	$(RM) $(OBJDIR)zombie_main_thread_api_attach.out
+
+zombie_secondary_thread_api_attach.test: $(OBJDIR)secondary_attach_app$(EXE_SUFFIX) $(OBJDIR)$(DLL_PREFIX)my_dll$(DLL_SUFFIX) $(OBJDIR)reattachZombie_tool$(PINTOOL_SUFFIX)
+	$(OBJDIR)secondary_attach_app$(EXE_SUFFIX) $(PIN) $(OBJDIR)reattachZombie_tool$(PINTOOL_SUFFIX) \
+	  $(OBJDIR)$(DLL_PREFIX)my_dll$(DLL_SUFFIX) $(OBJDIR)zombie_secondary_thread_api_attach.out \
+	    > $(OBJDIR)zombie_secondary_thread_api_attach.out
+	$(QGREP) PASSED $(OBJDIR)zombie_secondary_thread_api_attach.out  
+	$(RM) $(OBJDIR)zombie_secondary_thread_api_attach.out
+
+zombie_secondary_thread_command_line_attach.test: $(OBJDIR)secondary_command_line_app$(EXE_SUFFIX) $(OBJDIR)reattach_probed_tool$(PINTOOL_SUFFIX)
+	$(OBJDIR)secondary_command_line_app$(EXE_SUFFIX) $(PIN) $(OBJDIR)reattach_probed_tool$(PINTOOL_SUFFIX) \
+	  $(OBJDIR)zombie_secondary_thread_command_line_attach.out > $(OBJDIR)zombie_secondary_thread_command_line_attach.out
+	$(QGREP) PASSED $(OBJDIR)zombie_secondary_thread_command_line_attach.out
+	$(RM) $(OBJDIR)zombie_secondary_thread_command_line_attach.out
+
+detach_syscall.test: $(OBJDIR)detach_syscall_app$(EXE_SUFFIX) $(OBJDIR)detach_syscall$(PINTOOL_SUFFIX)
+	$(PIN) -t $(OBJDIR)detach_syscall$(PINTOOL_SUFFIX) -- $(OBJDIR)detach_syscall_app$(EXE_SUFFIX) \
+	  > $(OBJDIR)detach_syscall.out 2>&1
+	$(QGREP) "Application finished successfully!" $(OBJDIR)detach_syscall.out
+	$(RM) $(OBJDIR)detach_syscall.out
+
 
 ##############################################################
 #
@@ -441,23 +557,29 @@ attach_denied.test:
 # This section contains the build rules for all binaries that have special build rules.
 # See makefile.default.rules for the default build rules.
 
+###### Special tools' build rules ######
+
+$(OBJDIR)reattachZombie_tool$(PINTOOL_SUFFIX): $(OBJDIR)reattachZombie_tool$(OBJ_SUFFIX) $(OBJDIR)zombie_utils$(OBJ_SUFFIX)
+	$(LINKER) $(TOOL_LDFLAGS) $(LINK_EXE)$@ $^ $(TOOL_LPATHS) $(TOOL_LIBS)
+
 ###### Special applications' build rules ######
 
-$(OBJDIR)w_imageLoad_app$(EXE_SUFFIX): w_imageLoad_app.cpp
-	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS)
+$(OBJDIR)main_attach_app: main_attach_app.cpp $(OBJDIR)$(DLL_PREFIX)my_dll$(DLL_SUFFIX) $(OBJDIR)zombie_utils$(OBJ_SUFFIX)
+	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(OBJDIR)zombie_utils$(OBJ_SUFFIX) \
+	  $(APP_LDFLAGS) $(APP_LIBS) $(CXX_LIBS)
 
 $(OBJDIR)w_app1$(EXE_SUFFIX): w_app1.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS)
 
 $(OBJDIR)w_app2$(EXE_SUFFIX): w_app2.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS)
-	
+
 $(OBJDIR)w_app3$(EXE_SUFFIX): w_app3.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS)
 
 $(OBJDIR)w_app4$(EXE_SUFFIX): w_app4.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS)
-	
+
 $(OBJDIR)w_service_app1$(EXE_SUFFIX): w_service_app1.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) advapi32.lib
 
@@ -489,28 +611,28 @@ $(OBJDIR)mt_attach_and_execv$(EXE_SUFFIX): mt_attach_and_execv.cpp
 
 $(OBJDIR)short_func_app$(EXE_SUFFIX): short_func_app.cpp short_func_$(TARGET)$(ASM_SUFFIX)
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $^ $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
-	
+
 $(OBJDIR)mt_detach$(EXE_SUFFIX): mt_detach.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
-	
+
 $(OBJDIR)detach_probed_app$(EXE_SUFFIX): detach_probed_app.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
-	
+
 $(OBJDIR)detach_probed_wait_child_app$(EXE_SUFFIX): detach_probed_wait_child_app.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
-        
+
 $(OBJDIR)reattach_probed_app$(EXE_SUFFIX): reattach_probed_app.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
-	
+
 $(OBJDIR)reattach_verify_sigmask_app$(EXE_SUFFIX): reattach_verify_sigmask_app.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
 
-#$(OBJDIR)change_mask_app$(EXE_SUFFIX): change_mask_app.c
-#	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS)
+$(OBJDIR)change_mask_app$(EXE_SUFFIX): change_mask_app.cpp
+	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS)
     
 $(OBJDIR)read_write_app$(EXE_SUFFIX): read_write_app.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
-		
+
 $(OBJDIR)my_exe$(EXE_SUFFIX): my_exe.c
 	$(APP_CC) $(APP_CXXFLAGS) $(COMP_EXE)$@ $< $(APP_LDFLAGS) $(APP_LIBS)
 
@@ -520,17 +642,23 @@ $(OBJDIR)mt_fork_app$(EXE_SUFFIX): mt_fork_app.cpp
 $(OBJDIR)mt_thread$(EXE_SUFFIX): mt_thread.cpp
 	$(APP_CXX) $(APP_CXXFLAGS) $(COMP_EXE)$@ $< $(APP_LDFLAGS) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
 
+$(OBJDIR)attach_auxv_access_app$(EXE_SUFFIX): attach_auxv_access_app.cpp
+	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
+
 $(OBJDIR)tls_app_$(TARGET)$(EXE_SUFFIX): tls_app_$(TARGET).cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
-	
+
 $(OBJDIR)verify_fpstate_app$(EXE_SUFFIX): verify_fpstate_app.cpp $(OBJDIR)fp_save_restore$(OBJ_SUFFIX)
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $^ $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
-        
+
 $(OBJDIR)attach_in_sighandler_app$(EXE_SUFFIX): attach_in_sighandler_app.cpp $(OBJDIR)fp_save_restore$(OBJ_SUFFIX)
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $^ $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
-        
+
 $(OBJDIR)detach_in_sighandler_app$(EXE_SUFFIX): detach_in_sighandler_app.cpp $(OBJDIR)fp_save_restore$(OBJ_SUFFIX)
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $^ $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
+
+$(OBJDIR)detach_on_blocking_syscall$(EXE_SUFFIX): detach_on_blocking_syscall.c
+	$(APP_CC) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $^ $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
 
 $(OBJDIR)pause_msg_app$(EXE_SUFFIX): pause_msg_app.cpp 
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
@@ -541,12 +669,26 @@ $(OBJDIR)hello_world$(EXE_SUFFIX): hello_world.cpp
 $(OBJDIR)threadOrder$(EXE_SUFFIX): threadOrder.cpp
 	$(APP_CXX) $(APP_CXXFLAGS) $(COMP_EXE)$@ $< $(APP_LDFLAGS) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
 
-$(OBJDIR)launchReattachThreadDetachCallbacks_app : launchReattachThreadDetachCallbacks_app.cpp
+$(OBJDIR)launchReattachThreadDetachCallbacks_app$(EXE_SUFFIX): launchReattachThreadDetachCallbacks_app.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
  
-$(OBJDIR)attachReattachThreadDetachCallbacks_app: attachReattachThreadDetachCallbacks_app.cpp
+$(OBJDIR)attachReattachThreadDetachCallbacks_app$(EXE_SUFFIX): attachReattachThreadDetachCallbacks_app.cpp
 	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
 
+$(OBJDIR)main_command_line_app$(EXE_SUFFIX): main_command_line_app.cpp zombie_utils.h $(OBJDIR)zombie_utils$(OBJ_SUFFIX)
+	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $(^:%.h=) $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
+
+$(OBJDIR)secondary_command_line_app$(EXE_SUFFIX): secondary_command_line_app.cpp zombie_utils.h $(OBJDIR)zombie_utils$(OBJ_SUFFIX)   
+	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $(^:%.h=) $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
+
+$(OBJDIR)secondary_attach_app$(EXE_SUFFIX): secondary_attach_app.cpp zombie_utils.h $(OBJDIR)zombie_utils$(OBJ_SUFFIX)  
+	$(APP_CXX) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $(^:%.h=) $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS)
+
+###### Special objects' build rules ######
+
+$(OBJDIR)zombie_utils$(OBJ_SUFFIX): zombie_utils.cpp zombie_utils.h
+	$(CXX) $(TOOL_CXXFLAGS_NOOPT) $(PIC) $(COMP_OBJ)$@ $<
+	
 ###### Special dlls' build rules ######
 
 $(OBJDIR)$(DLL_PREFIX)my_dll$(DLL_SUFFIX): my_dll.c

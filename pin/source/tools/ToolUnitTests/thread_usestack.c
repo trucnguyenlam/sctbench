@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -39,7 +39,8 @@ END_LEGAL */
 #include <pthread.h>
 #include <memory.h>
 #include <string.h>
-
+// Stack size taken from the Linux default stack size.
+#define STACK_SIZE (8 * 1024 * 1024)
 #define ARRAY_SIZE 10000
 #define BUCKET 100000
 
@@ -149,12 +150,16 @@ int main(int argc, char* argv[])
 {
     pthread_t l;
 
+    // In Android, the pthread implementation preallocates too small a stack for the test. Make stack size large enough.
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setstacksize(&attr, STACK_SIZE);
+
     fprintf(stderr,"Start\n");
-    pthread_create(&l,0,thread,0);
+    pthread_create(&l,&attr,thread,0);
+
     pthread_join(l, 0);
 
     return 0;
 }
-
- 
 

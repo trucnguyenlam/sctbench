@@ -116,10 +116,10 @@ class iRootDB {
  protected:
   typedef std::vector<iRootEvent *> iRootEventVec;
   typedef std::vector<iRoot *> iRootVec;
-  typedef std::tr1::unordered_map<iroot_event_id_t, iRootEvent *> iRootEventMap;
-  typedef std::tr1::unordered_map<iroot_id_t, iRoot *> iRootMap;
-  typedef std::tr1::unordered_map<size_t, iRootEventVec> iRootEventHashIndex;
-  typedef std::tr1::unordered_map<size_t, iRootVec> iRootHashIndex;
+  typedef std::unordered_map<iroot_event_id_t, iRootEvent *> iRootEventMap;
+  typedef std::unordered_map<iroot_id_t, iRoot *> iRootMap;
+  typedef std::unordered_map<size_t, iRootEventVec> iRootEventHashIndex;
+  typedef std::unordered_map<size_t, iRootVec> iRootHashIndex;
 
   iRootEvent *FindiRootEvent(Inst *inst, iRootEventType type, bool locking);
   iRootEvent *CreateiRootEvent(Inst *inst, iRootEventType type, bool locking);

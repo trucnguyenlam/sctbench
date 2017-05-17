@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -89,7 +89,7 @@ EXPORT_SYM int Bar10( int one, int two, int three, int four, int five,
     return sum;
 }
 
-#if defined (TARGET_WINDOWS) && defined (TARGET_IA32)
+#if defined (TARGET_WINDOWS)
 
 extern  __declspec( dllexport ) int FAST_CALL FastBar10(
                                      int one, int two, int three, int four, int five,

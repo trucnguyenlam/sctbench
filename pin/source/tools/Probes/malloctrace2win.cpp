@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -89,23 +89,34 @@ INT32 Usage()
 
 ofstream TraceFile;
 
-static void * ( *fp_mallocWrapper )(size_t);
-static void ( *fp_freeWrapper )(void *);
-static WIND::HMODULE (APIENTRY *fp_loadLibrary )(WIND::LPCTSTR);
-
-static WIND::FARPROC (APIENTRY *fp_getProcAddress )( WIND::HMODULE, WIND::LPCTSTR );
-
-static WIND::HMODULE mallocTraceHandle = 0;
-
-
-RTN freeRtn;
-RTN mallocRtn;
-
-ADDRINT mainImgEntry = 0;
 
 BOOL replaced = FALSE;
 BOOL kernel_found = FALSE;
 BOOL crtl_found = FALSE;
+
+/* ===================================================================== */
+/* Replacement routines for probe mode */
+/* ===================================================================== */
+
+void * (*fp_mallocFun)(size_t size);
+void * MallocProbeWrapper(int size)
+{
+    void * res = fp_mallocFun(size);
+    
+    fprintf(stderr,"malloc(%d) = %p\n", size, res);
+    fflush(stderr);
+
+    return res;
+}
+
+void (*fp_freeFun)(void * p);
+void FreeProbeWrapper(void *p)
+{
+    fp_freeFun(p);
+    
+    fprintf(stderr,"free(%p)\n",p);
+    fflush(stderr);
+}
 
 /* ===================================================================== */
 /* Replacement routines for JIT mode */
@@ -116,15 +127,17 @@ void * MallocJitWrapper( CONTEXT * ctxt, AFUNPTR pf_malloc, size_t size)
     void * res;
 
     fprintf(stderr,"Calling malloc(%d)\n", (int)size);
+    fflush(stderr);
 
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, pf_malloc,
+                                 CALLINGSTD_DEFAULT, pf_malloc, NULL,
                                  PIN_PARG(void *), &res,
                                  PIN_PARG(size_t), size,
                                  PIN_PARG_END() );
     
     
     fprintf(stderr,"malloc(%d) = %p\n", (int)size, res);
+    fflush(stderr);
 
     return res;
 }
@@ -132,14 +145,16 @@ void * MallocJitWrapper( CONTEXT * ctxt, AFUNPTR pf_malloc, size_t size)
 void FreeJitWrapper(CONTEXT * ctxt, AFUNPTR pf_free, void *p)
 {
     fprintf(stderr,"Calling free(%p)\n",p);
+    fflush(stderr);
 
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, pf_free,
+                                 CALLINGSTD_DEFAULT, pf_free, NULL,
                                  PIN_PARG(void),
                                  PIN_PARG(void *), p,
                                  PIN_PARG_END() );
     
     fprintf(stderr,"free(%p)\n",p);
+    fflush(stderr);
 }
 
 
@@ -150,49 +165,28 @@ void FreeJitWrapper(CONTEXT * ctxt, AFUNPTR pf_free, void *p)
 
 VOID ReplaceRtnsProbed( IMG img )
 {
-    // inject mallocwrappers.dll into application by executing application
-    // LoadLibrary.
-    mallocTraceHandle = (*fp_loadLibrary)(TEXT("mallocwrappers.dll"));
-    ASSERTX(mallocTraceHandle);
-    
-    // Get function pointers for the wrappers
-    fp_mallocWrapper = (void * (*)(size_t))
-                       (*fp_getProcAddress)(mallocTraceHandle, TEXT("mallocWrapper"));
-    fp_freeWrapper = (void (*)(void *))
-                     (*fp_getProcAddress)(mallocTraceHandle, TEXT("freeWrapper"));
-    ASSERTX(fp_mallocWrapper && fp_freeWrapper);
-    
-    // Replace malloc and free in application libc with wrappers 
+    // Replace malloc and free in application libc with probe mode wrappers
     // in mallocwrappers.dll.
     RTN mallocRtn = RTN_FindByName(img, "malloc");
     ASSERTX(RTN_Valid(mallocRtn));
 
-    AFUNPTR mallocimpl = RTN_ReplaceProbed(mallocRtn, AFUNPTR(fp_mallocWrapper));
-    
-    // tell mallocwrappers.dll how to call original code
-    ASSERTX(mallocTraceHandle);
-    AFUNPTR * mallocptr = (AFUNPTR *)(*fp_getProcAddress)(mallocTraceHandle, 
-                                                          TEXT("fp_mallocFun"));
-    ASSERTX(mallocptr);
-    *mallocptr = mallocimpl;
+    AFUNPTR mallocimpl = RTN_ReplaceProbed(mallocRtn, AFUNPTR(MallocProbeWrapper));
+    ASSERTX(mallocimpl);
+    fp_mallocFun = (void * (*)(size_t))mallocimpl;
     
     
     RTN freeRtn = RTN_FindByName(img, "free");
     ASSERTX(RTN_Valid(freeRtn));
 
-    AFUNPTR freeimpl = RTN_ReplaceProbed(freeRtn, AFUNPTR(fp_freeWrapper));
-    
-    AFUNPTR * freeptr = (AFUNPTR *)(*fp_getProcAddress)(mallocTraceHandle, 
-                                                        TEXT("fp_freeFun"));
-    ASSERTX(freeptr);
-    *freeptr = freeimpl;
+    AFUNPTR freeimpl = RTN_ReplaceProbed(freeRtn, AFUNPTR(FreeProbeWrapper));
+    ASSERTX(freeimpl);
+    fp_freeFun = (void (*)(void *))freeimpl;
 }
 
 
 VOID ReplaceRtnsJit( IMG img )
 {
-    // Replace malloc and free in application libc with wrappers 
-    // in mallocwrappers.dll.
+    // Replace malloc and free in application libc with jit mode wrappers
     RTN mallocRtn = RTN_FindByName(img, "malloc");
     ASSERTX(RTN_Valid(mallocRtn));
     
@@ -221,6 +215,20 @@ VOID ReplaceRtnsJit( IMG img )
 }
 
 
+/*
+ * Return TRUE if baseName matches tail of imageName. Comparison is case-insensitive.
+ * @param[in]  imageName  image file name in either form with extension
+ * @param[in]  baseName   image base name with extension (e.g. kernel32.dll)
+ */
+static BOOL CmpBaseImageName(const string & imageName, const string & baseName)
+{
+    if (imageName.size() >= baseName.size())
+    {
+        return _stricmp(imageName.c_str() + imageName.size() - baseName.size(), baseName.c_str()) == 0;
+    }
+    return FALSE;
+}
+
 /* ===================================================================== */
 // Called every time a new image is loaded
 // Look for routines that we want to probe
@@ -232,27 +240,19 @@ VOID ImageLoad(IMG img, VOID *v)
     
     if ( PIN_IsProbeMode() )
     {
-        if ( strstr(IMG_Name(img).c_str(), "kernel32")) 
+        if ( CmpBaseImageName(IMG_Name(img), "kernel32.dll") )
         {
             TraceFile << "Found " << IMG_Name(img) << endl;
             TraceFile.flush();
             
             kernel_found = TRUE;
-            
-            // Get the function pointer for the application LoadLibrary().
-            RTN llRtn = RTN_FindByName(img, "LoadLibraryA");
-            ASSERTX(RTN_Valid(llRtn));
-            fp_loadLibrary = (WIND::HMODULE (APIENTRY *)(WIND::LPCTSTR))(RTN_Funptr(llRtn));
-            
-            // Get the function pointer for the application GetProcAddress().
-            RTN gpaRtn = RTN_FindByName(img, "GetProcAddress");
-            ASSERTX(RTN_Valid(gpaRtn));
-            fp_getProcAddress = (WIND::FARPROC (APIENTRY *)(WIND::HMODULE, WIND::LPCTSTR))(RTN_Funptr(gpaRtn));
         }
         
-        if ( strstr(IMG_Name(img).c_str(), "MSVCR80") ||
-             strstr(IMG_Name(img).c_str(), "MSVCR90") ||
-             strstr(IMG_Name(img).c_str(), "MSVCR100") )
+        if ( CmpBaseImageName(IMG_Name(img), "msvcr80.dll") ||
+             CmpBaseImageName(IMG_Name(img), "msvcr90.dll") ||
+             CmpBaseImageName(IMG_Name(img), "msvcr100.dll") ||
+             CmpBaseImageName(IMG_Name(img), "msvcr110.dll") ||
+             CmpBaseImageName(IMG_Name(img), "msvcr120.dll") )
         {
             TraceFile << "Found " << IMG_Name(img) << endl;
             TraceFile.flush();
@@ -268,9 +268,11 @@ VOID ImageLoad(IMG img, VOID *v)
     }
     else      // JIT mode!
     {
-        if ( strstr(IMG_Name(img).c_str(), "MSVCR80") ||
-             strstr(IMG_Name(img).c_str(), "MSVCR90") ||
-             strstr(IMG_Name(img).c_str(), "MSVCR100") )
+        if ( CmpBaseImageName(IMG_Name(img), "msvcr80.dll") ||
+             CmpBaseImageName(IMG_Name(img), "msvcr90.dll") ||
+             CmpBaseImageName(IMG_Name(img), "msvcr100.dll") ||
+             CmpBaseImageName(IMG_Name(img), "msvcr110.dll") ||
+             CmpBaseImageName(IMG_Name(img), "msvcr120.dll") )
         {
             TraceFile << "Found " << IMG_Name(img) << endl;
             TraceFile.flush();

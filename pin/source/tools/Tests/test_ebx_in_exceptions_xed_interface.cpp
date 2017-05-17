@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -114,7 +114,7 @@ extern "C" UINT32 GetInstructionLenAndDisasm (UINT8 *ip, string *str)
             os << "  ";
         os << " ";
         memset(buffer,0,200);
-        int dis_okay = xed_format(XED_SYNTAX_INTEL, &xedd, buffer, 200, (ADDRINT)ip);
+        int dis_okay = xed_format_context(XED_SYNTAX_INTEL, &xedd, buffer, 200, (ADDRINT)ip, 0, 0);
         if (dis_okay) 
             os << buffer << endl;
         else

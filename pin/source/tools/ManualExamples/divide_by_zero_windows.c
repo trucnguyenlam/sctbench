@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -40,6 +40,7 @@ int DivideByZero()
     __try 
     { 
         fprintf(stderr, "Going to divide by zero\n");
+        fflush(stderr);
         zero = 0;
         i  = 1 / zero;
         return 0;
@@ -56,7 +57,7 @@ int DivideByZero()
 
 int main()
 {
-    if(DivideByZero() != 1)
+    if (DivideByZero() != 1)
     {
         exit (-1);
     }

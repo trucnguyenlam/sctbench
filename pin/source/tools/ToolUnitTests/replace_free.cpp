@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -118,7 +118,7 @@ int main(int argc, CHAR *argv[])
 VOID Jit_Free_IA32( CONTEXT * context, AFUNPTR orgFuncptr, void * ptr)
 {
     PIN_CallApplicationFunction( context, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, orgFuncptr,
+                                 CALLINGSTD_DEFAULT, orgFuncptr, NULL,
                                  PIN_PARG(void),
                                  PIN_PARG(void *), ptr,
                                  PIN_PARG_END() );

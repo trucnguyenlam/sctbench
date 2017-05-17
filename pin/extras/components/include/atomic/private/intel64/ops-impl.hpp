@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -42,7 +42,7 @@ END_LEGAL */
 namespace ATOMIC {
 
 /*
- * Low-level implementation of fundemental atomic operations for the Intel(R)64 architecture.
+ * Low-level implementation of fundemental atomic operations for the Intel(R) 64 architecture.
  * Clients should not use this class directly, but should use OPS instead.
  */
 namespace OPS_IMPL

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -257,7 +257,7 @@ disassemble(UINT64 start, UINT64 stop) {
                 os << "  ";
             os << " ";
             memset(buffer,0,200);
-            int dis_okay = xed_format(syntax, &xedd, buffer, 200, pc);
+            int dis_okay = xed_format_context(syntax, &xedd, buffer, 200, pc, 0, 0);
             if (dis_okay) 
                 os << buffer << endl;
             else
@@ -681,7 +681,7 @@ VOID Fini(INT32 code, VOID *v)
 PIN_LOCK lock;
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     //fprintf(trace, "thread begin %x %x\n",threadid, numThreads);
     numThreads++;
     if (threadid < MAX_THREADS)
@@ -694,8 +694,8 @@ VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
     {
         printf ( "ERROR - maximum #threads exceeded\n");
     }
-    fflush (stdout);;
-    ReleaseLock(&lock);
+    fflush (stdout);
+    PIN_ReleaseLock(&lock);
 }
 
 
@@ -703,6 +703,7 @@ int main(int argc, char *argv[])
 {
     PIN_Init(argc, argv);
 
+    PIN_InitLock(&lock);
     PIN_AddThreadStartFunction(ThreadStart, 0);
     INS_AddInstrumentFunction(Instruction, 0);
     PIN_AddFiniFunction(Fini, 0);

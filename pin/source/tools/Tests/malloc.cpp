@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -62,7 +62,7 @@ int main(INT32 argc, CHAR **argv)
     
 #if defined(TARGET_IA32)
     // Test the initial pool
-    void * p = malloc(0xf0000000);
+    void * p = malloc(0xff000000);
     CHECKNULL(p);
 #endif
 
@@ -72,7 +72,7 @@ int main(INT32 argc, CHAR **argv)
     
 #if defined(TARGET_IA32)
     // Test after we are out of initial pool
-    void * p2 = malloc(0xf0000000);
+    void * p2 = malloc(0xff000000);
     CHECKNULL(p2);
 #endif
 

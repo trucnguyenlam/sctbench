@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -30,8 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
 #include <fstream>
 #include <cstring>
+#include <cassert>
 #include "context_utils.h"
-#include "regvalues.h"
+#include "register_modification_utils.h"
 
 using std::ofstream;
 
@@ -53,16 +54,6 @@ KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool",
 // ofstream object for handling the output
 ofstream OutFile;
 
-const unsigned char* agprptr = NULL;
-const unsigned char* astptr = NULL;
-#ifdef TARGET_MIC
-const unsigned char* azmmptr = NULL;
-const unsigned char* akptr = NULL;
-#else
-const unsigned char* axmmptr = NULL;
-const unsigned char* aymmptr = NULL;
-#endif
-
 
 /////////////////////
 // ANALYSIS FUNCTIONS
@@ -70,7 +61,7 @@ const unsigned char* aymmptr = NULL;
 
 static void ReplaceChangeRegs(CONTEXT * ctxt)
 {
-    OutFile << "Context values before they are changed" << endl;
+    OutFile << "Context values before they are changed" << endl << flush;
     StoreContext(ctxt);
     PrintStoredRegisters(OutFile);
     ModifyContext(ctxt);
@@ -83,50 +74,22 @@ static void ReplaceChangeRegsAndExecute(CONTEXT * ctxt, ADDRINT executeAtAddr)
     PIN_ExecuteAt(ctxt);
 }
 
-#ifdef TARGET_MIC
-static void ToolSaveAppPointers(void * gprptr, void * stptr, void * zmmptr, void * kptr)
-{
-    agprptr = (const unsigned char*)gprptr;
-    astptr = (const unsigned char*)stptr;
-    azmmptr = (const unsigned char*)zmmptr;
-    akptr = (const unsigned char*)kptr;
-}
-#else
-static void ToolSaveAppPointers(void * gprptr, void * stptr, void * xmmptr, void * ymmptr)
-{
-    agprptr = (const unsigned char*)gprptr;
-    astptr = (const unsigned char*)stptr;
-    axmmptr = (const unsigned char*)xmmptr;
-    aymmptr = (const unsigned char*)ymmptr;
-}
-#endif
-
-static void ChecksAfter(CONTEXT * ctxt)
-{
-    StoreContext(ctxt);
-    PrintStoredRegisters(OutFile);
-#ifdef TARGET_MIC
-    bool success = CheckExpectedValues(agprptr, astptr, azmmptr, akptr, OutFile);
-#else
-    bool success = CheckExpectedValues(agprptr, astptr, axmmptr, aymmptr, OutFile);
-#endif
-    if (!success)
-    {
-        OutFile << "ERROR: values mismatch" << endl << flush;
-        PIN_ExitApplication(1); // never returns
-    }
-}
 
 /////////////////////
-// INSTRUMENTATION FUNCTIONS
+// CALLBACKS
 /////////////////////
+#ifdef TARGET_MAC
+#define SAVEAPPPOINTERS_FN_NAME "_SaveAppPointers"
+#else
+#define SAVEAPPPOINTERS_FN_NAME "SaveAppPointers"
+#endif
 
 static VOID ImageLoad(IMG img, VOID * v)
 {
     if (IMG_IsMainExecutable(img))
     {
         // Find the application's modified values in memory
-        RTN SaveAppPointersRtn = RTN_FindByName(img, "SaveAppPointers");
+        RTN SaveAppPointersRtn = RTN_FindByName(img, SAVEAPPPOINTERS_FN_NAME);
         assert(RTN_Valid(SaveAppPointersRtn));
         RTN_Open(SaveAppPointersRtn);
         RTN_InsertCall(SaveAppPointersRtn, IPOINT_BEFORE, AFUNPTR(ToolSaveAppPointers),
@@ -134,7 +97,7 @@ static VOID ImageLoad(IMG img, VOID * v)
                                                           IARG_FUNCARG_ENTRYPOINT_VALUE, 1,
                                                           IARG_FUNCARG_ENTRYPOINT_VALUE, 2,
                                                           IARG_FUNCARG_ENTRYPOINT_VALUE, 3,
-                                                          IARG_END);
+                                                          IARG_PTR, &OutFile, IARG_END);
         RTN_Close(SaveAppPointersRtn);
 
         // Find the placeholder for PIN_ExecuteAt
@@ -171,7 +134,10 @@ static VOID ImageLoad(IMG img, VOID * v)
         RTN SaveRegsToMemRtn = RTN_FindByName(img, "SaveRegsToMem");
         assert(RTN_Valid(SaveRegsToMemRtn));
         RTN_Open(SaveRegsToMemRtn);
-        RTN_InsertCall(SaveRegsToMemRtn, IPOINT_AFTER, AFUNPTR(ChecksAfter), IARG_CONTEXT, IARG_END);
+        RTN_InsertCall(SaveRegsToMemRtn, IPOINT_AFTER, AFUNPTR(CheckToolModifiedValues),
+                                                       IARG_CONTEXT,
+                                                       IARG_PTR, &OutFile,
+                                                       IARG_END);
         RTN_Close(SaveRegsToMemRtn);
     }
 }

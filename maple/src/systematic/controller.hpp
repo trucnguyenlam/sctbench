@@ -58,7 +58,7 @@ class Controller : public ExecutionControl, public ControllerInterface {
   // define a mutex info
   class MutexInfo {
    public:
-    typedef std::tr1::unordered_map<address_t, MutexInfo *> Map;
+    typedef std::unordered_map<address_t, MutexInfo *> Map;
     typedef std::list<thread_id_t> WaitQueue;
     typedef std::map<thread_id_t, bool> ReadyMap;
 
@@ -75,7 +75,7 @@ class Controller : public ExecutionControl, public ControllerInterface {
   // define a cond info
   class CondInfo {
    public:
-    typedef std::tr1::unordered_map<address_t, CondInfo *> Map;
+    typedef std::unordered_map<address_t, CondInfo *> Map;
     typedef uint32 signal_id_t;
     typedef std::set<signal_id_t> SignalSet;
     typedef struct {
@@ -97,7 +97,7 @@ class Controller : public ExecutionControl, public ControllerInterface {
   // define a barrier info
   class BarrierInfo {
    public:
-    typedef std::tr1::unordered_map<address_t, BarrierInfo *> Map;
+    typedef std::unordered_map<address_t, BarrierInfo *> Map;
     typedef std::list<thread_id_t> WaitQueue;
 
     BarrierInfo() : count(0), free(false) {}
@@ -149,7 +149,7 @@ class Controller : public ExecutionControl, public ControllerInterface {
    public:
     typedef size_t hash_val_t;
     typedef std::vector<CreationInfo *> Vec;
-    typedef std::tr1::unordered_map<hash_val_t, Vec> HashMap;
+    typedef std::unordered_map<hash_val_t, Vec> HashMap;
 
     CreationInfo()
         : creator_thd_id(INVALID_THD_ID),
@@ -184,15 +184,15 @@ class Controller : public ExecutionControl, public ControllerInterface {
                                     SYSCALL_STANDARD std);
   virtual void HandleSyscallExit(THREADID tid, CONTEXT *ctxt,
                                    SYSCALL_STANDARD std);
-  
+
   virtual void HandleBeforeMemOp(THREADID tid, Inst *inst, address_t addr,
                                      size_t size, bool isWrite);
-  
+
   virtual void HandleBeforeMemRead(THREADID tid, Inst *inst, address_t addr,
                                      size_t size);
   virtual void HandleBeforeMemWrite(THREADID tid, Inst *inst, address_t addr,
                                     size_t size);
-  
+
   virtual void HandleBeforeRaceRead(THREADID tid, Inst *inst,
                                     address_t addr, size_t size);
   virtual void HandleAfterRaceRead(THREADID tid, Inst *inst,
@@ -221,7 +221,7 @@ class Controller : public ExecutionControl, public ControllerInterface {
   State *Execute(State *state, Action *action);
   Action *Schedule(thread_id_t self, address_t iaddr, Operation op, Inst *inst);
   void ScheduleOnExit(thread_id_t self);
-  
+
   Thread::Vec &GetThreadCreationOrder();
 
   // helper functions
@@ -281,7 +281,7 @@ class Controller : public ExecutionControl, public ControllerInterface {
   CreationInfo::HashMap creation_info_;
   Region::Map region_table_;
   JoinInfo::Map join_info_table_;
-  
+
   Thread::Vec  thread_creation_order_;
 
   // racy memory op related
@@ -291,7 +291,7 @@ class Controller : public ExecutionControl, public ControllerInterface {
   address_t tls_race_write_addr_[PIN_MAX_THREADS];
   size_t tls_race_write_size_[PIN_MAX_THREADS];
   address_t tls_race_read2_addr_[PIN_MAX_THREADS];
-  
+
   AFUNPTR pthreadExitFunPtr_;
 
  private:
@@ -326,7 +326,7 @@ class Controller : public ExecutionControl, public ControllerInterface {
   DECLARE_MEMBER_WRAPPER_HANDLER(Sleep);
   DECLARE_MEMBER_WRAPPER_HANDLER(Usleep);
   DECLARE_MEMBER_WRAPPER_HANDLER(SchedYield);
-  
+
   DECLARE_MEMBER_WRAPPER_HANDLER(Exit);
 
   DECLARE_MEMBER_WRAPPER_HANDLER(Malloc);

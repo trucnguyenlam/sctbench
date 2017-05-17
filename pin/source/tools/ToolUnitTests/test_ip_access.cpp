@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -104,9 +104,9 @@ VOID Instruction(INS ins, VOID *v)
         }
         instrumentedReadFromIpWithNoOffset = TRUE; // only instrument one of these
         printf ("Instrumenting [ip] read   %p   %s\n", INS_Address(ins), INS_Disassemble(ins).c_str());
+        fflush (stdout);
         globalIpOfReadRecordedAtInstrumentationTime = INS_Address(ins);
         globalReadInsSize = INS_Size(ins);
-        fflush (stdout);
         INS_InsertCall(ins,IPOINT_BEFORE, 
                        (AFUNPTR)IpReadBefore,
                        IARG_INST_PTR,
@@ -148,9 +148,9 @@ VOID Instruction(INS ins, VOID *v)
         }
         instrumentedReadFromIpWithNoOffset = TRUE; // only instrument one of these
         printf ("Instrumenting [ip] write  %p   %s\n", INS_Address(ins), INS_Disassemble(ins).c_str());
+        fflush (stdout);
         globalIpOfWriteRecordedAtInstrumentationTime = INS_Address(ins);
         globalWriteInsSize = INS_Size(ins);
-        fflush (stdout);
         INS_InsertCall(ins,IPOINT_BEFORE, 
                        (AFUNPTR)IpWriteBefore,
                        IARG_INST_PTR,
@@ -217,6 +217,7 @@ VOID PrintFinalInfo(INT32 code, VOID *v)
     {
         printf ("SUCCESS\n");
     }
+    fflush(stdout);
 }
 
 int main(int argc, char * argv[])

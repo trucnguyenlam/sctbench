@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -28,7 +28,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
-#include <iostream>
+#include <fstream>
 #include "pin.H"
 
 static void OnSig(THREADID, CONTEXT_CHANGE_REASON, const CONTEXT *, CONTEXT *, INT32, VOID *);
@@ -37,10 +37,22 @@ static void OnEnd(INT32, VOID *);
 
 std::vector<ADDRINT> Stack;
 
+KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "inscount.out",
+        "specify output file name");
+
+ofstream OutFile;
+
+INT32 Usage()
+{
+    OutFile << endl << KNOB_BASE::StringKnobSummary() << endl;
+    return -1;
+}
 
 int main(int argc, char * argv[])
 {
-    PIN_Init(argc, argv);
+    if (PIN_Init(argc, argv)) return Usage();
+
+    OutFile.open(KnobOutputFile.Value().c_str());
 
     PIN_AddContextChangeFunction(OnSig, 0);
     PIN_AddFiniFunction(OnEnd, 0);
@@ -65,14 +77,14 @@ static void OnSig(THREADID threadIndex, CONTEXT_CHANGE_REASON reason, const CONT
         ADDRINT returnPC = PIN_GetContextReg(ctxtTo, REG_INST_PTR);
         if (savedPC != returnPC)
         {
-            cout << "Handler does not return to original location: saved=" << hex << savedPC <<
+            OutFile << "Handler does not return to original location: saved=" << hex << savedPC <<
                 " return=" << returnPC << dec << endl;
         }
         Stack.pop_back();
         break;
       }
     default:
-        cout << "Unexpected CONTEXT_CHANGE_REASON " << reason << ", exiting the test." << endl;
+        OutFile << "Unexpected CONTEXT_CHANGE_REASON " << reason << ", exiting the test." << endl;
         PIN_ExitProcess(1);
         break;
     }
@@ -80,5 +92,5 @@ static void OnSig(THREADID threadIndex, CONTEXT_CHANGE_REASON reason, const CONT
 
 static void OnEnd(INT32 code, VOID *v)
 {
-    cout << "Program exitted with " << Stack.size() << " signal frames pending" << endl;
+    OutFile << "Program exitted with " << Stack.size() << " signal frames pending" << endl;
 }

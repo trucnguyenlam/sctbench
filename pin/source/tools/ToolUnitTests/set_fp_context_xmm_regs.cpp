@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -113,7 +113,7 @@ VOID REPLACE_ReplacedXmmRegs(CONTEXT *context, THREADID tid, AFUNPTR originalFun
     printf("TOOL Calling replaced ReplacedXmmRegs()\n");
     fflush (stdout);
     PIN_CallApplicationFunction(ctxt, tid, CALLINGSTD_DEFAULT, 
-                                originalFunction, PIN_PARG_END());
+                                originalFunction, NULL, PIN_PARG_END());
     printf("TOOL Returned from replaced ReplacedXmmRegs()\n");
     fflush (stdout);
 
@@ -143,7 +143,16 @@ VOID REPLACE_ReplacedXmmRegs(CONTEXT *context, THREADID tid, AFUNPTR originalFun
 
 VOID Image(IMG img, void *v)
 {
-    RTN rtn = RTN_FindByName(img, "ReplacedXmmRegs");
+#ifndef TARGET_MAC
+    const char *replacedXmmRegsName = "ReplacedXmmRegs";
+    const char *executedAtFuncName = "ExecutedAtFunc";
+    const char *dumpXmmRegsAtExceptionName = "DumpXmmRegsAtException";
+#else
+    const char *replacedXmmRegsName = "_ReplacedXmmRegs";
+    const char *executedAtFuncName = "_ExecutedAtFunc";
+    const char *dumpXmmRegsAtExceptionName = "_DumpXmmRegsAtException";
+#endif
+    RTN rtn = RTN_FindByName(img, replacedXmmRegsName);
     if (RTN_Valid(rtn))
     {
         PROTO proto = PROTO_Allocate(PIN_PARG(int), CALLINGSTD_DEFAULT, "ReplacedXmmRegs", PIN_PARG_END());
@@ -156,8 +165,7 @@ VOID Image(IMG img, void *v)
         PROTO_Free(proto);
         printf ("TOOL found and replaced ReplacedXmmRegs\n");
         fflush (stdout);
-
-        RTN rtn = RTN_FindByName(img, "ExecutedAtFunc");
+        RTN rtn = RTN_FindByName(img, executedAtFuncName);
         if (RTN_Valid(rtn))
         {
             executeAtAddr = RTN_Address(rtn);
@@ -165,7 +173,7 @@ VOID Image(IMG img, void *v)
             fflush (stdout);
         }
 
-        rtn = RTN_FindByName(img, "DumpXmmRegsAtException");
+        rtn = RTN_FindByName(img, dumpXmmRegsAtExceptionName);
         if (RTN_Valid(rtn))
         {
             dumpXmmRegsAtExceptionAddr = RTN_Address(rtn);

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -40,7 +40,7 @@ void * current_sp_value(void* arg1,
 {
     // Assume arg9 is on stack. Return SP value at entry to the function.
     // It is assumed that stack slot of size sizeof(void*) corresponds to every argument.
-    // This is relevant to any X86 and Intel 64 calling conventions.
+    // This is relevant to any X86 and Intel(R) 64 calling conventions.
     // The expression returns address of return IP slot.
     return &arg9 - 9;
 }

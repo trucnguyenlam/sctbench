@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -48,7 +48,7 @@ END_LEGAL */
 
 #if defined(TARGET_MAC)
 #include <sys/ucontext.h>
-#elif defined(TARGET_ANDROID)
+#elif defined(TARGET_ANDROID) && !defined(TARGET_NDK64)
 #include "android_ucontext.h"
 #else
 #include <ucontext.h>
@@ -154,7 +154,7 @@ static int SetupHandler()
     act.sa_flags = SA_SIGINFO;
     sigemptyset(&act.sa_mask);
 
-// FreeBSD 6 (and Mac OS - from what I read) send sigbus instead of sigsegv on the failure we catch 
+// FreeBSD 6 (and OS X* - from what I read) send sigbus instead of sigsegv on the failure we catch
 // here, however, FreeBSD 8 and Linux send sigsegv. therefore - we catch both...
 
     if (sigaction(SIGBUS, &act, 0) == -1)

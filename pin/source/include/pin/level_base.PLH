@@ -104,6 +104,7 @@ namespace LEVEL_BASE
 #include "fpstate_mic.PH"
 #endif
 
+#include "reginfo_ia32.PH"
 #include "reg_ia32.PH"
 #include "reg_partial_ia32.PH"
 #include "base_ia32.PH"

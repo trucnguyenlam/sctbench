@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -58,7 +58,8 @@ int REPLACE_Replaced(CONTEXT *context, THREADID tid, AFUNPTR func)
 {
     int ret;
 
-    printf("Calling replaced Replaced()\n");
+    fprintf(stderr, "Calling replaced Replaced()\n");
+    fflush(stderr);
 
     CONTEXT writableContext, *ctxt;
     if (KnobUseIargConstContext)
@@ -72,20 +73,24 @@ int REPLACE_Replaced(CONTEXT *context, THREADID tid, AFUNPTR func)
     }
 
     PIN_SetContextReg(ctxt, scratchReg, 1);
-    printf("REPLACE_Replaced: REG_INST_G0=0x%lx\n",  (unsigned long)PIN_GetContextReg(ctxt, scratchReg));
+    fprintf(stderr, "REPLACE_Replaced: REG_INST_G0=0x%lx\n",  (unsigned long)PIN_GetContextReg(ctxt, scratchReg));
+    fflush(stderr);
 
-    PIN_CallApplicationFunction(ctxt, tid, CALLINGSTD_DEFAULT, func,
+    PIN_CallApplicationFunction(ctxt, tid, CALLINGSTD_DEFAULT, func, NULL,
         PIN_PARG(int), &ret,
         PIN_PARG_END());
     
-    printf("REPLACE_Replaced: REG_INST_G0=0x%lx\n",  (unsigned long)PIN_GetContextReg(ctxt, scratchReg));
-    printf("Returning from replaced Replaced()\n");
+    fprintf(stderr, "REPLACE_Replaced: REG_INST_G0=0x%lx\n",  (unsigned long)PIN_GetContextReg(ctxt, scratchReg));
+    fprintf(stderr, "Returning from replaced Replaced()\n");
+    fflush(stderr);
+
     return ret;
 }
 
 void AtInner(ADDRINT g0)
 {
-    printf("At Inner G0=%d\n", (int)g0);
+    fprintf(stderr, "At Inner G0=%d\n", (int)g0);
+    fflush(stderr);
 }
 
 VOID Image(IMG img, void *v)

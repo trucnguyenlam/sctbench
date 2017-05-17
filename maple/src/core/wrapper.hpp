@@ -154,6 +154,7 @@ class WrapperBase {
         tid_,                                                               \
         CALLINGSTD_DEFAULT,                                                 \
         ori_funptr_,                                                        \
+        NULL,                                                               \
         PIN_PARG(R), &ret_val_,                                             \
         PARGS(NUM_ARGS)                                                     \
         PIN_PARG_END());                                                    \
@@ -167,6 +168,7 @@ class WrapperBase {
         tid_,                                                               \
         CALLINGSTD_DEFAULT,                                                 \
         ori_funptr_,                                                        \
+        NULL,                                                               \
         PIN_PARG(void),                                                     \
         PARGS(NUM_ARGS)                                                     \
         PIN_PARG_END());                                                    \
@@ -440,7 +442,7 @@ WRAPPER(PthreadJoin, "pthread_join", "libpthread.so", "pthread", int(pthread_t, 
 WRAPPER(PthreadMutexTryLock, "pthread_mutex_trylock", "libpthread.so", "pthread", int(pthread_mutex_t *));
 WRAPPER(PthreadMutexLock, "pthread_mutex_lock", "libpthread.so", "pthread", int(pthread_mutex_t *));
 
-WRAPPER(PthreadMutexInit, "pthread_mutex_init", "libpthread.so", "pthread", int(pthread_mutex_t *mutex, 
+WRAPPER(PthreadMutexInit, "pthread_mutex_init", "libpthread.so", "pthread", int(pthread_mutex_t *mutex,
     const pthread_mutexattr_t *attr));
 
 WRAPPER(PthreadMutexUnlock, "pthread_mutex_unlock", "libpthread.so", "pthread", int(pthread_mutex_t *));

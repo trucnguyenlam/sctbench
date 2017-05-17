@@ -51,30 +51,32 @@ $(foreach name,$(cmdtool_names),$(eval $(name)_objs := $($(name)_objs:%=$(buildd
 
 # set compile flags
 ifeq ($(compiletype), debug)
-  CFLAGS += -Wall -D_DEBUG -O0 -g -fno-omit-frame-pointer 
+  CFLAGS += -Wall -D_DEBUG -O0 -g -fno-omit-frame-pointer
   # -Werror
-  CXXFLAGS += -Wall -D_DEBUG -O0 -g -fno-omit-frame-pointer 
+  CXXFLAGS += -Wall -D_DEBUG -O0 -g -fno-omit-frame-pointer
   # -Werror
 else
-  CFLAGS += -O3 -fomit-frame-pointer 
-  CXXFLAGS += -O3 -fomit-frame-pointer 
+  CFLAGS += -O3 -fomit-frame-pointer
+  CXXFLAGS += -O3 -fomit-frame-pointer
 endif
-CFLAGS += -fPIC -D_GNU_SOURCE $(user_flags) 
+CFLAGS += -fPIC -D_GNU_SOURCE $(user_flags)
 #-finstrument-functions
-CXXFLAGS += -fPIC -std=c++0x -D_GNU_SOURCE $(user_flags) 
+CXXFLAGS += -fPIC -std=c++11 -D_GNU_SOURCE $(user_flags)
+# CXXFLAGS += -D_GLIBCXX_USE_CXX11_ABI=0
+CXXFLAGS += -fabi-version=2
 #-finstrument-functions
 INCS := -I$(srcdir) -I$(PROTOBUF_HOME)/include
-LDFLAGS += 
+LDFLAGS +=
 LPATHS += -L$(PROTOBUF_HOME)/lib -Wl,-rpath,$(PROTOBUF_HOME)/lib
-LIBS += -lprotobuf -pthread
+LIBS += -pthread -lprotobuf
 
 PIN_CXXFLAGS += $(TOOL_CXXFLAGS)
 PIN_LIBS += $(TOOL_LIBS)
 PIN_LDFLAGS += $(TOOL_LDFLAGS)
 PIN_LPATHS += $(TOOL_LPATHS)
-PIN_LD += g++ 
-OUTOPT = -o 
-LINK_OUT = -o 
+PIN_LD += g++
+OUTOPT = -o
+LINK_OUT = -o
 
 PIN_LDFLAGS +=
 PIN_LPATHS += -L$(PROTOBUF_HOME)/lib -Wl,-rpath,$(PROTOBUF_HOME)/lib
@@ -88,7 +90,7 @@ pincxxgendepend = $(CXX) $(CXXFLAGS) $(PIN_CXXFLAGS) $(INCS) -MM -MT $@ -MF $(bu
 .SECONDEXPANSION:
 
 all: $(pintools) $(cmdtools) proto-scripts
-	
+
 proto-scripts: $(protoscripts) $(protopkgscripts)
 
 $(cxxobjs) : | $(objdirs)

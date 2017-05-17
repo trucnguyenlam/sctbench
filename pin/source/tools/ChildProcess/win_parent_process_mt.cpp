@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -35,7 +35,8 @@ END_LEGAL */
 #include <string>
 using namespace std;
 
-const LONG numthreads = 32;
+// The number 55 stresses the system up to the point of crashing due to resource exhaustion.
+const LONG numthreads = 55;
 
 LONG volatile numThreadsArrived = 0;
 
@@ -117,10 +118,11 @@ void AllThreadSynchPoint (LONG threadNum)
 
 DWORD WINAPI CreateTestProcesses(LPVOID threadNumPtr)
 {
-    char cmd[] = "win_child_process.exe \"param1 param2\" param3";
+    char cmd[] = "win_child_process.exe \"param1 param2\" param3 5000";
     STARTUPINFO         si;
     PROCESS_INFORMATION  pi;
     LONG threadNum = (LONG)threadNumPtr;
+    BOOL ok;
 
     memset(&si, 0, sizeof(si));
     si.cb = sizeof(STARTUPINFO);
@@ -130,19 +132,26 @@ DWORD WINAPI CreateTestProcesses(LPVOID threadNumPtr)
                                     // simultaneously
     if (!CreateProcess(NULL, cmd, NULL, NULL, TRUE, NULL, NULL, NULL, &si, &pi))
     {
-        MutexWriteToStdout ( "Couldn't create child process \n");
-        return 1;
+        DWORD lastError = GetLastError();
+        MutexWriteToStdoutWithValue ( "Couldn't create child process, code %x\n", lastError);
+        ok = FALSE;
     }
-    if(WaitAndVerify(pi.hProcess) == FALSE)
+    else
     {
-        return 2;
+        CloseHandle (pi.hThread);
+        ok = WaitAndVerify(pi.hProcess);
+        CloseHandle (pi.hProcess);
     }
-    CloseHandle (pi.hThread);
-    CloseHandle (pi.hProcess);
-
     AllThreadSynchPoint(threadNum);
-    MutexWriteToStdout ("First Process was created successfully!\n"); 
-    
+    if (ok)
+    {
+        MutexWriteToStdout ("First Process was created successfully!\n"); 
+    }
+    else
+    {
+        MutexWriteToStdoutWithValue ( "First Process was not created successfully in thread %d\n", threadNum);
+    }
+
     //Create suspended
 
     AllThreadSynchPoint(threadNum);
@@ -151,20 +160,28 @@ DWORD WINAPI CreateTestProcesses(LPVOID threadNumPtr)
     memset(&pi, 0, sizeof(pi));
     if (!CreateProcess(NULL, cmd, NULL, NULL, TRUE, CREATE_SUSPENDED, NULL, NULL, &si, &pi))
     {
-        MutexWriteToStdout ( "Couldn't create child process \n");
-        return 1;
+        DWORD lastError = GetLastError();
+        MutexWriteToStdoutWithValue ( "Couldn't create child process suspended, code %x \n", lastError);
+        ok = FALSE;
     }
-    ResumeThread( pi.hThread );
-    CloseHandle (pi.hThread);
-
-    if(WaitAndVerify(pi.hProcess) == FALSE)
+    else
     {
-        return 2;
-    } 
-    CloseHandle (pi.hProcess);
+        ResumeThread( pi.hThread );
+        CloseHandle (pi.hThread);
+
+        ok = WaitAndVerify(pi.hProcess);
+        CloseHandle (pi.hProcess);
+    }
 
     AllThreadSynchPoint(threadNum);
-    MutexWriteToStdout ("Second Process was created successfully!\n");
+    if (ok)
+    {
+        MutexWriteToStdout ("Second Process was created successfully!\n");
+    }
+    else
+    {
+        MutexWriteToStdoutWithValue ( "Second Process was not created successfully in thread %d\n", threadNum);
+    }
 
     //Create process as user
 
@@ -174,7 +191,7 @@ DWORD WINAPI CreateTestProcesses(LPVOID threadNumPtr)
     if (!res)
     {
         MutexWriteToStdout ( "Couldn't open process token\n");
-        return 3;
+        tokenHandle = NULL;
     }
 
     AllThreadSynchPoint(threadNum);
@@ -183,21 +200,30 @@ DWORD WINAPI CreateTestProcesses(LPVOID threadNumPtr)
     memset(&pi, 0, sizeof(pi));
     if (!CreateProcessAsUser(tokenHandle, NULL, cmd, NULL, NULL, TRUE, CREATE_SUSPENDED, NULL, NULL, &si, &pi))
     {
-        MutexWriteToStdout ( "Couldn't create child process \n");
-        return 1;
+        DWORD lastError = GetLastError();
+        CloseHandle (tokenHandle);
+        MutexWriteToStdoutWithValue ( "Couldn't create child process as user, code %x \n", lastError);
+        ok = FALSE;
     }
-    ResumeThread( pi.hThread );
-    CloseHandle (pi.hThread);
-    CloseHandle (tokenHandle);
-
-    if(WaitAndVerify(pi.hProcess) == FALSE)
+    else
     {
-        return 2;
-    }  
-    CloseHandle (pi.hProcess);
+        CloseHandle (tokenHandle);
+        ResumeThread( pi.hThread );
+        CloseHandle (pi.hThread);
+
+        ok = WaitAndVerify(pi.hProcess);
+        CloseHandle (pi.hProcess);
+    }
 
     AllThreadSynchPoint(threadNum);
-    MutexWriteToStdout ("Third Process was created successfully!\n");
+    if (ok)
+    {
+        MutexWriteToStdout ("Third Process was created successfully!\n");
+    }
+    else
+    {
+        MutexWriteToStdoutWithValue ( "Third Process was not created successfully in thread %d\n", threadNum);
+    }
 
     return 0;
 }
@@ -207,6 +233,12 @@ int main(int argc, char * argv[])
 {
     LONG i;
     HANDLE threadHandles[numthreads];
+
+    if (numthreads > MAXIMUM_WAIT_OBJECTS)
+    {
+        cout << "exceeded limit of waitable objects\n";
+        return 2;
+    }
 
     InitializeCriticalSection (&critSec);
     

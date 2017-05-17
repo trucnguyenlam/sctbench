@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -67,7 +67,7 @@ VOID Instruction(INS ins, VOID *v)
     const UINT32 BUFLEN = 100;
     char buffer[BUFLEN];
     ADDRINT addr = INS_Address(ins);
-    BOOL ok = xed_format(syntax, xedd, buffer, BUFLEN, static_cast<UINT64>(addr));
+    BOOL ok = xed_format_context(syntax, xedd, buffer, BUFLEN, static_cast<UINT64>(addr), 0, 0);
     if (ok)
     {
         *out << setw(sizeof(ADDRINT)*2) 

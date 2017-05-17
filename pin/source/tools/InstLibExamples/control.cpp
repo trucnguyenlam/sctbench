@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -32,8 +32,10 @@ END_LEGAL */
 
 #include "pin.H"
 #include "instlib.H"
+#include "control_manager.H"
 
 using namespace INSTLIB;
+using namespace CONTROLLER;
 
 
 #if defined(__GNUC__)
@@ -52,27 +54,27 @@ LOCALVAR PIN_LOCK  ALIGN_LOCK output_lock;
 ICOUNT icount;
 
 // Contains knobs and instrumentation to recognize start/stop points
-CONTROL control(false, "controller_");
+CONTROL_MANAGER control("controller_");
 
-VOID Handler(CONTROL_EVENT ev, VOID * v, CONTEXT * ctxt, VOID * ip, THREADID tid)
+VOID Handler(EVENT_TYPE ev, VOID * v, CONTEXT * ctxt, VOID * ip, THREADID tid, BOOL bcast)
 {
-    GetLock(&output_lock, tid+1); 
+    PIN_GetLock(&output_lock, tid+1);
 
     std::cout << "tid: " << tid << " ";
     std::cout << "ip: "  << ip << " " << icount.Count() ;
 
     switch(ev)
     {
-      case CONTROL_START:
+      case EVENT_START:
         std::cout << "Start" << endl;
         break;
 
-      case CONTROL_STOP:
+      case EVENT_STOP:
         std::cout << "Stop" << endl;
         break;
 
 
-      case CONTROL_THREADID:
+      case EVENT_THREADID:
         std::cout << "ThreadID" << endl;
         break;
 
@@ -80,7 +82,7 @@ VOID Handler(CONTROL_EVENT ev, VOID * v, CONTEXT * ctxt, VOID * ip, THREADID tid
         ASSERTX(false);
         break;
     }
-    ReleaseLock(&output_lock);
+    PIN_ReleaseLock(&output_lock);
 }
     
 INT32 Usage()
@@ -101,11 +103,12 @@ int main(int argc, char * argv[])
         return Usage();
     }
 
-    InitLock(&output_lock);
+    PIN_InitLock(&output_lock);
     icount.Activate();
     
     // Activate alarm, must be done before PIN_StartProgram
-    control.CheckKnobs(Handler, 0);
+    control.RegisterHandler(Handler, 0, FALSE);
+    control.Activate();
 
     // Start the program, never returns
     PIN_StartProgram();

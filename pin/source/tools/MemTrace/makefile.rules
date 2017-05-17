@@ -54,6 +54,14 @@ LIB_ROOTS :=
 
 ###### Place OS-specific definitions here ######
 
+# Android
+ifeq ($(TARGET_OS),android)
+    TEST_TOOL_ROOTS += membuffer membuffer_simple membuffer_simple_tid
+    TEST_ROOTS += membuffermt membuffer_simple_mt
+    APP_ROOTS += thread2
+    OBJECT_ROOTS += atomic_increment_$(TARGET)
+endif
+
 # Linux
 ifeq ($(TARGET_OS),linux)
     TEST_TOOL_ROOTS += membuffer membuffer_simple membuffer_simple_tid
@@ -68,21 +76,6 @@ ifeq ($(TARGET_OS),windows)
     TEST_ROOTS += membuffer_threadpool_mt memtrace_threadpool_mt
     APP_ROOTS += thread2
     OBJECT_ROOTS += atomic_increment_$(TARGET)
-endif
-
-###### Handle exceptions here ######
-
-# TODO: These tests fail - fix and remove the following:
-# See Mantis 2963
-ifeq ($(TARGET),mic)
-    TEST_TOOL_ROOTS := $(filter-out membuffer_simple_tid membuffer membuffer_simple membuffermt membuffer_simple_mt, \
-                                    $(TEST_TOOL_ROOTS))
-    APP_ROOTS := $(filter-out thread2, $(APP_ROOTS))
-endif
-
-# TODO: These tests fail - fix and remove the following:
-ifeq ($(TARGET_OS),mac)
-    TEST_ROOTS := $(filter-out memtrace_simple_mt memtracemt, $(TEST_ROOTS))
 endif
 
 
@@ -101,21 +94,37 @@ memtracemt.test: $(OBJDIR)memtrace$(PINTOOL_SUFFIX) $(OBJDIR)thread$(EXE_SUFFIX)
 
 membuffermt.test: $(OBJDIR)membuffer$(PINTOOL_SUFFIX) $(OBJDIR)thread$(EXE_SUFFIX)
 	$(PIN) -t $(OBJDIR)membuffer$(PINTOOL_SUFFIX) -emit 0 -- $(OBJDIR)thread$(EXE_SUFFIX)
-	
+
 membuffer_simple_mt.test: $(OBJDIR)membuffer_simple$(PINTOOL_SUFFIX) $(OBJDIR)thread$(EXE_SUFFIX)
 	$(PIN) -t $(OBJDIR)membuffer_simple$(PINTOOL_SUFFIX) -- $(OBJDIR)thread$(EXE_SUFFIX)
-	
+
 membuffer_simple_tid.test: $(OBJDIR)membuffer_simple_tid$(PINTOOL_SUFFIX) $(OBJDIR)thread2$(EXE_SUFFIX)
 	$(PIN) -t $(OBJDIR)membuffer_simple_tid$(PINTOOL_SUFFIX) -- $(OBJDIR)thread2$(EXE_SUFFIX)
-	
+
 memtrace_simple_mt.test: $(OBJDIR)memtrace_simple$(PINTOOL_SUFFIX) $(OBJDIR)thread$(EXE_SUFFIX)
 	$(PIN) -t $(OBJDIR)memtrace_simple$(PINTOOL_SUFFIX) -- $(OBJDIR)thread$(EXE_SUFFIX)
-	
+
+# The following 4 tests do not support late exit because the tests were not designed
+# to gracefully finish active internal threads at regular exit point.
 membuffer_threadpool_mt.test: $(OBJDIR)membuffer_threadpool$(PINTOOL_SUFFIX) $(OBJDIR)thread$(EXE_SUFFIX)
-	$(PIN) -t $(OBJDIR)membuffer_threadpool$(PINTOOL_SUFFIX) -- $(OBJDIR)thread$(EXE_SUFFIX)
-	
+	$(PIN) -xyzzy -at_exit 0 -t $(OBJDIR)membuffer_threadpool$(PINTOOL_SUFFIX) -- $(OBJDIR)thread$(EXE_SUFFIX)
+
 memtrace_threadpool_mt.test: $(OBJDIR)memtrace_threadpool$(PINTOOL_SUFFIX) $(OBJDIR)thread$(EXE_SUFFIX)
-	$(PIN) -t $(OBJDIR)memtrace_threadpool$(PINTOOL_SUFFIX) -- $(OBJDIR)thread$(EXE_SUFFIX)
+	$(PIN) -xyzzy -at_exit 0 -t $(OBJDIR)memtrace_threadpool$(PINTOOL_SUFFIX) -- $(OBJDIR)thread$(EXE_SUFFIX)
+
+membuffer_threadpool.test: $(OBJDIR)membuffer_threadpool$(PINTOOL_SUFFIX) $(TESTAPP)
+	$(PIN) -xyzzy -at_exit 0 -t $(OBJDIR)$(@:.test=)$(PINTOOL_SUFFIX) -- $(TESTAPP) makefile \
+	  $(OBJDIR)$(@:.test=.makefile.copy) > $(OBJDIR)$(@:.test=.out) 2>&1
+	$(CMP) makefile $(OBJDIR)$(@:.test=.makefile.copy)
+	$(RM) $(OBJDIR)$(@:.test=.makefile.copy)
+	-$(RM) $(OBJDIR)$(@:.test=.out)
+
+memtrace_threadpool.test: $(OBJDIR)memtrace_threadpool$(PINTOOL_SUFFIX) $(TESTAPP)
+	$(PIN) -xyzzy -at_exit 0 -t $(OBJDIR)$(@:.test=)$(PINTOOL_SUFFIX) -- $(TESTAPP) makefile \
+	  $(OBJDIR)$(@:.test=.makefile.copy) > $(OBJDIR)$(@:.test=.out) 2>&1
+	$(CMP) makefile $(OBJDIR)$(@:.test=.makefile.copy)
+	$(RM) $(OBJDIR)$(@:.test=.makefile.copy)
+	-$(RM) $(OBJDIR)$(@:.test=.out)
 
 
 ##############################################################

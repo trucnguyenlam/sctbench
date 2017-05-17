@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -74,9 +74,9 @@ VOID PIN_FAST_ANALYSIS_CALL docount(UINT32 c, THREADID threadid)
 
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, threadid+1);
+    PIN_GetLock(&lock, threadid+1);
     numThreads++;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 
     thread_data_t* tdata = new thread_data_t;
 
@@ -137,7 +137,7 @@ int main(int argc, char * argv[])
     OutFile.open(KnobOutputFile.Value().c_str());
 
     // Initialize the lock
-    InitLock(&lock);
+    PIN_InitLock(&lock);
 
     // Obtain  a key for TLS storage.
     tls_key = PIN_CreateThreadDataKey(0);

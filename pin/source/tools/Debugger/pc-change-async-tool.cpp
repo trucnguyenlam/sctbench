@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -62,7 +62,7 @@ int main(int argc, char * argv[])
 {
     PIN_Init(argc, argv);
     PIN_InitSymbols();
-    InitLock(&Lock);
+    PIN_InitLock(&Lock);
 
     IMG_AddInstrumentFunction(OnImage, 0);
     RTN_AddInstrumentFunction(InstrumentRtn, 0);
@@ -117,9 +117,9 @@ static VOID AtOne()
 {
     if (!AllowBreakpoint)
     {
-        GetLock(&Lock, 1);
+        PIN_GetLock(&Lock, 1);
         std::cout << "Breakpoint is allowed" << std::endl;
-        ReleaseLock(&Lock);
+        PIN_ReleaseLock(&Lock);
     }
 
     // When the main thread reaches the One() function, allow the child thread to trigger
@@ -143,15 +143,15 @@ static BOOL Intercept(THREADID tid, DEBUGGING_EVENT eventType, CONTEXT *ctxt, VO
         if (pc == BreakpointLocation && !AllowBreakpoint)
         {
             PIN_SetContextReg(ctxt, REG_INST_PTR, BreakpointFunction);
-            GetLock(&Lock, 1);
+            PIN_GetLock(&Lock, 1);
             std::cout << "Squashing breakpoint at 0x" << std::hex << pc << " on thread " << std::dec << tid << std::endl;
-            ReleaseLock(&Lock);
+            PIN_ReleaseLock(&Lock);
             return FALSE;
         }
 
-        GetLock(&Lock, 1);
+        PIN_GetLock(&Lock, 1);
         std::cout << "Stopping at breakpoint at 0x" << std::hex << pc << " on thread " << std::dec << tid << std::endl;
-        ReleaseLock(&Lock);
+        PIN_ReleaseLock(&Lock);
         return TRUE;
     }
 
@@ -165,9 +165,9 @@ static BOOL Intercept(THREADID tid, DEBUGGING_EVENT eventType, CONTEXT *ctxt, VO
         if (pc == OneFunction)
         {
             PIN_SetContextReg(ctxt, REG_INST_PTR, TwoFunction);
-            GetLock(&Lock, 1);
+            PIN_GetLock(&Lock, 1);
             std::cout << "Changing ASYNC BREAK PC to Two() on thread " << std::dec << tid << std::endl;
-            ReleaseLock(&Lock);
+            PIN_ReleaseLock(&Lock);
             return TRUE;
         }
 
@@ -175,15 +175,15 @@ static BOOL Intercept(THREADID tid, DEBUGGING_EVENT eventType, CONTEXT *ctxt, VO
         // other than the one at Breakpoint().  (E.g. an internal breakpoint set by GDB.)  Don't
         // change the PC in such a case.
         //
-        GetLock(&Lock, 1);
+        PIN_GetLock(&Lock, 1);
         std::cout << "ASYNC_BREAK at 0x" << std::hex << pc << " on thread " << std::dec << tid << std::endl;
-        ReleaseLock(&Lock);
+        PIN_ReleaseLock(&Lock);
         return TRUE;
     }
 
-    GetLock(&Lock, 1);
+    PIN_GetLock(&Lock, 1);
     std::cout << "FAILURE: Unexpected debugging event type" << std::endl;
-    ReleaseLock(&Lock);
+    PIN_ReleaseLock(&Lock);
     std::exit(1);
 }
 

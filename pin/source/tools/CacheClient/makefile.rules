@@ -19,7 +19,7 @@
 # Tests defined here should not be defined in TOOL_ROOTS and TEST_ROOTS.
 TEST_TOOL_ROOTS := bb_test cache_simulator watch_fragmentation trace_insertions enter_exit link_unlink \
                    event_trace insertDelete deleteTrace orig_address br_test mem_usage cache_flusher \
-                   cache_stats flush_leaks flush_at_if
+                   cache_stats flush_leaks flush_at_if codecache_stress invalidate_cache_analysis
 
 # This defines the tests to be run that were not already defined in TEST_TOOL_ROOTS.
 TEST_ROOTS := cache_block high_water flush_at_if_no_inline_bridge
@@ -43,10 +43,10 @@ TOOL_ROOTS :=
 SA_TOOL_ROOTS :=
 
 # This defines all the applications that will be run during the tests.
-APP_ROOTS := bigBinary bigRegion manyIndirects
+APP_ROOTS := bigBinary bigRegion manyIndirects codecache_stress_app callFooTwice
 
 # This defines any additional object files that need to be compiled.
-OBJECT_ROOTS :=
+OBJECT_ROOTS := codecache_stress_app_asm
 
 # This defines any additional dlls (shared objects), other than the pintools, that need to be compiled.
 DLL_ROOTS :=
@@ -69,6 +69,12 @@ endif
 
 ###### Place OS-specific definitions here ######
 
+# Android
+ifeq ($(TARGET_OS),android)
+    TEST_TOOL_ROOTS += mtFlush
+    APP_ROOTS += threadWait
+endif
+
 # Linux
 ifeq ($(TARGET_OS),linux)
     TEST_TOOL_ROOTS += mtFlush
@@ -87,17 +93,18 @@ ifeq ($(TARGET_OS),windows)
     endif 
 endif
 
-# TODO: These tests fail on Mac - fix and remove the following:
-ifeq ($(TARGET_OS),mac)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:bb_test=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:br_test=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:cache_flusher=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:flush_leaks=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:orig_address=)
-    TEST_TOOL_ROOTS := $(TEST_TOOL_ROOTS:cache_doubler=)
-    TEST_ROOTS := $(TEST_ROOTS:big_region_intel64=)
-    TEST_ROOTS := $(TEST_ROOTS:cache_block=)
-    TEST_ROOTS := $(TEST_ROOTS:high_water=)
+###### Handle exceptions here ######
+
+# TODO: The following tests fail on Android - fix and remove the following:
+# see mantis 3107
+ifeq ($(TARGET_OS),android)
+    TEST_TOOL_ROOTS := $(filter-out flush_leaks, $(TEST_TOOL_ROOTS))
+endif
+
+# This test employs SMC, and PIN on MIC doesn't supports SMC yet (Mantis #2924)
+ifeq ($(TARGET),mic)
+    TEST_TOOL_ROOTS := $(filter-out codecache_stress, $(TEST_TOOL_ROOTS))
+    APP_ROOTS := $(filter-out codecache_stress_app, $(APP_ROOTS))
 endif
 
 
@@ -118,32 +125,32 @@ else
 endif
 
 action_pending_cachefull.test: $(OBJDIR)action_pending_cachefull$(PINTOOL_SUFFIX) $(OBJDIR)action_pending_cachefull_app$(EXE_SUFFIX)
-	$(PIN) -xyzzy -high_water_mark 25 -limit_code_cache $(CACHELIMIT_FOR_ACTION_PENDING) \
+	$(PIN) -xyzzy -high_water_mark 25 -cc_memory_size $(CACHELIMIT_FOR_ACTION_PENDING) \
 	  -t $(OBJDIR)action_pending_cachefull$(PINTOOL_SUFFIX) -- $(OBJDIR)action_pending_cachefull_app$(EXE_SUFFIX)
 
 cache_flusher.test: $(OBJDIR)cache_flusher$(PINTOOL_SUFFIX) $(OBJDIR)bigBinary$(EXE_SUFFIX)
-	$(PIN) -xyzzy -limit_code_cache 262144 -cache_block_size 65536 \
+	$(PIN) -cc_memory_size 262144 -cache_block_size 65536 \
 	  -t $(OBJDIR)cache_flusher$(PINTOOL_SUFFIX) -o $(OBJDIR)cache_flusher.out -- $(OBJDIR)bigBinary$(EXE_SUFFIX)
 	$(QGREP) SWOOSH $(OBJDIR)cache_flusher.out
 	$(QGREP) eof $(OBJDIR)cache_flusher.out
 	$(RM) $(OBJDIR)cache_flusher.out
 
 cache_doubler.test: $(OBJDIR)cache_doubler$(PINTOOL_SUFFIX) $(OBJDIR)bigBinary$(EXE_SUFFIX)
-	$(PIN) -xyzzy -limit_code_cache 262144 -cache_block_size 65536 \
+	$(PIN) -cc_memory_size 262144 -cache_block_size 65536 \
 	  -t $(OBJDIR)cache_doubler$(PINTOOL_SUFFIX) -o $(OBJDIR)cache_doubler.out -- $(OBJDIR)bigBinary$(EXE_SUFFIX) 
 	$(QGREP) STRETCH $(OBJDIR)cache_doubler.out
 	$(QGREP) eof $(OBJDIR)cache_doubler.out
 	$(RM) $(OBJDIR)cache_doubler.out
 
 flushAndInsert.test: $(OBJDIR)flushAndInsert$(PINTOOL_SUFFIX) $(OBJDIR)bigBinary$(EXE_SUFFIX)
-	$(PIN) -xyzzy -limit_code_cache 262144 -cache_block_size 65536 \
+	$(PIN) -cc_memory_size 262144 -cache_block_size 65536 \
 	  -t $(OBJDIR)flushAndInsert$(PINTOOL_SUFFIX) -o $(OBJDIR)flushAndInsert.out -- $(OBJDIR)bigBinary$(EXE_SUFFIX) 
 	$(QGREP) SWOOSH $(OBJDIR)flushAndInsert.out
 	$(QGREP) insertion $(OBJDIR)flushAndInsert.out
 	$(RM) $(OBJDIR)flushAndInsert.out
 
 cache_block.test: $(OBJDIR)bigBinary$(EXE_SUFFIX)
-	$(PIN) -xyzzy -cache_block_size 131072 -- $(OBJDIR)bigBinary$(EXE_SUFFIX)
+	$(PIN) -cache_block_size 131072 -- $(OBJDIR)bigBinary$(EXE_SUFFIX)
 
 high_water.test: $(OBJDIR)bigBinary$(EXE_SUFFIX)
 	$(PIN) -xyzzy -high_water_mark 75 -- $(OBJDIR)bigBinary$(EXE_SUFFIX)
@@ -193,6 +200,18 @@ flush_at_if_no_inline_bridge.test: $(OBJDIR)flush_at_if$(PINTOOL_SUFFIX)
 	$(CMP) makefile $(OBJDIR)flush_at_if_no_inline_bridge.makefile.copy
 	$(RM) $(OBJDIR)flush_at_if_no_inline_bridge.makefile.copy
 
+codecache_stress.test: $(OBJDIR)codecache_stress$(PINTOOL_SUFFIX) $(OBJDIR)codecache_stress_app$(EXE_SUFFIX)
+	$(PIN) -cc_memory_size 262144 -cache_block_size 65536 \
+	  -t $(OBJDIR)codecache_stress$(PINTOOL_SUFFIX) -o $(OBJDIR)codecache_stress.out -x 30 -- \
+	  $(OBJDIR)codecache_stress_app$(EXE_SUFFIX) 2000
+	$(RM) $(OBJDIR)codecache_stress.out
+
+invalidate_cache_analysis.test: $(OBJDIR)invalidate_cache_analysis$(PINTOOL_SUFFIX) $(OBJDIR)callFooTwice$(EXE_SUFFIX)
+	$(PIN) -t $(OBJDIR)invalidate_cache_analysis$(PINTOOL_SUFFIX) -o $(OBJDIR)invalidate_cache_analysis.out \
+	  -- $(OBJDIR)callFooTwice$(EXE_SUFFIX) > $(OBJDIR)invalidate_cache_analysis.log 2>&1
+	$(QGREP) "fooInstrumentCount : 2" $(OBJDIR)invalidate_cache_analysis.out
+	$(RM) $(OBJDIR)invalidate_cache_analysis.out $(OBJDIR)invalidate_cache_analysis.log
+
 
 ##############################################################
 #
@@ -224,3 +243,10 @@ $(OBJDIR)action_pending_cachefull_app$(EXE_SUFFIX): action_pending_cachefull_app
 
 $(OBJDIR)bigBinary$(EXE_SUFFIX): bigBinary.c
 	$(APP_CC) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS)
+
+$(OBJDIR)codecache_stress_app$(EXE_SUFFIX): $(OBJDIR)codecache_stress_app$(OBJ_SUFFIX) $(OBJDIR)codecache_stress_app_asm$(OBJ_SUFFIX)
+	$(APP_CXX) $(COMP_EXE)$@ $^ $(APP_LDFLAGS_NOOPT) $(APP_LIBS) $(CXX_LPATHS) $(CXX_LIBS) $(PIE)
+
+$(OBJDIR)callFooTwice$(EXE_SUFFIX): callFooTwice.c
+	$(APP_CC) $(APP_CXXFLAGS_NOOPT) $(COMP_EXE)$@ $< $(APP_LDFLAGS_NOOPT) $(APP_LIBS)
+

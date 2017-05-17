@@ -340,10 +340,10 @@ def ApplyPintoolsToSource(pinhome, pintools, includes, defines, libs):
 
     includes.append({'dir': pinhome + '/PinTools/Include'})
     includes.append({'dir': pinhome + '/PinTools/InstLib'})
-    includes.append({'dir': pinhome + '/build/Source/xed/xed-gcc-pin-$TARGETOS-$TARGETCPU/xed2-kit/include',
+    includes.append({'dir': pinhome + '/build/Source/xed/xed-gcc-pin-$TARGETOS-$TARGETCPU/xed-kit/include',
         'selector': sel.TargetLinuxX86 + ' or ' + sel.TargetBsdX86})
-    includes.append({'dir': pinhome + '/build/Source/xed/xed-clang-pin-$TARGETOS-$TARGETCPU/xed2-kit/include', 'selector': sel.TargetMacX86})
-    includes.append({'dir': pinhome + '/build/Source/xed/xed-msvc-pin-$TARGETOS-$TARGETCPU/xed2-kit/include', 'selector': sel.TargetWindowsX86})
+    includes.append({'dir': pinhome + '/build/Source/xed/xed-clang-pin-$TARGETOS-$TARGETCPU/xed-kit/include', 'selector': sel.TargetMacX86})
+    includes.append({'dir': pinhome + '/build/Source/xed/xed-msvc-pin-$TARGETOS-$TARGETCPU/xed-kit/include', 'selector': sel.TargetWindowsX86})
     includes.append({'dir': pinhome + '/Source/atomic/00-export-include'})
     includes.append({'dir': pinhome + '/Source/barecrt/00-export-include', 'selector': sel.TargetUnix})
     includes.append({'dir': pinhome + '/Source/fund/00-export-include'})
@@ -366,20 +366,14 @@ def ApplyPintoolsToSource(pinhome, pintools, includes, defines, libs):
         outdir = tool.get('outdir', None)
 
         files.append({'library': pinhome + '/build/Source/pin/pin-$TARGETOS-$TARGETCPU/$LIB_STATIC($HOSTOS,pin)'})
-        files.append({'library': pinhome + '/build/Source/xed/xed-gcc-pin-$TARGETOS-$TARGETCPU/xed2-kit/lib/libxed.a',
+        files.append({'library': pinhome + '/build/Source/xed/xed-gcc-pin-$TARGETOS-$TARGETCPU/xed-kit/lib/libxed.a',
             'selector': sel.TargetLinuxX86 + ' or ' + sel.TargetBsdX86})
-        files.append({'library': pinhome + '/build/Source/xed/xed-clang-pin-$TARGETOS-$TARGETCPU/xed2-kit/lib/libxed.a', 'selector': sel.TargetMacX86})
-        files.append({'library': pinhome + '/build/Source/xed/xed-msvc-pin-$TARGETOS-$TARGETCPU/xed2-kit/lib/libxed.lib', 'selector': sel.TargetWindowsX86})
+        files.append({'library': pinhome + '/build/Source/xed/xed-clang-pin-$TARGETOS-$TARGETCPU/xed-kit/lib/libxed.a', 'selector': sel.TargetMacX86})
+        files.append({'library': pinhome + '/build/Source/xed/xed-msvc-pin-$TARGETOS-$TARGETCPU/xed-kit/lib/libxed.lib', 'selector': sel.TargetWindowsX86})
 
-        files.append({'library-with-implied-path': pinhome + '/External/Libdwarf/Lib_ia32_linux/libdwarf.so', 'selector': sel.TargetLinuxIA32})
-        files.append({'library-with-implied-path': pinhome + '/External/Libdwarf/Lib_intel64_linux/libdwarf.so', 'selector': sel.TargetLinuxIntel64})
-        files.append({'library': pinhome + '/External/Libdwarf/Lib_ia32_bsd/libdwarf.a', 'selector': sel.TargetBsdIA32})
-        files.append({'library': pinhome + '/External/Libdwarf/Lib_intel64_bsd/libdwarf.a', 'selector': sel.TargetBsdIntel64})
 
-        files.append({'library': pinhome + '/External/Libelf/Lib_ia32_linux/libelf.so', 'selector': sel.TargetLinuxIA32})
-        files.append({'library': pinhome + '/External/Libelf/Lib_intel64_linux/libelf.so', 'selector': sel.TargetLinuxIntel64})
-        files.append({'library': pinhome + '/External/Libelf/Lib_ia32_bsd/libelf.a', 'selector': sel.TargetBsdIA32})
-        files.append({'library': pinhome + '/External/Libelf/Lib_intel64_bsd/libelf.a', 'selector': sel.TargetBsdIntel64})
+        files.append({'library': pinhome + '/External/pindwarf/$(TARGETOS)/$(TARGETCPU)/libpindwarf.a',
+                      'selector': sel.TargetAndroid + ' or ' sel.TargetLinux})
 
         files.append({'library': pinhome + '/build/Source/pin/pin-$TARGETOS-$TARGETCPU/pinvm.lib', 'selector': sel.TargetWindows})
         files.append({'library': pinhome + '/External/Ntdll/Lib_ia32_windows/ntdll-32.lib', 'selector': sel.TargetWindowsIA32})
@@ -420,7 +414,7 @@ def ApplyPintoolsToKit(pinhome, pintools, includes, defines, libs):
 
     includes.append({'dir': pinhome + '/source/include/pin'})
     includes.append({'dir': pinhome + '/source/include/pin/gen'})
-    includes.append({'dir': pinhome + '/extras/xed2-$TARGETCPU/include', 'selector': sel.TargetX86})
+    includes.append({'dir': pinhome + '/extras/xed-$TARGETCPU/include', 'selector': sel.TargetX86})
     includes.append({'dir': pinhome + '/extras/components/include'})
     includes.append({'dir': pinhome + '/source/tools/InstLib'})
 
@@ -436,25 +430,11 @@ def ApplyPintoolsToKit(pinhome, pintools, includes, defines, libs):
         outdir = tool.get('outdir', None)
 
         files.append({'library': pinhome + '/$TARGETCPU/lib/$LIB_STATIC($HOSTOS,pin)'})
-        files.append({'library': pinhome + '/extras/xed2-$TARGETCPU/lib/libxed.a', 'selector': sel.TargetUnixX86})
-        files.append({'library': pinhome + '/extras/xed2-$TARGETCPU/lib/libxed.lib', 'selector': sel.TargetWindowsX86})
+        files.append({'library': pinhome + '/extras/xed-$TARGETCPU/lib/libxed.a', 'selector': sel.TargetUnixX86})
+        files.append({'library': pinhome + '/extras/xed-$TARGETCPU/lib/libxed.lib', 'selector': sel.TargetWindowsX86})
 
-        # The Pin kit on Linux provides a shared version of libdwarf, however it does not have an SONAME tag.
-        # As a result, we cannot specify the relative path to libdwarf.so on the link line (doing so would
-        # require libdwarf.so to be at that exact same relative path when the tool was executed).  Instead,
-        # we link with -ldwarf and pass a -L option to specify the directory.  This allows the libdwarf.so
-        # library to be found anyplace on the LD_LIBRARY_PATH when the tool runs.
-        #
-        # Note that libdwarf is not used at all on Mac or Windows.
-        #
-        files.append({'library-with-implied-path': pinhome + '/$TARGETCPU/lib-ext/libdwarf.so', 'selector': sel.TargetLinuxX86})
-        files.append({'library': pinhome + '/$TARGETCPU/lib-ext/libdwarf.a', 'selector': sel.TargetBsd})
-
-        # Link against libelf on Linux and BSD.  On Linux, we use a shared version, which does have SONAME.
-        # Therefore, we don't need to use 'library-with-implied-path' as we do for libdwarf.
-        #
-        files.append({'library': pinhome + '/$TARGETCPU/lib-ext/libelf.so', 'selector': sel.TargetLinuxX86})
-        files.append({'library': pinhome + '/$TARGETCPU/lib-ext/libelf.a', 'selector': sel.TargetBsd})
+        files.append({'library': pinhome + '/External/pindwarf/$(TARGETOS)/$(TARGETCPU)/libpindwarf.a',
+                      'selector': sel.TargetAndroid + ' or ' sel.TargetLinux})
 
         files.append({'library': pinhome + '/$TARGETCPU/lib/pinvm.lib', 'selector': sel.TargetWindows})
         files.append({'library': pinhome + '/$TARGETCPU/lib-ext/ntdll-32.lib', 'selector': sel.TargetWindowsIA32})
@@ -488,7 +468,6 @@ def ApplyCommonDefines(defines):
     """
 
     defines.append({'macro': 'BIGARRAY_MULTIPLIER', 'value': '1'})
-    defines.append({'macro': 'USING_XED', 'selector': sel.TargetX86})
     defines.append({'macro': 'HOST_IA32', 'selector': sel.HostIA32})
     defines.append({'macro': 'HOST_IA32E', 'selector': sel.HostIntel64})
     defines.append({'macro': 'TARGET_IA32', 'selector': sel.TargetIA32})
@@ -534,7 +513,7 @@ def ApplyCommonOptionsForPinToolsAndLibraries(opts):
     # thunk calls to materialize the PC.  Also, the Intel64 linker doesn't support dynamic
     # relocations to compensate for non-PIC code.
     #
-    # We don't do this on Mac because non-PIC shared libraries are not supported on that
+    # We don't do this on OS X* because non-PIC shared libraries are not supported on that
     # platform.  As a result, IA32 tools that reference global variables will contain a call
     # to the thunk, and this will prevent them from being inlined.
     #
@@ -590,9 +569,9 @@ def GetPinPath(proj, pinHome, pinType):
             return pinHome + '/pin'
 
     # When building out of a source tree, we use these scripts to launch
-    # Pin on systems where the tool links against shared libraries (e.g.
-    # libelf and libdwarf).  The script sets the library load path to find
-    # the libraries in the source tree.
+    # Pin on systems where the tool links against shared libraries.
+    # The script sets the library load path to find the libraries in 
+    # the source tree.
     #
     if os == 'linux' and cpu == 'ia32':
         return pinHome + '/Source/pin/pin-runner-linux-ia32.sh'

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -28,65 +28,88 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
-#include <assert.h>
-#include <stdio.h>
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
 #include <dlfcn.h>
 #include <signal.h>
 #include <sys/types.h>
-#include <linux/unistd.h>
+#include <unistd.h>
 #include <pthread.h>
 #include <sys/wait.h>
-#include <stdlib.h>
 #include <string>
-
 
 using namespace std;
 
 
 /* 
- * The total number of threads that should run in this process
- * The number may be changed in command line with -th_num
+ * The total number of threads that should run in this process.
  */
-unsigned int numOfSecondaryThreads = 4;
+const unsigned int numOfSecondaryThreads = 4;
+
 
 /*
- * An loop function for secondary threads
+ * Timeout for the application to avoid hung tests.
  */
+const unsigned int TIMEOUT = 600; // 10 minute timeout.
 
+
+/*
+ * Signal handler for handling a timeout situation.
+ */
+static void TimeoutHandler(int sig)
+{
+    fprintf(stderr, "mt_thread has reached a timeout of %d seconds.\n", TIMEOUT);
+    exit(1);
+}
+
+
+/*
+ * Main function for secondary threads.
+ */
 void * ThreadFunc(void * arg)
 {
     unsigned int sum1 = 0;
     unsigned int sum2 = 0;
-    for (int i=0; i<1000; i++)
+    for (unsigned int i = 0; i < 1000; ++i)
     {
         sum1 += i;
         sum2 -= i;
     }
-    return 0;
+    return NULL;
 }
-
-
 
 
 int main(int argc, char *argv[])
 {
+    // Set up the timeout handler.
+    struct sigaction sigact_timeout;
+    sigact_timeout.sa_handler = TimeoutHandler;
+    sigact_timeout.sa_flags = 0;
+    sigfillset(&sigact_timeout.sa_mask);
+    if (-1 == sigaction(SIGALRM, &sigact_timeout, 0))
+    {
+        perror("Unable to set up the timeout handler.");
+        return 1;
+    }
+    alarm(TIMEOUT);
+
+    // Create the secondary threads.
     pthread_t *thHandle;
     thHandle = new pthread_t[numOfSecondaryThreads];
-
-    // start all secondary threads
-    
     for (unsigned int repeat = 0; repeat < 10; repeat++)
     {
+        // Create the threads.
         for (unsigned int i = 0; i < numOfSecondaryThreads; i++)
         {
             pthread_create(&thHandle[i], 0, ThreadFunc, (void *)i);
         }
         
+        // Wait for the threads to exit.
         for (unsigned int i = 0; i < numOfSecondaryThreads; i++)
         {
             pthread_join(thHandle[i], 0);
         }
-    }	
+    }
     return 0;
 }
-

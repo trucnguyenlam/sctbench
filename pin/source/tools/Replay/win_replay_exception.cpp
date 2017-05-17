@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -49,6 +49,8 @@ static INT32   savedReason;
 
 static int exceptionCount = 0;
 static BOOL foundReplayException = FALSE;
+static BOOL foundReadyForException = FALSE;
+static BOOL toolIsReadyForException = FALSE;
 
 static VOID OnException(THREADID threadIndex, 
                         CONTEXT_CHANGE_REASON reason, 
@@ -57,6 +59,12 @@ static VOID OnException(THREADID threadIndex,
                         INT32 info, 
                         VOID *v)
 {
+	if (!toolIsReadyForException && reason == CONTEXT_CHANGE_REASON_EXCEPTION)
+	{
+		fprintf (out, "See exception %d : info 0x%x from 0x%0x  but this is not the exception we want to replay\n", exceptionCount, info,
+                 PIN_GetContextReg(ctxtFrom, REG_INST_PTR));
+		return;
+	}
     if (!foundReplayException)
     {
         fprintf (out, "Failed to instrument ReplayException!\n");
@@ -105,9 +113,14 @@ static VOID reRaiseException(THREADID tid)
     PIN_ReplayContextChange(tid, &savedFromContext, &savedToContext, CONTEXT_CHANGE_REASON_EXCEPTION, savedReason);
 }
 
+static VOID ToolReadyForExceptionFromAppMain()
+{
+	toolIsReadyForException = TRUE;
+}
+
 static VOID Image(IMG img, VOID *v)
 {
-    if (foundReplayException)
+    if (foundReplayException && foundReadyForException)
         return;
 
     // hook the functions in the image. If these functions are called then it means
@@ -119,6 +132,15 @@ static VOID Image(IMG img, VOID *v)
         RTN_InsertCall(rtn, IPOINT_BEFORE, AFUNPTR(reRaiseException), IARG_THREAD_ID, IARG_END);
         RTN_Close(rtn);
         foundReplayException = TRUE;
+    }
+
+	rtn = RTN_FindByName(img, "ReadyForExceptionFromAppMain");
+    if (RTN_Valid(rtn))
+    {
+        RTN_Open(rtn);
+        RTN_InsertCall(rtn, IPOINT_BEFORE, AFUNPTR(ToolReadyForExceptionFromAppMain), IARG_END);
+        RTN_Close(rtn);
+        foundReadyForException = TRUE;
     }
 }
 

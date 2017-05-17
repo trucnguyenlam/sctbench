@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -44,7 +44,7 @@ END_LEGAL */
 namespace ATOMIC {
 
 /*
- * Low-level implementation of fundemental atomic operations for the IA-64 architecture.
+ * Low-level implementation of fundemental atomic operations for the Itanium(R) architecture.
  * Clients should not use this class directly, but should use OPS instead.
  */
 namespace OPS_IMPL
@@ -236,7 +236,7 @@ namespace OPS_IMPL
     template<unsigned size> static inline void Increment(volatile void *location, const void *inc,
         void *oldVal, BARRIER_CS barrier);
 
-    // There is no atomic increment instruction on IA-64, so all specializations use
+    // There is no atomic increment instruction on Itaium(R), so all specializations use
     // compare-and-swap.
     //
     template<> inline void Increment<1>(volatile void *location, const void *inc, void *oldVal,

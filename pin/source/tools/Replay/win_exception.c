@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -40,8 +40,16 @@ void EXPORT_SYM ReplayException()
     dummy = 1;
 }
 
+// Our pintool notices when we enter this function, so it knows the next exception it is notified about is
+// the one caused in the __try of main.
+void EXPORT_SYM ReadyForExceptionFromAppMain()
+{
+    dummy = 1;
+}
+
 int main (int argc, char ** argv)
 {
+	ReadyForExceptionFromAppMain();
     __try {
         // Explicitly raising an exception does not cause a kernel exception in some versions
         // of Windows, and therefore is invisible to Pin.

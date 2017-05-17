@@ -12,7 +12,7 @@
 .extern fpSaveArea
 
 # The zmmSaveArea requires 64 bytes and a 64 byte padding since the
-# vmovdqa64 instruction requires a 64-byte-alligned address
+# vmovdqa64 instruction requires a 64-byte-aligned address
 zmmSaveArea:
 .space 128
 
@@ -52,8 +52,8 @@ ChangeRegsWrapper:
 
     # Allign the zmmSaveArea
     lea     zmmSaveArea, %rdx
-    add     $0x40,%rdx
-    and     $0xffffffffffffffc0,%rdx
+    add     $0x40, %rdx
+    and     $0xffffffffffffffc0, %rdx
     # Save the necessary vector register
     vmovdqa64   %zmm5, (%rdx) {%k1}
 
@@ -107,8 +107,6 @@ ChangeRegs:
     fst     %st(2)
     # Allign the zmmval
     lea     zmmval, %rax
-    add     $0x40,%rax
-    and     $0xffffffffffffffc0,%rax
     # TEST: store the new value to zmm5
     vmovdqa64   (%rax), %zmm5 {%k1}
     # Prepare the new value for k3 in the gpr rax
@@ -138,8 +136,6 @@ SaveRegsToMem:
     fstpt   astval
     # Allign the zmmval save area
     lea     azmmval, %rax
-    add     $0x40,%rax
-    and     $0xffffffffffffffc0,%rax
     # TEST: store the new value of zmm5
     vmovdqa64   %zmm5, (%rax) {%k1}
     # Prepare the new value of k3 in the gpr rax

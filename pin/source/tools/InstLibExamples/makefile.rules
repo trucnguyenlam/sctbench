@@ -17,16 +17,16 @@
 # This defines tests which run tools of the same name.  This is simply for convenience to avoid
 # defining the test name twice (once in TOOL_ROOTS and again in TEST_ROOTS).
 # Tests defined here should not be defined in TOOL_ROOTS and TEST_ROOTS.
-TEST_TOOL_ROOTS := icount filter alarm_icount alarm_symbol control alarm_image_offset control_detach
+TEST_TOOL_ROOTS := icount filter control control_detach
 
 # This defines the tests to be run that were not already defined in TEST_TOOL_ROOTS.
-TEST_ROOTS :=
+TEST_ROOTS := filter_lib filter_rtn
 
 # This defines a list of tests that should run in the "short" sanity. Tests in this list must also
 # appear either in the TEST_TOOL_ROOTS or the TEST_ROOTS list.
 # If the entire directory should be tested in sanity, assign TEST_TOOL_ROOTS and TEST_ROOTS to the
 # SANITY_SUBSET variable in the tests section below (see example in makefile.rules.tmpl).
-SANITY_SUBSET := icount control
+SANITY_SUBSET := icount control filter_lib
 
 # This defines the tools which will be run during the the tests, and were not already defined in
 # TEST_TOOL_ROOTS.
@@ -41,18 +41,25 @@ TOOL_ROOTS :=
 SA_TOOL_ROOTS :=
 
 # This defines all the applications that will be run during the tests.
-APP_ROOTS :=
+APP_ROOTS := filter_app
 
 # This defines any additional object files that need to be compiled.
 OBJECT_ROOTS :=
 
 # This defines any additional dlls (shared objects), other than the pintools, that need to be compiled.
-DLL_ROOTS :=
+DLL_ROOTS := one
 
 # This defines any static libraries (archives), that need to be built.
 LIB_ROOTS :=
 
 ###### Place OS-specific definitions here ######
+
+# Android
+ifeq ($(TARGET_OS),android)
+    TEST_TOOL_ROOTS += follow_child
+    TEST_ROOTS += marker_test int3_test multi_start_stop_test
+    APP_ROOTS += itext-marker-test int3-test multi-start-stop-test
+endif
 
 # Linux
 ifeq ($(TARGET_OS),linux)
@@ -68,7 +75,7 @@ ifeq ($(TARGET_OS),linux)
     endif
 endif
 
-# Mac
+# Mac OS X*
 ifeq ($(TARGET_OS),mac)
     TEST_TOOL_ROOTS += follow_child
     TEST_ROOTS += marker_test int3_test multi_start_stop_test mt3_test
@@ -81,11 +88,6 @@ endif
 # See Mantis 2963
 ifeq ($(TARGET),mic)
     TEST_ROOTS := $(filer-out int3_test marker_test, $(TEST_ROOTS))
-endif
-
-# TODO: These tests fail - fix and remove the following:
-ifeq ($(TARGET_OS),mac)
-    TEST_ROOTS := $(filer-out int3_test marker_test mt3_test multi_start_stop_test, $(TEST_ROOTS))
 endif
 
 
@@ -114,9 +116,10 @@ int3_test.test: $(OBJDIR)int3-test$(EXE_SUFFIX) $(OBJDIR)control$(PINTOOL_SUFFIX
 	$(RM) $(OBJDIR)int3_test.out
 
 multi_start_stop_test.test: $(OBJDIR)multi-start-stop-test$(EXE_SUFFIX) $(OBJDIR)control$(PINTOOL_SUFFIX)
-	$(PIN) -t $(OBJDIR)control$(PINTOOL_SUFFIX) -controller-start-address mark1 -controller-stop-address foo \
-	  -controller-start-address mark2 -controller-stop-address bar \
-	    -- $(OBJDIR)multi-start-stop-test$(EXE_SUFFIX) > $(OBJDIR)multi_start_stop_test.out 2>&1
+	$(PIN) -t $(OBJDIR)control$(PINTOOL_SUFFIX) \
+	  -controller-start-address $(GLOBALFUN_PREFIX)mark1 -controller-stop-address $(GLOBALFUN_PREFIX)foo \
+	    -controller-start-address $(GLOBALFUN_PREFIX)mark2 -controller-stop-address $(GLOBALFUN_PREFIX)bar \
+	      -- $(OBJDIR)multi-start-stop-test$(EXE_SUFFIX) > $(OBJDIR)multi_start_stop_test.out 2>&1
 	test `$(CGREP) -E '0x.*Start' $(OBJDIR)multi_start_stop_test.out` -eq 2
 	test `$(CGREP) -E '0x.*Stop' $(OBJDIR)multi_start_stop_test.out` -eq 2
 	$(RM) $(OBJDIR)multi_start_stop_test.out
@@ -128,6 +131,20 @@ mt3_test.test: $(OBJDIR)mt3-test$(EXE_SUFFIX) $(OBJDIR)control$(PINTOOL_SUFFIX)
 	$(QGREP) -E '0x.*Stop' $(OBJDIR)mt3_test.out
 	$(RM) $(OBJDIR)mt3_test.out
 
+filter_lib.test: $(OBJDIR)filter_app$(EXE_SUFFIX) $(OBJDIR)filter$(PINTOOL_SUFFIX) $(OBJDIR)$(DLL_PREFIX)one$(DLL_SUFFIX)
+	$(SET_DLL_PATH) $(PIN) -t $(OBJDIR)filter$(PINTOOL_SUFFIX) -filter_no_shared_libs -o $(OBJDIR)filter_lib.out \
+	  -- $(OBJDIR)filter_app$(EXE_SUFFIX)
+	$(QGREP) 'main' $(OBJDIR)filter_lib.out
+	test `$(CGREP) '$(OBJDIR)$(DLL_PREFIX)one$(DLL_SUFFIX)' $(OBJDIR)filter_lib.out` -eq 0
+	$(RM) $(OBJDIR)filter_lib.out
+
+filter_rtn.test: $(OBJDIR)filter_app$(EXE_SUFFIX) $(OBJDIR)filter$(PINTOOL_SUFFIX) $(OBJDIR)$(DLL_PREFIX)one$(DLL_SUFFIX)
+	$(SET_DLL_PATH) $(PIN) -t $(OBJDIR)filter$(PINTOOL_SUFFIX) -o $(OBJDIR)filter_rtn.out \
+	  -filter_rtn $(GLOBALFUN_PREFIX)one -filter_rtn $(GLOBALFUN_PREFIX)two -- $(OBJDIR)filter_app$(EXE_SUFFIX)
+	test `$(CGREP) 'main' $(OBJDIR)filter_rtn.out` -eq 0
+	$(QGREP) 'two' $(OBJDIR)filter_rtn.out
+	$(QGREP) 'one' $(OBJDIR)filter_rtn.out
+	$(RM) $(OBJDIR)filter_rtn.out
 
 ##############################################################
 #
@@ -138,6 +155,14 @@ mt3_test.test: $(OBJDIR)mt3-test$(EXE_SUFFIX) $(OBJDIR)control$(PINTOOL_SUFFIX)
 # This section contains the build rules for all binaries that have special build rules.
 # See makefile.default.rules for the default build rules.
 
+###### Special tools' build rules ######
+
+$(OBJDIR)control$(PINTOOL_SUFFIX): $(OBJDIR)control$(OBJ_SUFFIX) $(CONTROLLERLIB)
+	$(LINKER) $(TOOL_LDFLAGS) $(LINK_EXE)$@ $^ $(TOOL_LPATHS) $(TOOL_LIBS)
+
+$(OBJDIR)control_detach$(PINTOOL_SUFFIX): $(OBJDIR)control_detach$(OBJ_SUFFIX) $(CONTROLLERLIB)
+	$(LINKER) $(TOOL_LDFLAGS) $(LINK_EXE)$@ $^ $(TOOL_LPATHS) $(TOOL_LIBS)
+
 ###### Special applications' build rules ######
 
 $(OBJDIR)multi-start-stop-test$(EXE_SUFFIX): multi-start-stop-test.c
@@ -145,3 +170,12 @@ $(OBJDIR)multi-start-stop-test$(EXE_SUFFIX): multi-start-stop-test.c
 
 $(OBJDIR)mt3-test$(EXE_SUFFIX): test-mt3.cpp
 	$(APP_CXX) $(APP_CXXFLAGS) $(SSE2) $(COMP_EXE)$@ $< $(APP_LDFLAGS) $(APP_LIBS)
+
+$(OBJDIR)filter_app$(EXE_SUFFIX): filter_app.c $(OBJDIR)$(DLL_PREFIX)one$(DLL_SUFFIX)
+	$(APP_CC) $(APP_CXXFLAGS) $(PIC) $(COMP_EXE)$@ $< $(APP_LDFLAGS) $(PIE) $(APP_LIBS) \
+	  $(OBJDIR)$(DLL_PREFIX)one$(DLL_LINKAGE_SUFFIX)
+
+###### Special DLLs' build rules ######
+$(OBJDIR)$(DLL_PREFIX)one$(DLL_SUFFIX): one.c
+	$(APP_CC) $(APP_CXXFLAGS) $(DLL_CXXFLAGS) $(COMP_EXE)$@ $< $(APP_LDFLAGS) $(DLL_LDFLAGS) $(APP_LIBS)
+

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -433,7 +433,7 @@ LOCALVAR vector<BBLSTATS*> statsList;
 
 #if defined(__GNUC__)
 #  if defined(TARGET_MAC) || defined(TARGET_WINDOWS) 
-     // MAC XCODE2.4.1 gcc and Cgywin gcc 3.4.x only allow for 16b
+     // OS X* XCODE2.4.1 gcc and Cgywin gcc 3.4.x only allow for 16b
      // alignment! So we need to pad!
 #    define ALIGN_LOCK __attribute__ ((aligned(16)))
 #    define NEED_TO_PAD
@@ -509,9 +509,9 @@ VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
     // This function is locked no need for a Pin Lock here
     numThreads++;
-    GetLock(&lock, tid+1); // for output
+    PIN_GetLock(&lock, tid+1); // for output
     *out << "# Starting tid " << tid << endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 
     thread_data_t* tdata = new thread_data_t;
     // remember my pointer for later
@@ -538,23 +538,23 @@ VOID emit_pc_stats(THREADID tid); //forward prototype
 VOID zero_stats(THREADID tid); //forward prototype
 
 VOID emit_bbl_stats_sorted(THREADID tid);
-LOCALVAR CONTROL control;
-LOCALVAR CONTROL_STATS control_stats;
+LOCALVAR CONTROL_MANAGER control;
 
 
 
-LOCALFUN VOID Handler(CONTROL_EVENT ev, VOID *val, CONTEXT *ctxt, VOID *ip, THREADID tid)
+
+LOCALFUN VOID Handler(EVENT_TYPE ev, VOID *val, CONTEXT *ctxt, VOID *ip, THREADID tid, bool bcast)
 {
     switch(ev)
     {
-      case CONTROL_START:
-        GetLock(&lock, tid+1); // for output
+      case EVENT_START:
+        PIN_GetLock(&lock, tid+1); // for output
         *out << "# Start counting for tid " << tid << endl;
-        ReleaseLock(&lock);
+        PIN_ReleaseLock(&lock);
         activate_counting(tid);
         break;
-      case CONTROL_STOP:
-        GetLock(&lock, tid+1); // for output
+      case EVENT_STOP:
+        PIN_GetLock(&lock, tid+1); // for output
         *out << "# Stop counting for tid "  << tid << endl;
         if (control.PinPointsActive()) {
             UINT32 pp = control.CurrentPp(tid);
@@ -562,7 +562,7 @@ LOCALFUN VOID Handler(CONTROL_EVENT ev, VOID *val, CONTEXT *ctxt, VOID *ip, THRE
             *out << "# PinPointNumber " << pp << endl;
             *out << "# PinPointPhase " << phase << endl;
         }
-        ReleaseLock(&lock);
+        PIN_ReleaseLock(&lock);
         deactivate_counting(tid);
         if (control.PinPointsActive()) {
             // when doing pinpoints "mixes" we want to emit and then zero the stats when we stop a region.
@@ -571,30 +571,19 @@ LOCALFUN VOID Handler(CONTROL_EVENT ev, VOID *val, CONTEXT *ctxt, VOID *ip, THRE
             zero_stats(tid);
         }
         break;
-      default:
-        ASSERTX(false);
-    }
-}
-
-
-
-
-LOCALFUN VOID HandlerStats(CONTROL_STATS_EVENT ev, VOID *val, CONTEXT* dummy_context, VOID *ip, THREADID tid)
-{
-    switch(ev)
-    {
       case CONTROL_STATS_EMIT:
-        GetLock(&lock, tid+1); // for output
+        PIN_GetLock(&lock, tid+1); // for output
         *out << "# Emit stats for tid " << tid << endl;
-        ReleaseLock(&lock);
+        PIN_ReleaseLock(&lock);
         emit_stats(tid);
         break;
       case CONTROL_STATS_RESET:
-        GetLock(&lock, tid+1); // for output
+        PIN_GetLock(&lock, tid+1); // for output
         *out << "# Reset stats for tid " << tid << endl;
-        ReleaseLock(&lock);
+        PIN_ReleaseLock(&lock);
         zero_stats(tid);
-        break;
+        break;   
+        
       default:
         ASSERTX(false);
     }
@@ -745,8 +734,7 @@ VOID Trace(TRACE trace, VOID *v)
         {
             unsigned int instruction_size = INS_Size(ins);
 
-            // This checks for x86-specific opcodes and fails on some IA-64 architecture
-            // machines where the itext is not readable.
+            // This checks for x86-specific opcodes
             CheckForSpecialMarkers(ins, pc, instruction_size);
 
             // Count the number of times a predicated instruction is actually executed
@@ -794,9 +782,9 @@ VOID Trace(TRACE trace, VOID *v)
 
         // Remember the counter and stats so we can compute a summary at the end
         basic_blocks++;
-        GetLock(&bbl_list_lock,1);
+        PIN_GetLock(&bbl_list_lock,1);
         statsList.push_back(bblstats);
-        ReleaseLock(&bbl_list_lock);
+        PIN_ReleaseLock(&bbl_list_lock);
     }
 
 }
@@ -904,7 +892,7 @@ VOID emit_bbl_stats(THREADID tid)
 
     // Need to lock here because we might be resize (and thus reallocing)
     // the statsList when we do a push_back in the instrumentation.
-    GetLock(&bbl_list_lock,tid+1);
+    PIN_GetLock(&bbl_list_lock,tid+1);
     UINT32 limit = tdata->size();
     if ( limit  > statsList.size() )
         limit = statsList.size();
@@ -916,14 +904,14 @@ VOID emit_bbl_stats(THREADID tid)
             for (const stat_index_t* stats = b->_stats; *stats; stats++)
                 tdata->cstats.unpredicated[*stats] += bcount;
     }
-    ReleaseLock(&bbl_list_lock);
+    PIN_ReleaseLock(&bbl_list_lock);
 
-    GetLock(&lock, tid+1); // for output
+    PIN_GetLock(&lock, tid+1); // for output
     stat_dump_count++;
     *out << "# EMIT_STATS " << stat_dump_count << endl;
     DumpStats(*out, tdata->cstats, KnobProfilePredicated, "$dynamic-counts",tid);
     *out << "# END_STATS" <<  endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 
 int qsort_compare_fn(const void *a, const void *b) 
@@ -940,7 +928,7 @@ VOID emit_bbl_stats_sorted(THREADID tid)
 
     // Need to lock here because we might be resize (and thus reallocing)
     // the statsList when we do a push_back in the instrumentation.
-    GetLock(&bbl_list_lock,tid+1);
+    PIN_GetLock(&bbl_list_lock,tid+1);
     UINT32 limit = tdata->size();
     if ( limit  > statsList.size() )
         limit = statsList.size();
@@ -958,11 +946,11 @@ VOID emit_bbl_stats_sorted(THREADID tid)
             thread_total += icounts[i]._icount;
         }
     }
-    ReleaseLock(&bbl_list_lock);
+    PIN_ReleaseLock(&bbl_list_lock);
 
     qsort(icounts, limit, sizeof(BBL_SORT_STATS), qsort_compare_fn);
 
-    GetLock(&lock, tid+1); // for output
+    PIN_GetLock(&lock, tid+1); // for output
     *out << "# EMIT_STATS TOP BLOCKS " << stat_dump_count 
          << " FOR TID " << tid
          << endl;
@@ -999,7 +987,7 @@ VOID emit_bbl_stats_sorted(THREADID tid)
     }
     
     *out << "# END_STATS" <<  endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
     delete [] icounts;
 }
 
@@ -1018,9 +1006,9 @@ VOID emit_pc_stats(THREADID tid)
     // Need to lock here because we might be resize (and thus reallocing)
     // the statsList when we do a push_back in the instrumentation.
 
-    GetLock(&lock, tid+1); // for output
+    PIN_GetLock(&lock, tid+1); // for output
     *out << "# EMIT_PC_STATS for TID "  << tid << endl;
-    GetLock(&bbl_list_lock,tid+1);
+    PIN_GetLock(&bbl_list_lock,tid+1);
     UINT32 limit = tdata->size();
     if ( limit  > statsList.size() )
         limit = statsList.size();
@@ -1031,9 +1019,9 @@ VOID emit_pc_stats(THREADID tid)
         if (bcount && b && b->_stats) 
             *out << "BLOCKCOUNT 0x" << hex << b->_pc  << " " << dec << (bcount * b->_ninst ) << endl;
     }
-    ReleaseLock(&bbl_list_lock);
+    PIN_ReleaseLock(&bbl_list_lock);
     *out << "# END_EMIT_PC_STATS for TID "  << tid << endl;
-    ReleaseLock(&lock);
+    PIN_ReleaseLock(&lock);
 }
 VOID emit_stats(THREADID tid)
 {
@@ -1175,7 +1163,7 @@ disassemble(UINT64 start, UINT64 stop) {
                 os << "  ";
             os << " ";
             memset(buffer,0,200);
-            int dis_okay = xed_format(syntax, &xedd, buffer, 200, pc);
+            int dis_okay = xed_format_context(syntax, &xedd, buffer, 200, pc, 0, 0);
             if (dis_okay) 
                 os << buffer << endl;
             else
@@ -1205,6 +1193,9 @@ int main(int argc, CHAR **argv)
     if( PIN_Init(argc,argv) )
         return Usage();
 
+    PIN_InitLock(&lock);
+    PIN_InitLock(&bbl_list_lock);
+
     // obtain  a key for TLS storage
     tls_key = PIN_CreateThreadDataKey(0);
 
@@ -1214,7 +1205,6 @@ int main(int argc, CHAR **argv)
     out = new std::ofstream(filename.c_str());
 
     control.CheckKnobs(Handler, 0);
-    control_stats.CheckKnobs(HandlerStats, 0);
 
     // make sure that exactly one thing-to-count knob is specified.
     if (KnobInstructionLengthMix.Value() && KnobCategoryMix.Value()) {

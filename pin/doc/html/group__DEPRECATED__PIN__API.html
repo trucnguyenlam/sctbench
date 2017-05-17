@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -50,10 +51,6 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">PIN_DEPRECATED_API BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__DEPRECATED__PIN__API.html#g8d4b6b530b4e9e3edde679b883a0ab39">LEVEL_CORE::INS_OperandReadAndWriten</a> (INS ins, UINT32 n)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">PIN_DEPRECATED_API VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__DEPRECATED__PIN__API.html#g8ad892731b191b27a2a2c6883b8c4b43">LEVEL_PINCLIENT::PIN_FindLineFileByAddress</a> (ADDRINT address, INT32 *line, const CHAR **file)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">PIN_DEPRECATED_API VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__DEPRECATED__PIN__API.html#g6714b0ccbb729580a04738be060c5baa">LEVEL_PINCLIENT::PIN_FindColumnLineFileByAddress</a> (ADDRINT address, INT32 *column, INT32 *line, const CHAR **file)</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">PIN_DEPRECATED_API BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__DEPRECATED__PIN__API.html#gb731fcb56a2b7cd1f29c90810234db5c">LEVEL_PINCLIENT::PIN_AddSignalBeforeFunction</a> (<a class="el" href="group__DEPRECATED__PIN__API.html#gc79b6ff735d7c369f1954561ee8a5d15">SIGNAL_BEFORE_CALLBACK</a> fun, VOID *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">PIN_DEPRECATED_API BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__DEPRECATED__PIN__API.html#gfad3e0d26e3dc68ac8be59250a25fd3f">LEVEL_PINCLIENT::PIN_AddSignalAfterFunction</a> (<a class="el" href="group__DEPRECATED__PIN__API.html#ge95acc4f2b08a2491822c1884428968c">SIGNAL_AFTER_CALLBACK</a> fun, VOID *val)</td></tr>
@@ -69,14 +66,6 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">PIN_DEPRECATED_API BOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__DEPRECATED__PIN__API.html#g53520920dce2c0b519bc10f7bbec9886">LEVEL_PINCLIENT::RTN_IsSafeForProbe</a> (RTN rtn)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">PIN_DEPRECATED_API VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__DEPRECATED__PIN__API.html#g7a996be7fec85f2a67e171ef767172c7">LEVEL_PINCLIENT::RTN_ReplaceWithUninstrumentedRoutine</a> (RTN replacedRtn, AFUNPTR replacementFun)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">PIN_DEPRECATED_API VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__DEPRECATED__PIN__API.html#ge7a7d51b2af355653c71503612c09c1f">LEVEL_PINCLIENT::PIN_SetContextFPState</a> (<a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, const VOID *fpstate)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">PIN_DEPRECATED_API VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__DEPRECATED__PIN__API.html#gc8d7656f063a4a13759798bfdc6a29e6">LEVEL_PINCLIENT::PIN_SetContextFPState</a> (<a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, const FPSTATE *fpstate)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">PIN_DEPRECATED_API VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__DEPRECATED__PIN__API.html#g9920f77895e9e9ed2685f49a76e8d05f">LEVEL_PINCLIENT::PIN_GetContextFPState</a> (const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, VOID *fpstate)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">PIN_DEPRECATED_API VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__DEPRECATED__PIN__API.html#gbaa7cdd805a7773879e91b77290c5c5d">LEVEL_PINCLIENT::PIN_GetContextFPState</a> (const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, FPSTATE *fpstate)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">PIN_DEPRECATED_API BBL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__DEPRECATED__PIN__API.html#ga793e2a308c99a05c7b2efbe027e8330">LEVEL_PINCLIENT::RTN_BblHead</a> (RTN x)</td></tr>
 
@@ -156,7 +145,7 @@ Call back function when application signal handler returns.<p>
     <tr><td valign="top"></td><td valign="top"><em>v</em>&nbsp;</td><td>The tool's call-back value.</td></tr>
   </table>
 </dl>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gdb70938ef31309447fe65a653667334a">PIN_AddContextChangeFunction()</a>. </dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gfe475fc12b9060e8e45cbfccd7d592c8">PIN_AddContextChangeFunction()</a>. </dd></dl>
     </td>
   </tr>
 </table>
@@ -190,7 +179,7 @@ Call back function when application handles a signal.<p>
     <tr><td valign="top"></td><td valign="top"><em>v</em>&nbsp;</td><td>The tool's call-back value.</td></tr>
   </table>
 </dl>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gdb70938ef31309447fe65a653667334a">PIN_AddContextChangeFunction()</a>. </dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gfe475fc12b9060e8e45cbfccd7d592c8">PIN_AddContextChangeFunction()</a>. </dd></dl>
     </td>
   </tr>
 </table>
@@ -250,7 +239,7 @@ Call back function when tool creates its own signal handler.<p>
 
 <p>
 Call back function when thread begins<p>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gd990464123111fae4a3e575039b11af7">PIN_AddThreadStartFunction()</a>. </dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#g0549831d0b423aea93768b1bc491938b">PIN_AddThreadStartFunction()</a>. </dd></dl>
     </td>
   </tr>
 </table>
@@ -275,7 +264,7 @@ Call back function when thread begins<p>
 
 <p>
 Call back function when thread ends<p>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#g2d6c3eea4ebe3e76baed4481b079e3b1">PIN_AddThreadFiniFunction()</a>. </dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gc3f2c06e525bd0f23e8aa55f801989df">PIN_AddThreadFiniFunction()</a>. </dd></dl>
     </td>
   </tr>
 </table>
@@ -702,7 +691,7 @@ Register a notification function that is called immediately after the applicatio
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>TRUE if succeeds, FALSE otherwise</dd></dl>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gdb70938ef31309447fe65a653667334a">PIN_AddContextChangeFunction()</a>. </dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gfe475fc12b9060e8e45cbfccd7d592c8">PIN_AddContextChangeFunction()</a>. </dd></dl>
     </td>
   </tr>
 </table>
@@ -749,7 +738,7 @@ Register a notification function that is called immediately before the applicati
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>TRUE if succeeds, FALSE otherwise </dd></dl>
 <dl compact><dt><b>Note:</b></dt><dd>Function always return FALSE on Windows<p>
-DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gdb70938ef31309447fe65a653667334a">PIN_AddContextChangeFunction()</a>. </dd></dl>
+DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gfe475fc12b9060e8e45cbfccd7d592c8">PIN_AddContextChangeFunction()</a>. </dd></dl>
     </td>
   </tr>
 </table>
@@ -794,7 +783,7 @@ DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gdb70938ef31309447f
 
 <p>
 Takes over ownership of a signal for the tool and establishes a tool handler for the signal. Tools should never call sigaction() directly to handle signals.<p>
-Use this function to take over "ownership" of a signal. If you want to be notified when the application receives a signal, use <a class="el" href="group__PIN__CONTROL.html#gdb70938ef31309447fe65a653667334a">PIN_AddContextChangeFunction()</a> instead.<p>
+Use this function to take over "ownership" of a signal. If you want to be notified when the application receives a signal, use <a class="el" href="group__PIN__CONTROL.html#gfe475fc12b9060e8e45cbfccd7d592c8">PIN_AddContextChangeFunction()</a> instead.<p>
 Tools should take care when intercepting signals, because this can adversely affect the application if it also uses the signal. The application is still allowed to set up its own handler for an intercepted signal. However, the application is prevented from attempts to block the signal.<p>
 When an intercepted signal is received, the tool's handler is called first. The tool's handler then decides whether the signal should be forwarded to the application's handler (if any).<p>
 A tool can set only one "intercept" handler for a particular signal, so a new handler overwrites any previous handler for the same signal. To disable a handler, pass a NULL function pointer.<p>
@@ -857,7 +846,7 @@ Call func immediately after a new thread has been created<p>
     <tr><td valign="top"></td><td valign="top"><em>val</em>&nbsp;</td><td>Value to be passed to fun when it is called</td></tr>
   </table>
 </dl>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gd990464123111fae4a3e575039b11af7">PIN_AddThreadStartFunction()</a>. </dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#g0549831d0b423aea93768b1bc491938b">PIN_AddThreadStartFunction()</a>. </dd></dl>
     </td>
   </tr>
 </table>
@@ -902,7 +891,7 @@ Call func immediately before a thread ends<p>
     <tr><td valign="top"></td><td valign="top"><em>val</em>&nbsp;</td><td>Value to be passed to fun when it is called</td></tr>
   </table>
 </dl>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#g2d6c3eea4ebe3e76baed4481b079e3b1">PIN_AddThreadFiniFunction()</a>. </dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__PIN__CONTROL.html#gc3f2c06e525bd0f23e8aa55f801989df">PIN_AddThreadFiniFunction()</a>. </dd></dl>
     </td>
   </tr>
 </table>
@@ -931,223 +920,6 @@ Call func immediately before a thread ends<p>
 
 <p>
 If we are currently on a pin stack, return a location on the application stack where we can "unswitch to" and continue execution there <dl compact><dt><b>Note:</b></dt><dd>DEPRECATED. </dd></dl>
-    </td>
-  </tr>
-</table>
-<a class="anchor" name="g6714b0ccbb729580a04738be060c5baa"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_FindColumnLineFileByAddress" ref="g6714b0ccbb729580a04738be060c5baa" args="(ADDRINT address, INT32 *column, INT32 *line, const CHAR **file)" --><p>
-<table class="mdTable" cellpadding="2" cellspacing="0">
-  <tr>
-    <td class="mdRow">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top">PIN_DEPRECATED_API VOID LEVEL_PINCLIENT::PIN_FindColumnLineFileByAddress           </td>
-          <td class="md" valign="top">(&nbsp;</td>
-          <td class="md" nowrap valign="top">ADDRINT&nbsp;</td>
-          <td class="mdname" nowrap> <em>address</em>, </td>
-        </tr>
-        <tr>
-          <td class="md" nowrap align="right"></td>
-          <td class="md"></td>
-          <td class="md" nowrap>INT32 *&nbsp;</td>
-          <td class="mdname" nowrap> <em>column</em>, </td>
-        </tr>
-        <tr>
-          <td class="md" nowrap align="right"></td>
-          <td class="md"></td>
-          <td class="md" nowrap>INT32 *&nbsp;</td>
-          <td class="mdname" nowrap> <em>line</em>, </td>
-        </tr>
-        <tr>
-          <td class="md" nowrap align="right"></td>
-          <td class="md"></td>
-          <td class="md" nowrap>const CHAR **&nbsp;</td>
-          <td class="mdname" nowrap> <em>file</em></td>
-        </tr>
-        <tr>
-          <td class="md"></td>
-          <td class="md">)&nbsp;</td>
-          <td class="md" colspan="2"></td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing="5" cellpadding="0" border="0">
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-Find the line number, file, and column number corresponding to a memory address. Compile your program with -g to include line number information. Pin can only read dwarf2 information, which is the default for most modern compilers. Use -gdwarf-2 if you are using gcc 2.96.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>address</em>&nbsp;</td><td>The code address to lookup. </td></tr>
-    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>column</em>&nbsp;</td><td>A pointer to the variable that will hold the column number. Returns -1 if the address has no valid column information or if the compiler did not annotate a specific column for this address. </td></tr>
-    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>line</em>&nbsp;</td><td>A pointer to the variable that will hold the line number. Returns zero if the address has no valid line information. </td></tr>
-    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>file</em>&nbsp;</td><td>A pointer to the variable that will hold the file name. Returns NULL if the address has no valid file information. </td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
- <b>O/S</b>: Linux, Windows &amp; MacOS<br>
- <b>CPU:</b> All<br>
-</dd></dl>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: see <a class="el" href="group__DEBUG__API.html#gcdb6e153e9699ed9011aba7ac629c5d8">PIN_GetSourceLocation()</a>. </dd></dl>
-    </td>
-  </tr>
-</table>
-<a class="anchor" name="g8ad892731b191b27a2a2c6883b8c4b43"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_FindLineFileByAddress" ref="g8ad892731b191b27a2a2c6883b8c4b43" args="(ADDRINT address, INT32 *line, const CHAR **file)" --><p>
-<table class="mdTable" cellpadding="2" cellspacing="0">
-  <tr>
-    <td class="mdRow">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top">PIN_DEPRECATED_API VOID LEVEL_PINCLIENT::PIN_FindLineFileByAddress           </td>
-          <td class="md" valign="top">(&nbsp;</td>
-          <td class="md" nowrap valign="top">ADDRINT&nbsp;</td>
-          <td class="mdname" nowrap> <em>address</em>, </td>
-        </tr>
-        <tr>
-          <td class="md" nowrap align="right"></td>
-          <td class="md"></td>
-          <td class="md" nowrap>INT32 *&nbsp;</td>
-          <td class="mdname" nowrap> <em>line</em>, </td>
-        </tr>
-        <tr>
-          <td class="md" nowrap align="right"></td>
-          <td class="md"></td>
-          <td class="md" nowrap>const CHAR **&nbsp;</td>
-          <td class="mdname" nowrap> <em>file</em></td>
-        </tr>
-        <tr>
-          <td class="md"></td>
-          <td class="md">)&nbsp;</td>
-          <td class="md" colspan="2"></td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing="5" cellpadding="0" border="0">
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-Find the line number and file corresponding to a memory address. Compile your program with -g to include line number information. Pin can only read dwarf2 information, which is the default for most modern compilers. Use -gdwarf-2 if you are using gcc 2.96.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>address</em>&nbsp;</td><td>The code address to lookup. </td></tr>
-    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>line</em>&nbsp;</td><td>A pointer to the variable that will hold the line number. Returns zero if the address has no valid line information. </td></tr>
-    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>file</em>&nbsp;</td><td>A pointer to the variable that will hold the file name. Returns NULL if the address has no valid file information. </td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT &amp; Probe<br>
- <b>O/S</b>: Linux, Windows &amp; MacOS<br>
- <b>CPU:</b> All<br>
-</dd></dl>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: see <a class="el" href="group__DEBUG__API.html#gcdb6e153e9699ed9011aba7ac629c5d8">PIN_GetSourceLocation()</a>. </dd></dl>
-    </td>
-  </tr>
-</table>
-<a class="anchor" name="gbaa7cdd805a7773879e91b77290c5c5d"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_GetContextFPState" ref="gbaa7cdd805a7773879e91b77290c5c5d" args="(const CONTEXT *ctxt, FPSTATE *fpstate)" --><p>
-<table class="mdTable" cellpadding="2" cellspacing="0">
-  <tr>
-    <td class="mdRow">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top">PIN_DEPRECATED_API VOID LEVEL_PINCLIENT::PIN_GetContextFPState           </td>
-          <td class="md" valign="top">(&nbsp;</td>
-          <td class="md" nowrap valign="top">const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *&nbsp;</td>
-          <td class="mdname" nowrap> <em>ctxt</em>, </td>
-        </tr>
-        <tr>
-          <td class="md" nowrap align="right"></td>
-          <td class="md"></td>
-          <td class="md" nowrap>FPSTATE *&nbsp;</td>
-          <td class="mdname" nowrap> <em>fpstate</em></td>
-        </tr>
-        <tr>
-          <td class="md"></td>
-          <td class="md">)&nbsp;</td>
-          <td class="md" colspan="2"></td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing="5" cellpadding="0" border="0">
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-Get the floating point state of the specified context.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>ctxt</em>&nbsp;</td><td>context whose floating point state is retrieved </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>fpstate</em>&nbsp;</td><td>pointer to the buffer that receives floating point state of the context. the FPSTATE type is exposed by Pin.</td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
- <b>O/S</b>: Linux, Windows &amp; MacOS<br>
- <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
-</dd></dl>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See PIN_GetContextRegVal(const CONTEXT * ctxt, REG reg, REGVAL * val) </dd></dl>
-    </td>
-  </tr>
-</table>
-<a class="anchor" name="g9920f77895e9e9ed2685f49a76e8d05f"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_GetContextFPState" ref="g9920f77895e9e9ed2685f49a76e8d05f" args="(const CONTEXT *ctxt, VOID *fpstate)" --><p>
-<table class="mdTable" cellpadding="2" cellspacing="0">
-  <tr>
-    <td class="mdRow">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top">PIN_DEPRECATED_API VOID LEVEL_PINCLIENT::PIN_GetContextFPState           </td>
-          <td class="md" valign="top">(&nbsp;</td>
-          <td class="md" nowrap valign="top">const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *&nbsp;</td>
-          <td class="mdname" nowrap> <em>ctxt</em>, </td>
-        </tr>
-        <tr>
-          <td class="md" nowrap align="right"></td>
-          <td class="md"></td>
-          <td class="md" nowrap>VOID *&nbsp;</td>
-          <td class="mdname" nowrap> <em>fpstate</em></td>
-        </tr>
-        <tr>
-          <td class="md"></td>
-          <td class="md">)&nbsp;</td>
-          <td class="md" colspan="2"></td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing="5" cellpadding="0" border="0">
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-Get the floating point state of the specified context.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>ctxt</em>&nbsp;</td><td>context whose floating point state is retrieved </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>fpstate</em>&nbsp;</td><td>pointer to the buffer that receives floating point state of the context. The size of the buffer must be at least sizeof (FXSAVE) bytes - i.e. 512bytes. The returned state has the FXSAVE structure - It will return only the fxsave_legacy part of the Fp State</td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
- <b>O/S</b>: Linux, Windows &amp; MacOS<br>
- <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
-</dd></dl>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See PIN_GetContextRegVal(const CONTEXT * ctxt, REG reg, REGVAL * val) </dd></dl>
     </td>
   </tr>
 </table>
@@ -1211,104 +983,6 @@ Get the value stored in the specified TLS slot of the thread.<p>
 
 <p>
 This API is only used by the Intel Thread Checker. Calling this API to register the function that libtcheck provides to push the original function pointer of a replaced function onto Thread Checker's internal storage. Once this API is called, the function replacement bridge will call "callBackPushFun" with the original function pointer of the replaced function as the parameter. <dl compact><dt><b>Note:</b></dt><dd>DEPRECATED. </dd></dl>
-    </td>
-  </tr>
-</table>
-<a class="anchor" name="gc8d7656f063a4a13759798bfdc6a29e6"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_SetContextFPState" ref="gc8d7656f063a4a13759798bfdc6a29e6" args="(CONTEXT *ctxt, const FPSTATE *fpstate)" --><p>
-<table class="mdTable" cellpadding="2" cellspacing="0">
-  <tr>
-    <td class="mdRow">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top">PIN_DEPRECATED_API VOID LEVEL_PINCLIENT::PIN_SetContextFPState           </td>
-          <td class="md" valign="top">(&nbsp;</td>
-          <td class="md" nowrap valign="top"><a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *&nbsp;</td>
-          <td class="mdname" nowrap> <em>ctxt</em>, </td>
-        </tr>
-        <tr>
-          <td class="md" nowrap align="right"></td>
-          <td class="md"></td>
-          <td class="md" nowrap>const FPSTATE *&nbsp;</td>
-          <td class="mdname" nowrap> <em>fpstate</em></td>
-        </tr>
-        <tr>
-          <td class="md"></td>
-          <td class="md">)&nbsp;</td>
-          <td class="md" colspan="2"></td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing="5" cellpadding="0" border="0">
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-Set the given floating point state in the specified context.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in,out]</tt>&nbsp;</td><td valign="top"><em>ctxt</em>&nbsp;</td><td>context whose floating point state is to be set </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>fpstate</em>&nbsp;</td><td>new floating point state of the context. the FPSTATE type is exposed by Pin. </td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
- <b>O/S</b>: Linux, Windows &amp; MacOS<br>
- <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
-</dd></dl>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See PIN_SetContextRegVal(CONTEXT * ctxt, REG reg, const REGVAL * val) </dd></dl>
-    </td>
-  </tr>
-</table>
-<a class="anchor" name="ge7a7d51b2af355653c71503612c09c1f"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_SetContextFPState" ref="ge7a7d51b2af355653c71503612c09c1f" args="(CONTEXT *ctxt, const VOID *fpstate)" --><p>
-<table class="mdTable" cellpadding="2" cellspacing="0">
-  <tr>
-    <td class="mdRow">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top">PIN_DEPRECATED_API VOID LEVEL_PINCLIENT::PIN_SetContextFPState           </td>
-          <td class="md" valign="top">(&nbsp;</td>
-          <td class="md" nowrap valign="top"><a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *&nbsp;</td>
-          <td class="mdname" nowrap> <em>ctxt</em>, </td>
-        </tr>
-        <tr>
-          <td class="md" nowrap align="right"></td>
-          <td class="md"></td>
-          <td class="md" nowrap>const VOID *&nbsp;</td>
-          <td class="mdname" nowrap> <em>fpstate</em></td>
-        </tr>
-        <tr>
-          <td class="md"></td>
-          <td class="md">)&nbsp;</td>
-          <td class="md" colspan="2"></td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing="5" cellpadding="0" border="0">
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-Set the given floating point state in the specified context.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in,out]</tt>&nbsp;</td><td valign="top"><em>ctxt</em>&nbsp;</td><td>context whose floating point state is to be set </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>fpstate</em>&nbsp;</td><td>new floating point state of the context. The area pointed to must be at least sizeof (FXSAVE) bytes - i.e. 512bytes, and have FXSAVE structure - The function will set only the fxsave_legacy part of the Fp State </td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
- <b>O/S</b>: Linux, Windows &amp; MacOS<br>
- <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
-</dd></dl>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See PIN_SetContextRegVal(CONTEXT * ctxt, REG reg, const REGVAL * val). </dd></dl>
     </td>
   </tr>
 </table>
@@ -1488,7 +1162,7 @@ The RTN must have been opened by RTN_Open in order to receive a valid BBL. Note 
     <td>
 
 <p>
-Replace a function in the application (replacedRtn) by another function defined in the Pintool (replacementFun). The replacement function is not instrumented. Difference between <a class="el" href="group__DEPRECATED__PIN__API.html#g7a996be7fec85f2a67e171ef767172c7">RTN_ReplaceWithUninstrumentedRoutine()</a> and <a class="el" href="group__DEPRECATED__PIN__API.html#g16e4f67c10f95873a82586f08054ddfd">RTN_ComplexReplaceWithUninstrumentedRoutine()</a> is that the latter does complex replacement (i.e. a call to the callBackPushFun registered will be made before calling to the replacement funtion). <dl compact><dt><b>Note:</b></dt><dd>DEPRECATED. </dd></dl>
+Replace a function in the application (replacedRtn) by another function defined in the Pintool (replacementFun). The replacement function is not instrumented. Difference between <a class="el" href="group__DEPRECATED__PIN__API.html#g7a996be7fec85f2a67e171ef767172c7">RTN_ReplaceWithUninstrumentedRoutine()</a> and <a class="el" href="group__DEPRECATED__PIN__API.html#g16e4f67c10f95873a82586f08054ddfd">RTN_ComplexReplaceWithUninstrumentedRoutine()</a> is that the latter does complex replacement (i.e. a call to the callBackPushFun registered will be made before calling to the replacement function). <dl compact><dt><b>Note:</b></dt><dd>DEPRECATED. </dd></dl>
     </td>
   </tr>
 </table>
@@ -1552,7 +1226,7 @@ Return TRUE if the given RTN is a candidate for function insertion using probes,
  <b>O/S</b>: Linux, Windows &amp; MacOS<br>
  <b>CPU:</b> All<br>
 </dd></dl>
-<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__RTN__BASIC__API.html#g6831172f1bcd6f8226af5f3c1a409cbd">RTN_Id()</a>. </dd></dl>
+<dl compact><dt><b>Note:</b></dt><dd>DEPRECATED: See <a class="el" href="group__RTN__BASIC__API.html#g2021004b76379a3e40db22743b50dbeb">RTN_Id()</a>. </dd></dl>
     </td>
   </tr>
 </table>
@@ -1595,7 +1269,7 @@ Replace a function in the application (replacedRtn) by another function defined 
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:52 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

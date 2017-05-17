@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -79,6 +79,12 @@ VOID Instruction(INS ins, VOID *v)
     // Don't allow s to be deallocated before we've finished with d!
     string s = hexstr(INS_Address(ins));
     const char *d = s.c_str();
+
+    if (!INS_IsStandardMemop(ins) && !INS_HasMemoryVector(ins))
+    {
+        // We don't know how to treat these instructions
+        return;
+    }
 
     if (fout) {
         fprintf(fout, "Checking: %s %s\n", d, INS_Disassemble(ins).c_str());

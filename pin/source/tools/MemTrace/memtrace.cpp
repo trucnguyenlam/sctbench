@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -620,15 +620,15 @@ void InstrumentBBL(BBL bbl, SCRATCH_TRACE_HEADER * theader)
     for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
     {
         // Log every memory references of the instruction
-        if (INS_IsMemoryRead(ins))
+        if (INS_IsMemoryRead(ins) && INS_IsStandardMemop(ins))
         {
             theader->RecordLogImmediate(ins, IARG_MEMORYREAD_EA);
         }
-        if (INS_IsMemoryWrite(ins))
+        if (INS_IsMemoryWrite(ins) && INS_IsStandardMemop(ins))
         {
             theader->RecordLogImmediate(ins, IARG_MEMORYWRITE_EA);
         }
-        if (INS_HasMemoryRead2(ins))
+        if (INS_HasMemoryRead2(ins) && INS_IsStandardMemop(ins))
         {
             theader->RecordLogImmediate(ins, IARG_MEMORYREAD2_EA);
         }

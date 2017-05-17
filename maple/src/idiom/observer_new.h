@@ -131,8 +131,8 @@ class ObserverNew : public Analyzer {
       bool valid;
       Acc acc;
     };
-    typedef std::tr1::unordered_set<Meta *> HashSet;
-    typedef std::tr1::unordered_map<address_t, Meta *> Table;
+    typedef std::unordered_set<Meta *> HashSet;
+    typedef std::unordered_map<address_t, Meta *> Table;
 
     explicit Meta(Type t) : type(t) {}
     ~Meta() {}

@@ -130,7 +130,6 @@ FUNS1000(foo2)
 FUNS1000(foo3)
 FUNS1000(foo4)
 FUNS1000(foo5)
-FUNS1000(foo6)
 
 
 int main()
@@ -181,7 +180,6 @@ static void *Generator(void *x)
 	CALLFUNS1000(foo3);
 	CALLFUNS1000(foo4);
 	CALLFUNS1000(foo5);
-	CALLFUNS1000(foo6);
 	return 0;
 }
 

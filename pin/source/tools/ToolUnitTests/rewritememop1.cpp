@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -197,6 +197,11 @@ static void BranchTaken(ADDRINT ip)
 // Useful to track down bugs to specific instructions.
 static BOOL doTranslate(INS ins)
 {
+    if (!INS_IsStandardMemop(ins) && !INS_HasMemoryVector(ins))
+    {
+        // We don't know how to treat these instructions
+        return FALSE;
+    }
     switch (INS_Category(ins))
     {
         case XED_CATEGORY_CALL:

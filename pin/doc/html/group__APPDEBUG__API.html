@@ -9,6 +9,7 @@
   <ul>
     <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
     <li><a href="modules.html"><span>Modules</span></a></li>
+    <li><a href="namespaces.html"><span>Namespaces</span></a></li>
     <li><a href="classes.html"><span>Classes</span></a></li>
     <li>
       <form action="search.php" method="get">
@@ -30,6 +31,8 @@
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef BOOL(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__APPDEBUG__API.html#g6dc634ecc9b3b225a7adc1894358dfb3">LEVEL_PINCLIENT::DEBUG_INTERPRETER_CALLBACK</a> )(<a class="el" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> threadIndex, <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, const std::string &amp;cmd, std::string *reply, VOID *v)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef BOOL(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__APPDEBUG__API.html#g4f422159aa53c6ac15e3c4988470ef4c">LEVEL_PINCLIENT::DEBUG_BREAKPOINT_CALLBACK</a> )(ADDRINT addr, UINT size, BOOL insert, VOID *v)</td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__APPDEBUG__API.html#g2873b12faab265843028e2f388009e98">DEBUG_STATUS</a> { <br>
@@ -77,9 +80,15 @@
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__APPDEBUG__API.html#gea5826d7103d2f8cfd14320d388dbad9">LEVEL_PINCLIENT::PIN_AddDebugInterpreter</a> (<a class="el" href="group__APPDEBUG__API.html#g6dc634ecc9b3b225a7adc1894358dfb3">DEBUG_INTERPRETER_CALLBACK</a> fun, VOID *val)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__APPDEBUG__API.html#g5c3c5c6220acfad8860218b41410b07a">LEVEL_PINCLIENT::PIN_AddDebugInterpreter</a> (<a class="el" href="group__APPDEBUG__API.html#g6dc634ecc9b3b225a7adc1894358dfb3">DEBUG_INTERPRETER_CALLBACK</a> fun, VOID *val)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__APPDEBUG__API.html#g1798c34b9a1384ba4b55fb8af0042512">LEVEL_PINCLIENT::PIN_RemoveDebugInterpreter</a> (<a class="el" href="group__APPDEBUG__API.html#g6dc634ecc9b3b225a7adc1894358dfb3">DEBUG_INTERPRETER_CALLBACK</a> fun)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__APPDEBUG__API.html#g3f3296542ad9dbd72967e36de005fd5a">LEVEL_PINCLIENT::PIN_AddBreakpointHandler</a> (<a class="el" href="group__APPDEBUG__API.html#g4f422159aa53c6ac15e3c4988470ef4c">DEBUG_BREAKPOINT_CALLBACK</a> fun, VOID *val)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__APPDEBUG__API.html#gd7f2971e58ab2cc4f232bed0e1b0a37d">LEVEL_PINCLIENT::PIN_RemoveBreakpointHandler</a> (<a class="el" href="group__APPDEBUG__API.html#g4f422159aa53c6ac15e3c4988470ef4c">DEBUG_BREAKPOINT_CALLBACK</a> fun)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__APPDEBUG__API.html#g776b0533f78b5abeabf6463183ba6027">LEVEL_PINCLIENT::PIN_ResetBreakpointAt</a> (ADDRINT addr)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">VOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__APPDEBUG__API.html#g0cc79428309a39c0cbae4e6131b51f3a">LEVEL_PINCLIENT::PIN_ApplicationBreakpoint</a> (const <a class="el" href="group__CONTEXT__API.html#g70a3022fd8834c783509c028ffcd07cb">CONTEXT</a> *ctxt, <a class="el" href="group__PIN__THREAD__API.html#g3bc3c874675eba0be607f41464eeb31c">THREADID</a> tid, BOOL waitIfNoDebugger, const std::string &amp;msg)</td></tr>
 
@@ -100,6 +109,41 @@
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 This API allows the user to debug the application that is running on top of Pin. It also allows a tool to interact with the debugger and provide extended commands to the debugger. Also see the tutorial section on this topic: <a class="el" href="index.html#APPDEBUG">The Pin Advanced Debugging Extensions</a>. <hr><h2>Typedef Documentation</h2>
+<a class="anchor" name="g4f422159aa53c6ac15e3c4988470ef4c"></a><!-- doxytag: member="LEVEL_PINCLIENT::DEBUG_BREAKPOINT_CALLBACK" ref="g4f422159aa53c6ac15e3c4988470ef4c" args=")(ADDRINT addr, UINT size, BOOL insert, VOID *v)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">typedef BOOL(* <a class="el" href="group__APPDEBUG__API.html#g4f422159aa53c6ac15e3c4988470ef4c">LEVEL_PINCLIENT::DEBUG_BREAKPOINT_CALLBACK</a>)(ADDRINT addr, UINT size, BOOL insert, VOID *v)          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Call-back function to handle breakpoint set requests from a debugger.<p>
+Once a callback accepted control over a breakpoint at the given address, Pin and PinADX will not stop at that address. The stop responsibility is handled solely by the tool.<p>
+However, PinADX does keep track of the breakpoint, in case the tool wants to "reset" the breakpoint and give the control back to PinADX.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>addr</em>&nbsp;</td><td>The address of the requested breakpoint. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>size</em>&nbsp;</td><td>The size of the breakpoint (HW/SW) </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>insert</em>&nbsp;</td><td>Whether if this is a breakpoint insertion or deletion. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>v</em>&nbsp;</td><td>The tool's call-back value.</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>TRUE if this callback function takes control over the breakpoint. FALSE if it does not. If FALSE is returned, Pin will call the next registered interpreter to see if it understands <em>cmd</em>. </dd></dl>
+    </td>
+  </tr>
+</table>
 <a class="anchor" name="g6dc634ecc9b3b225a7adc1894358dfb3"></a><!-- doxytag: member="LEVEL_PINCLIENT::DEBUG_INTERPRETER_CALLBACK" ref="g6dc634ecc9b3b225a7adc1894358dfb3" args=")(THREADID threadIndex, CONTEXT *ctxt, const std::string &amp;cmd, std::string *reply, VOID *v)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
@@ -279,13 +323,64 @@ Visual Studio via native connection. </td></tr>
   </tr>
 </table>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="gea5826d7103d2f8cfd14320d388dbad9"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddDebugInterpreter" ref="gea5826d7103d2f8cfd14320d388dbad9" args="(DEBUG_INTERPRETER_CALLBACK fun, VOID *val)" --><p>
+<a class="anchor" name="g3f3296542ad9dbd72967e36de005fd5a"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddBreakpointHandler" ref="g3f3296542ad9dbd72967e36de005fd5a" args="(DEBUG_BREAKPOINT_CALLBACK fun, VOID *val)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_AddDebugInterpreter           </td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddBreakpointHandler           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__APPDEBUG__API.html#g4f422159aa53c6ac15e3c4988470ef4c">DEBUG_BREAKPOINT_CALLBACK</a>&nbsp;</td>
+          <td class="mdname" nowrap> <em>fun</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>VOID *&nbsp;</td>
+          <td class="mdname" nowrap> <em>val</em></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Register a handler that can intercept breakpoint set/delete commands sent from an application debugger. This API allows a tool to take control over specific breakpoints stop behavior.<p>
+A tool may install more than one handler function. Pin calls each one until it reaches an handler that understand the command.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>fun</em>&nbsp;</td><td>The breakpoint handler function. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>val</em>&nbsp;</td><td>Value to pass to the handler function.</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
+ <b>O/S</b>: Linux, Windows, OS X*<br>
+ <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="g5c3c5c6220acfad8860218b41410b07a"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_AddDebugInterpreter" ref="g5c3c5c6220acfad8860218b41410b07a" args="(DEBUG_INTERPRETER_CALLBACK fun, VOID *val)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="group__PIN__CALLBACKS.html#g0a4ffb30eef7af84cb12b46e37ac4074">PIN_CALLBACK</a> LEVEL_PINCLIENT::PIN_AddDebugInterpreter           </td>
           <td class="md" valign="top">(&nbsp;</td>
           <td class="md" nowrap valign="top"><a class="el" href="group__APPDEBUG__API.html#g6dc634ecc9b3b225a7adc1894358dfb3">DEBUG_INTERPRETER_CALLBACK</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>fun</em>, </td>
@@ -322,6 +417,7 @@ A tool may install more than one interpreter function. Pin calls each one until 
   </table>
 </dl>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
+<dl compact><dt><b>Returns:</b></dt><dd>PIN_CALLBACK A handle to a callback that can be used to further modify this callback's properties</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows<br>
  <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
@@ -599,6 +695,45 @@ Tells whether a stopped thread has called <a class="el" href="group__APPDEBUG__A
     </td>
   </tr>
 </table>
+<a class="anchor" name="gd7f2971e58ab2cc4f232bed0e1b0a37d"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_RemoveBreakpointHandler" ref="gd7f2971e58ab2cc4f232bed0e1b0a37d" args="(DEBUG_BREAKPOINT_CALLBACK fun)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_RemoveBreakpointHandler           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top"><a class="el" href="group__APPDEBUG__API.html#g4f422159aa53c6ac15e3c4988470ef4c">DEBUG_BREAKPOINT_CALLBACK</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>fun</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Remove a previously installed breakpoint handler function.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>fun</em>&nbsp;</td><td>The breakpoint handler to remove.</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
+ <b>O/S</b>: Linux, Windows, OS X*<br>
+ <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
 <a class="anchor" name="g1798c34b9a1384ba4b55fb8af0042512"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_RemoveDebugInterpreter" ref="g1798c34b9a1384ba4b55fb8af0042512" args="(DEBUG_INTERPRETER_CALLBACK fun)" --><p>
 <table class="mdTable" cellpadding="2" cellspacing="0">
   <tr>
@@ -633,6 +768,45 @@ Remove a previously installed debug interpreter function.<p>
 <dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
 <dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
  <b>O/S</b>: Linux, Windows<br>
+ <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
+ </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="g776b0533f78b5abeabf6463183ba6027"></a><!-- doxytag: member="LEVEL_PINCLIENT::PIN_ResetBreakpointAt" ref="g776b0533f78b5abeabf6463183ba6027" args="(ADDRINT addr)" --><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">VOID LEVEL_PINCLIENT::PIN_ResetBreakpointAt           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">ADDRINT&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>addr</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Resets the breakpoint address, and returns the control back to PinADX.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>addr</em>&nbsp;</td><td>The breakpoint address.</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Note:</b></dt><dd>The pin client lock is obtained during the call of this API.</dd></dl>
+<dl compact><dt><b>Availability:</b></dt><dd><b>Mode:</b> JIT<br>
+ <b>O/S</b>: Linux, Windows, OS X*<br>
  <b>CPU:</b> IA-32 and Intel(R) 64 architectures<br>
  </dd></dl>
     </td>
@@ -721,7 +895,7 @@ After a successful return, an application level debugger is connected to Pin. Th
     </td>
   </tr>
 </table>
-<hr size="1"><address style="align: right;"><small>Generated on Sun Apr 7 22:20:51 2013 for Pin by&nbsp;
+<hr size="1"><address style="align: right;"><small>Generated on Wed Jan 21 02:16:17 2015 for Pin by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.4.6 </small></address>
 </body>

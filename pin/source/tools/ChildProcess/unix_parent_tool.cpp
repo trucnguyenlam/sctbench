@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -28,8 +28,17 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
+
+/*
+ * NOTE: Due to the structure of tests that use this tool, its output file is opened in append mode.
+ * If the test is run more than once without removing the output file for the tool, the output will
+ * be concatenated with the output from the previous run. To prevent it, always delete this tool's
+ * output file before running.
+ */
+
 #include "pin.H"
 #include <iostream>
+#include <fstream>
 #include "arglist.h"
 
 /* ===================================================================== */
@@ -42,8 +51,23 @@ KNOB<string> KnobPin(KNOB_MODE_WRITEONCE, "pintool", "pin", "", "pin full path")
 //Parent configuration - Application name
 KNOB<string> KnobApplication(KNOB_MODE_WRITEONCE, "pintool", "app", "", "application name");
 
-KNOB<BOOL> KnobToolProbeMode(KNOB_MODE_WRITEONCE, "pintool", "probe", "0", "invoke tool in probe mode");
+KNOB<BOOL> KnobToolProbeMode(KNOB_MODE_WRITEONCE, "pintool", "probe", "0",
+        "invoke tool in probe mode");
 
+KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "unix_parent_tool.out",
+        "specify output file name");
+
+ofstream OutFile;
+
+/* ===================================================================== */
+/* Print Help Message                                                    */
+/* ===================================================================== */
+
+INT32 Usage()
+{
+    cout << endl << KNOB_BASE::StringKnobSummary() << endl;
+    return -1;
+}
 
 /*
  * FollowChild(CHILD_PROCESS childProcess, VOID * userData) - child process configuration
@@ -69,24 +93,25 @@ BOOL FollowChild(CHILD_PROCESS childProcess, VOID * userData)
             newPinCmd.Add(appCmd.String());
 
             CHILD_PROCESS_SetPinCommandLine(childProcess, newPinCmd.Argc(), newPinCmd.Argv());
-            cout << "Process to execute: " << newPinCmd.String()  << endl;
+            OutFile << "Process to execute: " << newPinCmd.String()  << endl;
         }
         else
         {
-            cout << "Pin command line remains unchanged" << endl;
-            cout << "Application to execute: " << appCmd.String() << endl;
+            OutFile << "Pin command line remains unchanged" << endl;
+            OutFile << "Application to execute: " << appCmd.String() << endl;
         }
         return TRUE;
     }
-    cout << "knob val " << KnobApplication.Value() << "app " << childApp << endl;
-    cout << "Do not run Pin under the child process" << endl;
+    OutFile << "knob val " << KnobApplication.Value() << "app " << childApp << endl;
+    OutFile << "Do not run Pin under the child process" << endl;
     return FALSE;
-}        
+}
 
 /* ===================================================================== */
 VOID Fini(INT32 code, VOID *v)
 {
-    cout << "In unix_parent_tool PinTool" << endl;
+    OutFile << "In unix_parent_tool PinTool" << endl;
+    OutFile.close();
 }
 
 typedef VOID (*EXITFUNCPTR)(INT code);
@@ -120,7 +145,12 @@ VOID ImageLoad(IMG img, VOID *v)
 
 int main(INT32 argc, CHAR **argv)
 {
-    PIN_Init(argc, argv);
+    if (PIN_Init(argc, argv)) return Usage();
+
+    // Can't just open for writing because the child process' Pintool may overwrite
+    // the parent process' Pintool file (when the -o parameter doesn't change).
+    // Opening in append mode instead.
+    OutFile.open(KnobOutputFile.Value().c_str(), ofstream::app);
 
     PIN_AddFollowChildProcessFunction(FollowChild, 0);
 

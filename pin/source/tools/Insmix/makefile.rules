@@ -72,3 +72,8 @@ LIB_ROOTS :=
 
 # This section contains the build rules for all binaries that have special build rules.
 # See makefile.default.rules for the default build rules.
+
+###### Special tools' build rules ######
+
+$(OBJDIR)insmix$(PINTOOL_SUFFIX): $(OBJDIR)insmix$(OBJ_SUFFIX) $(CONTROLLERLIB)
+	$(LINKER) $(TOOL_LDFLAGS) $(LINK_EXE)$@ $^ $(TOOL_LPATHS) $(TOOL_LIBS)

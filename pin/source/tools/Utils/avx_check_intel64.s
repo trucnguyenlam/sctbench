@@ -1,6 +1,11 @@
+#ifdef TARGET_MAC
+.global _SupportsAvx
+_SupportsAvx:
+#else
 .type SupportsAvx, @function
 .global SupportsAvx
 SupportsAvx:
+#endif
     push    %rbp
     mov     %rsp, %rbp
     push %rcx

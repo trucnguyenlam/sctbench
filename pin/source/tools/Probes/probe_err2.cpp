@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -52,7 +52,7 @@ void * Malloc(  CONTEXT * ctxt, AFUNPTR pf_malloc, size_t size )
     // This should result in an error.  Do not try this at home.
     //
     PIN_CallApplicationFunction( ctxt, PIN_ThreadId(),
-                                 CALLINGSTD_DEFAULT, pf_malloc,
+                                 CALLINGSTD_DEFAULT, pf_malloc, NULL,
                                  PIN_PARG(int), &res,
                                  PIN_PARG(size_t), size,
                                  PIN_PARG_END() );

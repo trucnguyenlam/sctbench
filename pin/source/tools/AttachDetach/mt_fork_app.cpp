@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -33,8 +33,11 @@ END_LEGAL */
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 #define NUM_OF_THREADS 5
+#define CHILD_TIMEOUT 30 //30 seconds
+#define TIMEOUT 600      //10 minutes
 
 void RunApp(char *app)
 {
@@ -45,18 +48,33 @@ void RunApp(char *app)
 	}
 	else
 	{
-		int status = 0;
-		waitpid(child, &status, 0);
-		if (WIFEXITED(status))
+		int status = 0, res = 0;
+        int timer = CHILD_TIMEOUT;
+        do {
+            res = waitpid(child, &status, WNOHANG); 
+            // waitpid will return: 
+            //   0 : case child is alive but not finished. 
+            //   child : case child finished and status is available. 
+            //   -1 : case child is dead and no status is available (possibly died from kill -9)
+            sleep(1);
+        } while (res == 0 && timer-- > 0 );
+                
+		if (res == child && WIFEXITED(status))
 		{
 			if (WEXITSTATUS(status) != 0)
 			{
 				fprintf(stderr, 
-				"APPLICATION ERROR: The child prs fails with status 0x%x\n", 
+				"APPLICATION ERROR: The child process failed with status 0x%x\n", 
 						WEXITSTATUS(status));
-				exit(-1);
+				exit(1);
 			}
-		}
+		} else if (res == -1 ){
+            //Child is dead (might be killed with kill -9), and status is not available
+            fprintf(stderr,
+            "APPLICATION ERROR: child process exited unexpectedly, status is not available. \n");
+            exit(1);
+        }
+
 	}
 }
 		
@@ -69,7 +87,14 @@ void *ThreadFunc(void *arg)
 		sleep(1);
 	}
 }
-	
+
+
+static void TimeoutHandler(int a)
+{
+    printf("Application is running more than %d minutes. It might be hanged. Killing it", TIMEOUT/60);
+    exit(1);
+}
+
 int main(int argc, char **argv)
 {
 	if (argc <=1)
@@ -78,7 +103,20 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	pthread_t thHandle[NUM_OF_THREADS];
-	
+
+    struct sigaction sigact_timeout;
+    sigact_timeout.sa_handler = TimeoutHandler;
+    sigact_timeout.sa_flags = 0;
+    sigfillset(&sigact_timeout.sa_mask);
+                            
+    if (sigaction(SIGALRM, &sigact_timeout, 0) == -1)
+    {
+        fprintf(stderr, "Unable to set up timeout handler errno=%d.\n", errno);
+        return 1;
+    }
+
+    alarm(TIMEOUT);
+
 	for (unsigned int i=0; i < NUM_OF_THREADS; ++i)
 	{
 		pthread_create(&thHandle[i], NULL, ThreadFunc, (void *)argv[1]);

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -64,6 +64,7 @@ int main()
     {
         // If Pin translated probed code properly, exception will reach the handler
         printf("Exception %08X\n", (unsigned long) GetExceptionCode());
+        fflush(stdout);
     }
 
     pBar = bar;
@@ -76,9 +77,11 @@ int main()
     {
         // No exception expected
         printf("Exception %08X\n", (unsigned long) GetExceptionCode());
+        fflush(stdout);
     }
 
     printf("result=%d\n", i);
+    fflush(stdout);
 
     return 0;
 }

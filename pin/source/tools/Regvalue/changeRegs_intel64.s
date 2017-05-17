@@ -1,3 +1,5 @@
+# On OS X*, we need to use RIP relative addressing (%rip) to access nonlocal 
+# data. This has no effect on Linux.
 
 .data
 
@@ -30,8 +32,10 @@
 # st2   - used for testing the FPU values
 # xmm0  - used for testing the sse values
 # ymm1  - used for testing the avx values
-.global ChangeRegsWrapper
+#ifndef TARGET_MAC
 .type ChangeRegsWrapper,  @function
+#endif
+.global ChangeRegsWrapper
 ChangeRegsWrapper:
     # Save the necessary GPRs
     push    %rax
@@ -40,7 +44,7 @@ ChangeRegsWrapper:
     push    %rdx
 
     # Allign the fpSaveArea
-    lea     fpSaveArea, %rcx
+    lea     fpSaveArea(%rip), %rcx
     add     $0x40, %rcx
     and     $0xffffffffffffffc0, %rcx
     # Save the floating-point state
@@ -82,26 +86,30 @@ ChangeRegsWrapper:
 
 # void ChangeRegs();
 # For register usage see ChangeRegsWrapper above.
-.global ChangeRegs
+#ifndef TARGET_MAC
 .type ChangeRegs,  @function
+#endif
+.global ChangeRegs
 ChangeRegs:
     # TEST: load the new value to rbx
-    mov     gprval, %rbx
+    mov     gprval(%rip), %rbx
     # prepare the test value at the top of the FPU stack
-    fldt    stval
+    fldt    stval(%rip)
     # TEST: load the new value to st2
     fst     %st(2)
     # TEST: load the new value to xmm0
-    movdqu  xmmval, %xmm0
+    movdqu  xmmval(%rip), %xmm0
 #ifdef CONTEXT_USING_AVX
     # TEST: load the new value to ymm1
-    vmovdqu ymmval, %ymm1
+    vmovdqu ymmval(%rip), %ymm1
 #endif
     ret
 
 # void ExecuteAt();
-.global ExecuteAt
+#ifndef TARGET_MAC
 .type ExecuteAt,  @function
+#endif
+.global ExecuteAt
 ExecuteAt:
     ret
 
@@ -109,19 +117,21 @@ ExecuteAt:
 # Save the necessary registers to memory.
 # The tool will then compare the value stored in memory to the ones it expects to find.
 # For register usage see ChangeRegsWrapper above.
-.global SaveRegsToMem
+#ifndef TARGET_MAC
 .type SaveRegsToMem,  @function
+#endif
+.global SaveRegsToMem
 SaveRegsToMem:
     # TEST: store the new value of rbx
-    mov     %rbx, agprval
+    mov     %rbx, agprval(%rip)
     # prepare the test value at the top of the FPU stack
     fld     %st(2)
     # TEST: store the new value of st2
-    fstpt   astval
+    fstpt   astval(%rip)
     # TEST: store the new value of xmm0
-    movdqu  %xmm0, axmmval
+    movdqu  %xmm0, axmmval(%rip)
 #ifdef CONTEXT_USING_AVX
     # TEST: store the new value of ymm1
-    vmovdqu %ymm1, aymmval
+    vmovdqu %ymm1, aymmval(%rip)
 #endif
     ret

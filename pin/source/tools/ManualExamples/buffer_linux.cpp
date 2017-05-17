@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -146,6 +146,12 @@ VOID Trace(TRACE trace, VOID *v)
     {
         for(INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins=INS_Next(ins))
         {
+            if (!INS_IsStandardMemop(ins) && !INS_HasMemoryVector(ins))
+            {
+                // We don't know how to treat these instructions
+                continue;
+            }
+
             UINT32 memoryOperands = INS_MemoryOperandCount(ins);
 
             for (UINT32 memOp = 0; memOp < memoryOperands; memOp++)

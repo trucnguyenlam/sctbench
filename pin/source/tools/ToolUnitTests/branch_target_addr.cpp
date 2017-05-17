@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -118,7 +118,7 @@ disassemble(UINT64 start, UINT64 stop) {
                 os << "  ";
             os << " ";
             memset(buffer,0,200);
-            int dis_okay = xed_format(syntax, &xedd, buffer, 200, pc);
+            int dis_okay = xed_format_context(syntax, &xedd, buffer, 200, pc, 0, 0);
             if (dis_okay) 
                 os << buffer << endl;
             else

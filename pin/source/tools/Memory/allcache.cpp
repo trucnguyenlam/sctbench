@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -199,7 +199,7 @@ LOCALFUN VOID Instruction(INS ins, VOID *v)
         IARG_INST_PTR,
         IARG_END);
 
-    if (INS_IsMemoryRead(ins))
+    if (INS_IsMemoryRead(ins) && INS_IsStandardMemop(ins))
     {
         const UINT32 size = INS_MemoryReadSize(ins);
         const AFUNPTR countFun = (size <= 4 ? (AFUNPTR) MemRefSingle : (AFUNPTR) MemRefMulti);
@@ -213,7 +213,7 @@ LOCALFUN VOID Instruction(INS ins, VOID *v)
             IARG_END);
     }
 
-    if (INS_IsMemoryWrite(ins))
+    if (INS_IsMemoryWrite(ins) && INS_IsStandardMemop(ins))
     {
         const UINT32 size = INS_MemoryWriteSize(ins);
         const AFUNPTR countFun = (size <= 4 ? (AFUNPTR) MemRefSingle : (AFUNPTR) MemRefMulti);

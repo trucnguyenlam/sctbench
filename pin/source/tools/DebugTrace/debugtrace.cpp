@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -44,12 +44,14 @@ END_LEGAL */
 
 #include "pin.H"
 #include "instlib.H"
+#include "control_manager.H"
 #include "portability.H"
 #include <vector>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 
+using namespace CONTROLLER;
 using namespace INSTLIB;
 
 /* ===================================================================== */
@@ -127,11 +129,11 @@ LOCALFUN VOID Flush()
 
 LOCALFUN VOID Fini(int, VOID * v);
 
-LOCALFUN VOID Handler(CONTROL_EVENT ev, VOID *, CONTEXT * ctxt, VOID *, THREADID)
+LOCALFUN VOID Handler(EVENT_TYPE ev, VOID *, CONTEXT * ctxt, VOID *, THREADID, bool bcast)
 {
     switch(ev)
     {
-      case CONTROL_START:
+      case EVENT_START:
         enabled = 1;
         PIN_RemoveInstrumentation();
 #if defined(TARGET_IA32) || defined(TARGET_IA32E)
@@ -140,7 +142,7 @@ LOCALFUN VOID Handler(CONTROL_EVENT ev, VOID *, CONTEXT * ctxt, VOID *, THREADID
 #endif   
         break;
 
-      case CONTROL_STOP:
+      case EVENT_STOP:
         enabled = 0;
         PIN_RemoveInstrumentation();
         if (KnobEarlyOut)
@@ -474,7 +476,13 @@ string FormatAddress(ADDRINT address, RTN rtn)
     
     if (KnobSymbols && RTN_Valid(rtn))
     {
-        s += " " + IMG_Name(SEC_Img(RTN_Sec(rtn))) + ":";
+        IMG img = SEC_Img(RTN_Sec(rtn));
+        s+= " ";
+        if (IMG_Valid(img))
+        {
+            s += IMG_Name(img) + ":";
+        }
+
         s += RTN_Name(rtn);
 
         ADDRINT delta = address - RTN_Address(rtn);
@@ -684,7 +692,7 @@ VOID MemoryTrace(INS ins)
     if (!KnobTraceMemory)
         return;
     
-    if (INS_IsMemoryWrite(ins))
+    if (INS_IsMemoryWrite(ins) && INS_IsStandardMemop(ins))
     {
         INS_InsertCall(ins, IPOINT_BEFORE, AFUNPTR(CaptureWriteEa), IARG_THREAD_ID, IARG_MEMORYWRITE_EA, IARG_END);
 
@@ -698,12 +706,12 @@ VOID MemoryTrace(INS ins)
         }
     }
 
-    if (INS_HasMemoryRead2(ins))
+    if (INS_HasMemoryRead2(ins) && INS_IsStandardMemop(ins))
     {
         INS_InsertPredicatedCall(ins, IPOINT_BEFORE, AFUNPTR(EmitRead), IARG_THREAD_ID, IARG_MEMORYREAD2_EA, IARG_MEMORYREAD_SIZE, IARG_END);
     }
 
-    if (INS_IsMemoryRead(ins) && !INS_IsPrefetch(ins))
+    if (INS_IsMemoryRead(ins) && !INS_IsPrefetch(ins) && INS_IsStandardMemop(ins))
     {
         INS_InsertPredicatedCall(ins, IPOINT_BEFORE, AFUNPTR(EmitRead), IARG_THREAD_ID, IARG_MEMORYREAD_EA, IARG_MEMORYREAD_SIZE, IARG_END);
     }
@@ -793,7 +801,7 @@ static void OnSig(THREADID threadIndex,
 
 /* ===================================================================== */
 
-LOCALVAR CONTROL control;
+LOCALVAR CONTROL_MANAGER control;
 LOCALVAR SKIPPER skipper;
 
 /* ===================================================================== */
@@ -819,7 +827,8 @@ int main(int argc, CHAR *argv[])
     out << hex << right;
     out.setf(ios::showbase);
 
-    control.CheckKnobs(Handler, 0);
+    control.RegisterHandler(Handler, 0, FALSE);
+    control.Activate();
     skipper.CheckKnobs(0);
     
     TRACE_AddInstrumentFunction(Trace, 0);

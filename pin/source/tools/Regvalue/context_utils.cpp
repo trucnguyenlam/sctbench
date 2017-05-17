@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -29,7 +29,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END_LEGAL */
 #include "context_utils.h"
-#include "regvalues.h"
 
 
 /////////////////////
@@ -38,44 +37,22 @@ END_LEGAL */
 
 void StoreContext(const CONTEXT * ctxt)
 {
-    PIN_GetContextRegval(ctxt, GPRREG, &gprregval);
-#if defined(TARGET_IA32E) || defined(TARGET_MIC)
-    PIN_GetContextRegval(ctxt, GPR32REG, &gpr32regval);
-#endif
-    PIN_GetContextRegval(ctxt, GPR16REG, &gpr16regval);
-    PIN_GetContextRegval(ctxt, GPRLREG, &gprlregval);
-    PIN_GetContextRegval(ctxt, GPRHREG, &gprhregval);
-    PIN_GetContextRegval(ctxt, STREG, &stregval);
-#ifdef TARGET_MIC
-    PIN_GetContextRegval(ctxt, ZMMREG, &zmmregval);
-    PIN_GetContextRegval(ctxt, KREG, &kregval);
-#else
-    PIN_GetContextRegval(ctxt, XMMREG, &xmmregval);
-    if (hasAvxSupport)
+    vector<REG> regs = GetTestRegs();
+    int numOfRegs = regs.size();
+    for (int r = 0; r < numOfRegs; ++r)
     {
-        PIN_GetContextRegval(ctxt, YMMREG, &ymmregval);
+        REG reg = regs[r];
+        PIN_GetContextRegval(ctxt, reg, GetRegval(reg));
     }
-#endif // not TARGET_MIC
 }
 
 void ModifyContext(CONTEXT * ctxt)
 {
-    PIN_AssignRegval(&gprregval, reinterpret_cast<const UINT64*>(tgprval), GPRBITSIZE);
-    PIN_SetContextRegval(ctxt, GPRREG, &gprregval);
-    PIN_AssignRegval(&stregval, reinterpret_cast<const UINT64*>(tstval), STBITSIZE);
-    PIN_SetContextRegval(ctxt, STREG, &stregval);
-#ifdef TARGET_MIC
-    PIN_AssignRegval(&zmmregval, reinterpret_cast<const UINT64*>(tzmmval), ZMMBITSIZE);
-    PIN_SetContextRegval(ctxt, ZMMREG, &zmmregval);
-    PIN_AssignRegval(&kregval, reinterpret_cast<const UINT64*>(tkval), KBITSIZE);
-    PIN_SetContextRegval(ctxt, KREG, &kregval);
-#else
-    PIN_AssignRegval(&xmmregval, reinterpret_cast<const UINT64*>(txmmval), XMMBITSIZE);
-    PIN_SetContextRegval(ctxt, XMMREG, &xmmregval);
-    if (hasAvxSupport)
+    vector<REG> regs = GetTestRegs();
+    int numOfRegs = regs.size();
+    for (int r = 0; r < numOfRegs; ++r)
     {
-        PIN_AssignRegval(&ymmregval, reinterpret_cast<const UINT64*>(tymmval), YMMBITSIZE);
-        PIN_SetContextRegval(ctxt, YMMREG, &ymmregval);
+        REG reg = regs[r];
+        PIN_SetContextRegval(ctxt, reg, GetToolRegisterValue(reg));
     }
-#endif // not TARGET_MIC
 }

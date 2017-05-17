@@ -23,8 +23,8 @@
 #include <iostream>
 #include <map>
 #include <set>
-#include <tr1/unordered_map>
 #include <unordered_set>
+#include <unordered_map>
 
 #include "core/basictypes.h"
 #include "core/sync.h"
@@ -51,7 +51,7 @@ class Image {
   const std::string &name() { return proto_->name(); }
 
  private:
-  typedef std::tr1::unordered_map<address_t, Inst *> InstAddrMap;
+  typedef std::unordered_map<address_t, Inst *> InstAddrMap;
 
   explicit Image(ImageProto *proto) : proto_(proto) {}
   ~Image() {}
@@ -77,7 +77,7 @@ typedef uint32 opcode_type;
 class Inst {
  public:
   typedef std::unordered_set<Inst*> Set;
-  
+
   bool HasOpcode() { return proto_->has_opcode(); }
   bool HasDebugInfo() { return proto_->has_debug_info(); }
   void SetOpcode(opcode_type c) { proto_->set_opcode(c); }
@@ -120,7 +120,7 @@ class StaticInfo {
 
  private:
   typedef std::map<image_id_type, Image *> ImageMap;
-  typedef std::tr1::unordered_map<inst_id_type, Inst *> InstMap;
+  typedef std::unordered_map<inst_id_type, Inst *> InstMap;
 
   image_id_type GetNextImageID() { return ++curr_image_id_; }
   inst_id_type GetNextInstID() { return ++curr_inst_id_; }

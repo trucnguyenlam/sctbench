@@ -42,8 +42,13 @@ _start:
         
         # Test 5
         incq    %rdi   
+#ifdef __PIC__
+        pushq   value(%rip)
+        movq    value(%rip), %rax
+#else
         pushq   value
         movq    value, %rax
+#endif
         cmp     (%rsp),%rax
         jne     1f
 
@@ -205,7 +210,12 @@ _start:
         # Test 27 call indirect through the stack
         inc     %rdi
         mov     $1,%rax
+#ifdef __PIC__
+        lea     stubRoutine(%rip),%rax 
+        movq    %rax,8(%rsp)
+#else
         movq    $stubRoutine,8(%rsp)
+#endif
         call    *8(%rsp)
         cmp     $0,%rax
         jne     1f

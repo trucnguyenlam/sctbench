@@ -18,7 +18,7 @@ This program is called "mix" (or mix-mt, etc.). It  does static and dynamic:
 	ISA extension counting, or
         ISA category counting.
 
-(Note: static profiles are only available on linux/mac. Not windows).
+(Note: static profiles are only available on Linux and OS X*. Not on Windows).
 
 ---------------------------------------------------------------
 

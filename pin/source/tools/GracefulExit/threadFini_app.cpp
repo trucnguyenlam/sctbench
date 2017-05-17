@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -47,7 +47,6 @@ END_LEGAL */
 #include <cstring>
 #include "threadUtils.h"
 
-
 /**************************************************
  * enums and typedefs                             *
  **************************************************/
@@ -90,7 +89,7 @@ const string roleStrings[ROLE_SIZE] = { "WAIT", "LOOP", "FINISH", "EXIT", "CANCE
  * Function declarations                          *
  **************************************************/
 static void* DoNewThread(void* threadNumArg);
-extern "C" EXPORT_SYM void doExit(bool appThread);
+extern "C" EXPORT_SYM volatile void doExit(bool appThread);
 
 
 /**************************************************
@@ -203,7 +202,7 @@ static void waitForThreads() {
 }
 
 // The tool will kill the process, either by the main thread or an internal tool thread.
-void doExit(bool appThread) {
+void volatile doExit(bool appThread) {
     Print("main thread is in doExit");
     while (1) { // wait here until the tool kills the process
         DoYield();
@@ -211,12 +210,13 @@ void doExit(bool appThread) {
 }
 
 static void waitOrExit() {
+    volatile void (*fn)(bool) = &doExit; // This trick prevents GCC 3.4.6 to opt out this function
     switch(exitType) {
     case EXIT_TOOL_APP:
-        doExit(true); // never returns
+        (*fn)(true); // never returns
     
     case EXIT_TOOL_INTERNAL:
-        doExit(false); // never returns
+        (*fn)(false); // never returns
     
     case EXIT_RETURN:
         return;
@@ -238,18 +238,20 @@ static void waitOrExit() {
  **************************************************/
 int main(int argc, const char* argv[]) {
     parseArgs(argc, argv);
-    
+
 //    Print("main thread starting the test..."); // FOR DEBUG
-    
+
     InitLocks();
-    
+
+    SetTimeout();
+
     if (!createThreads()) { // returns true if all threads were created successfully
         ErrorExit(RES_CREATE_FAILED);
     }
-    
+
     waitForThreads();
     waitOrExit();
-    
+
     Print("main thread is calling return from main()"); // FOR DEBUG
     return RES_SUCCESS;
 }

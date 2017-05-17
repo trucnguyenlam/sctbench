@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -55,6 +55,7 @@ struct MEMREF
 };
 
 FILE *outfile;
+KNOB<string> KnobOutputFile(KNOB_MODE_WRITEONCE, "pintool", "o", "allocate.out", "output file");
 
 BUFFER_ID bufId;
 PIN_LOCK fileLock;
@@ -84,7 +85,7 @@ VOID Trace(TRACE trace, VOID *v){
                 INS_InsertFillBuffer(ins, IPOINT_BEFORE, bufId,
                     IARG_INST_PTR, offsetof(struct MEMREF, pc),
                     IARG_MEMORYREAD_EA, offsetof(struct MEMREF, address),
-                    IARG_UINT32, refSize, offsetof(struct MEMREF, size), 
+                    IARG_UINT32, refSize, offsetof(struct MEMREF, size),
                     IARG_UINT32, 1, offsetof(struct MEMREF, load),
                     IARG_END);
 
@@ -96,7 +97,7 @@ VOID Trace(TRACE trace, VOID *v){
                 INS_InsertFillBuffer(ins, IPOINT_BEFORE, bufId,
                     IARG_INST_PTR, offsetof(struct MEMREF, pc),
                     IARG_MEMORYREAD2_EA, offsetof(struct MEMREF, address),
-                    IARG_UINT32, refSize, offsetof(struct MEMREF, size), 
+                    IARG_UINT32, refSize, offsetof(struct MEMREF, size),
                     IARG_UINT32, 1, offsetof(struct MEMREF, load),
                     IARG_END);
 
@@ -108,7 +109,7 @@ VOID Trace(TRACE trace, VOID *v){
                 INS_InsertFillBuffer(ins, IPOINT_BEFORE, bufId,
                     IARG_INST_PTR, offsetof(struct MEMREF, pc),
                     IARG_MEMORYWRITE_EA, offsetof(struct MEMREF, address),
-                    IARG_UINT32, refSize, offsetof(struct MEMREF, size), 
+                    IARG_UINT32, refSize, offsetof(struct MEMREF, size),
                     IARG_UINT32, 0, offsetof(struct MEMREF, load),
                     IARG_END);
             }
@@ -130,7 +131,7 @@ VOID Trace(TRACE trace, VOID *v){
 VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,
                   UINT64 numElements, VOID *v)
 {
-    GetLock(&fileLock, 1);
+    PIN_GetLock(&fileLock, 1);
 
     struct MEMREF* reference=(struct MEMREF*)buf;
     UINT64 i;
@@ -141,13 +142,13 @@ VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,
     }
     
     fflush(outfile);
-    ReleaseLock(&fileLock);
+    PIN_ReleaseLock(&fileLock);
 
     // Test deallocate and allocate
     VOID * newbuf = PIN_AllocateBuffer(id);
 
     PIN_DeallocateBuffer( id, buf );
-    
+
     return newbuf;
 }
 
@@ -161,10 +162,10 @@ VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,
 VOID Fini(INT32 code, VOID *v)
 {
 
-    GetLock(&fileLock, 1);
+    PIN_GetLock(&fileLock, 1);
     fclose(outfile);
     printf("outfile closed\n");
-    ReleaseLock(&fileLock);
+    PIN_ReleaseLock(&fileLock);
 }
 
 /*!
@@ -192,13 +193,13 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    outfile = fopen("allocate.out", "w");
+    outfile = fopen(KnobOutputFile.Value().c_str(), "w");
     if(!outfile){
-        cerr << "Couldn't open allocate.out" << endl;
+        cerr << "Couldn't open " << KnobOutputFile.Value() << endl;
         return 1;
     }
 
-    InitLock(&fileLock);
+    PIN_InitLock(&fileLock);
 
     // add an instrumentation function
     TRACE_AddInstrumentFunction(Trace, 0);

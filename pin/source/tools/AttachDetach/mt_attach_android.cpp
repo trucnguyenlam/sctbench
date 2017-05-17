@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -45,7 +45,7 @@ END_LEGAL */
 
 using namespace std;
 
-bool allThreadsCanceled = false;
+bool shouldCancelThreads = true;
 volatile bool exitThreads = false;
 void CancelAllThreads();
 void BlockSignal(int sigNo);
@@ -82,11 +82,11 @@ void UnblockAllSignals()
  */
 void SigUsr1Handler(int sig)
 {
-    if (!allThreadsCanceled)
+    if (shouldCancelThreads)
     {
         fprintf(stderr, "Cancel all threads\n");
         CancelAllThreads();
-        allThreadsCanceled = true;
+        shouldCancelThreads = false;
     }
 }
 
@@ -236,6 +236,10 @@ void ParseCommandLine(int argc, char *argv[], list < string>* pinArgs)
         {
             attachTwice = true;
         }
+        else if ("-keep_threads")
+        {
+            shouldCancelThreads = false;
+        }
     }
     assert(!pinBinary.empty());
     pinArgs->push_front(pinBinary);
@@ -299,11 +303,11 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Sending SIGUSR1\n");
     SendSignals(SIGUSR1);
     
-    while(!allThreadsCanceled)
+    while(shouldCancelThreads)
     {
         sched_yield();
     }
-    fprintf(stderr, "All threads are canceled after SIGUSR1\n");
+    fprintf(stderr, "%s: exiting...\n", argv[0]);
 
     return 0;
 }

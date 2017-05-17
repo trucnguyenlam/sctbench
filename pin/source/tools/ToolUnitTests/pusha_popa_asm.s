@@ -1,6 +1,8 @@
 	.text
 .globl DoPushA16
+#ifndef TARGET_MAC
 	.type	DoPushA16,@function
+#endif
 DoPushA16:
 	pushl	%ebp
 	pushl	%ebx
@@ -20,7 +22,10 @@ DoPushA16:
     mov     12(%edi), %si           # si = inRegs->si
     mov     14(%edi), %di           # di = inRegs->di
 
-    pushaw
+    // This is the encoding for `pushaw`. The `pushaw` mnemonic is not known
+    // on old Clang versions, so we encode the instruction as raw bytes.
+    //
+    .byte 0x66,0x60
 
     mov     (16+24)(%esp), %edi     # second parameter (&outRegs)
     mov     14(%esp), %ax           # outRegs->ax = push'd ax value
@@ -51,7 +56,9 @@ DoPushA16:
 
 	.text
 .globl DoPushA32
+#ifndef TARGET_MAC
 	.type	DoPushA32,@function
+#endif
 DoPushA32:
 	pushl	%ebp
 	pushl	%ebx
@@ -101,7 +108,9 @@ DoPushA32:
 
 
 .globl DoPopA16
+#ifndef TARGET_MAC
 	.type	DoPopA16,@function
+#endif
 DoPopA16:
 	pushl	%ebp
 	pushl	%ebx
@@ -128,7 +137,10 @@ DoPopA16:
     mov     14(%eax), %bx           # copy inRegs->di to stack
     mov     %bx, 0(%esp)
 
-    popaw
+    // This is the encoding for `popaw`. The `popaw` mnemonic is not known
+    // on old Clang versions, so we encode the instruction as raw bytes.
+    //
+    .byte 0x66,0x61
 
     pushl   %eax                    # temporarily save pop'd AX value
     movl    (4+24)(%esp), %eax      # second parameter (&outRegs)
@@ -150,7 +162,9 @@ DoPopA16:
 
 
 .globl DoPopA32
+#ifndef TARGET_MAC
 	.type	DoPopA32,@function
+#endif
 DoPopA32:
 	pushl	%ebp
 	pushl	%ebx

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -31,7 +31,7 @@ END_LEGAL */
 #define _GNU_SOURCE
 #ifdef TARGET_MAC
 #include <sys/ucontext.h>
-#elif defined(TARGET_ANDROID)
+#elif defined(TARGET_ANDROID) && !defined(TARGET_NDK64)
 #include <signal.h>
 #include <setjmp.h>
 #include "android_ucontext.h"
@@ -40,6 +40,7 @@ END_LEGAL */
 #endif
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <assert.h>
 #include <unistd.h>
@@ -48,8 +49,24 @@ END_LEGAL */
 #include "raise-exception-addrs.h"
 #include "faultcheck-target.h"
 
+#ifndef TARGET_ANDROID
 #define PAGESIZE 4096
+#endif
 
+/* When an executable is position independent, it may load into any location. 
+ * This causes a problem when diffing the outputs of two runs of this program.
+ * We can solve this by only comparing the page offsets, which should remain
+ * constant between runs. If, for debugging purposes, full addresses are
+ * needed, define NORMALIZE_ADDRESSES as 0.
+ */
+#define NORMALIZE_ADDRESSES 1
+
+uintptr_t normalize_addr(uintptr_t addr) {
+    if (NORMALIZE_ADDRESSES) {
+        addr = addr & (PAGESIZE - 1);
+    }
+    return addr;
+}
 
 extern void DoUnmappedWrite(void *);
 extern void DoUnmappedRead(void *);
@@ -378,7 +395,7 @@ TSTATUS DoTest(unsigned int tnum)
 #if defined(TARGET_IA32) && !defined(TARGET_MAC)
         /*
          * The BOUND instruction only exists on IA32.
-         * GCC/GAS on Mac does not support assemblying the bound instruction
+         * GCC/GAS on OS X* does not support assemblying the bound instruction
          */
         DoBoundTrap();
         return TSTATUS_NOFAULT;
@@ -447,7 +464,7 @@ TSTATUS DoTest(unsigned int tnum)
         DoSIMDDivideByZero();
         return TSTATUS_NOFAULT;
 #else
-        /* This causes problems on Mac */
+        /* This causes problems on OS X* */
         return TSTATUS_SKIP;
 #endif
     case 23:
@@ -476,7 +493,7 @@ TSTATUS DoTest(unsigned int tnum)
         DoSIMDInvalidOperation();
         return TSTATUS_NOFAULT;
 #else
-        /* This causes problems on Mac */
+        /* This causes problems on OS X* */
         return TSTATUS_SKIP;
 #endif
     case 27:
@@ -487,7 +504,7 @@ TSTATUS DoTest(unsigned int tnum)
         DoSIMDDenormalizedOperand();
         return TSTATUS_NOFAULT;
 #else
-        /* This causes problems on Mac */
+        /* This causes problems on OS X* */
         return TSTATUS_SKIP;
 #endif
     case 28:
@@ -557,17 +574,17 @@ TSTATUS DoTest(unsigned int tnum)
         if (trapNo >= NUM_TRAP_FUNCS)
             break;
 
-        printf("  INT %u (at %p)\n", trapNo, (void *)&IntTrapCode[trapNo*BYTES_PER_TRAP_FUNC]);
+        printf("  INT %u (at %p)\n", trapNo, normalize_addr((intptr_t)&IntTrapCode[trapNo*BYTES_PER_TRAP_FUNC]));
 
 #if defined(TARGET_MAC)
         /*
-         * Mac kernel delivers all sorts of signals to these traps
+         * OS X* kernel delivers all sorts of signals to these traps
          */
         if (trapNo <= 5 || trapNo == 127)
             return TSTATUS_SKIP;
 
         /*
-         * These are considered as system calls on Mac OS
+         * These are considered as system calls on OS X*
          */
         if (0x80 <= trapNo && trapNo <= 0x83)
             return TSTATUS_SKIP;
@@ -634,16 +651,17 @@ void PrintSignalContext(int sig, const siginfo_t *info, void *vctxt)
     mxcsr = (long int)ctxt->uc_mcontext->__fs.__fpu_mxcsr;
 #endif
 
+    ;
     printf("  Signal %d, pc=0x%lx, si_errno=%d, trap_no=%ld",
         sig,
-        rip,
+        normalize_addr((uintptr_t)rip),
         (int)info->si_errno,
         trapno);
 
     if (!IsBadKernel)
         printf(", si_code=%d", (int)info->si_code);
     if (PrintSiAddr)
-        printf(", si_addr=0x%lx", (unsigned long)info->si_addr);
+        printf(", si_addr=%lx", normalize_addr((uintptr_t)info->si_addr));
     if (PrintMxcsr)
         printf(", mxcsr=0x%lx", mxcsr);
     if (PrintX87Status)

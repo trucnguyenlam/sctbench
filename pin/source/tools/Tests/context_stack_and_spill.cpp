@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -121,7 +121,7 @@ disassemble(UINT64 start, UINT64 stop) {
                 os << "  ";
             os << " ";
             memset(buffer,0,200);
-            int dis_okay = xed_format(syntax, &xedd, buffer, 200, pc);
+            int dis_okay = xed_format_context(syntax, &xedd, buffer, 200, pc, 0, 0);
             if (dis_okay) 
                 os << buffer << endl;
             else
@@ -210,7 +210,7 @@ VOID GetFpContextFromContext (CONTEXT *ctxt)
      FPSTATE *fpContextFromPin = 
         reinterpret_cast<FPSTATE *>
         (( reinterpret_cast<ADDRINT>(fpContextSpaceForFpConextFromPin) + (FPSTATE_ALIGNMENT - 1))
-           & (-1*(int)FPSTATE_ALIGNMENT));
+           & (-FPSTATE_ALIGNMENT));
     PIN_GetContextFPState(ctxt, fpContextFromPin);
 }
 
@@ -676,7 +676,7 @@ BOOL CompareFpContext(CONTEXT *context1, CONTEXT *context2)
     }
     for (i=0; i < 8; ++i)
     {
-        if (fpVerboseContext1->_vstate._kmasks[i] != fpVerboseContext2->_vstate._kmasks[i])
+        if ((UINT16)fpVerboseContext1->_vstate._kmasks[i] != (UINT16)fpVerboseContext2->_vstate._kmasks[i])
         {
             printf ("_kmasks[%d] ERROR\n", i);
             fflush (stdout);

@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -33,6 +33,11 @@ END_LEGAL */
  *  This is the "main DLL", use PIN API only in this DLL
  *  usage of PIN API in dynamic_secondary_dll and static_secondary_dll is not allowed
  *  (see README for more inforamtion)
+ *
+ *  NOTE: New Pin image loader does not (yet) support dynamic loading of Pin DLLs.
+ *        Code related to dynamic_secondary_dll was suppressed.
+ *        Look at Mantis 3280 for updates.
+ *        #define DYN_LOAD will enable validation of dynamic loading feature in the test.
  */
 
 #include <iostream>
@@ -53,10 +58,12 @@ PIN_LOCK lock;
 
 typedef VOID (* BEFORE_BBL)(ADDRINT ip);
 
+#if defined(DYN_LOAD)
 // Functions pointers for dynamic_secondary_dll
 BEFORE_BBL pBeforeBBL2;
 WINDOWS::FARPROC pInit2;
 WINDOWS::FARPROC pFini2;
+#endif
 
 // Dll imports for static_secondary_dll
 extern "C" __declspec( dllimport ) VOID BeforeBBL1(ADDRINT ip);
@@ -68,10 +75,12 @@ extern "C" __declspec( dllimport ) VOID Fini1();
 // This function is called before every basic block
 VOID PIN_FAST_ANALYSIS_CALL BeforeBBL(ADDRINT ip) 
 {
-    GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     BeforeBBL1(ip);
+#if defined(DYN_LOAD)
     pBeforeBBL2(ip);
-    ReleaseLock(&lock);
+#endif
+    PIN_ReleaseLock(&lock);
 }
 
 /* ===================================================================== */
@@ -90,18 +99,22 @@ VOID Trace(TRACE trace, VOID *v)
 
 VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
-    GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     BeforeBBL1(0);
+#if defined(DYN_LOAD)
     pBeforeBBL2(0);
-    ReleaseLock(&lock);
+#endif
+    PIN_ReleaseLock(&lock);
 }
 
 VOID ThreadFini(THREADID threadid, const CONTEXT *ctxt, INT32 code, VOID *v)
 {
-    GetLock(&lock, PIN_GetTid());
+    PIN_GetLock(&lock, PIN_GetTid());
     BeforeBBL1(0);
+#if defined(DYN_LOAD)
     pBeforeBBL2(0);
-    ReleaseLock(&lock);
+#endif
+    PIN_ReleaseLock(&lock);
 }
 
 /* ===================================================================== */
@@ -110,17 +123,19 @@ VOID ThreadFini(THREADID threadid, const CONTEXT *ctxt, INT32 code, VOID *v)
 VOID Fini(INT32 code, VOID *v)
 {
     Fini1();
+#if defined(DYN_LOAD)
     pFini2();
+#endif
 }
 
 /* ===================================================================== */
 
 int main(int argc, char * argv[])
 {
-    InitLock(&lock);
-
     // Initialize pin
     PIN_Init(argc, argv);
+
+    PIN_InitLock(&lock);
 
     // Register Trace() to be called to instrument traces
     TRACE_AddInstrumentFunction(Trace, 0);
@@ -131,6 +146,7 @@ int main(int argc, char * argv[])
     // Call Static secondary dll Init1()
     Init1();
 
+#if defined(DYN_LOAD)
     // Dynamic secondary dll - load library, initialize function pointers
     // and call Init2()
     WINDOWS::HMODULE module = WINDOWS::LoadLibrary("dynamic_secondary_dll.dll");
@@ -148,10 +164,10 @@ int main(int argc, char * argv[])
         exit(1);
     }
     pInit2(); 
-    
+#endif
+
     // Start the program, never returns
     PIN_StartProgram();
-    
+
     return 0;
 }
-

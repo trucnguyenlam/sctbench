@@ -1,7 +1,7 @@
 /*BEGIN_LEGAL 
 Intel Open Source License 
 
-Copyright (c) 2002-2013 Intel Corporation. All rights reserved.
+Copyright (c) 2002-2015 Intel Corporation. All rights reserved.
  
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -36,8 +36,12 @@ END_LEGAL */
  * using TLS for data storage and avoids locking, except during I/O.
  */
 
+#if defined(TARGET_WINDOWS)
+#define strdup _strdup
+#endif
+
 #include "pin.H"
-#include "instlib.H"
+#include "control_manager.H"
 #include "portability.H"
 #include <vector>
 #include <iostream>
@@ -49,7 +53,7 @@ END_LEGAL */
 #include <utility> /* for pair */
 #include <vector>
 #include "mix-fp-state.H"
-using namespace INSTLIB;
+using namespace CONTROLLER;
 
 // key for accessing TLS storage in the threads. initialized once in main()
 static  TLS_KEY tls_key;
@@ -432,7 +436,7 @@ LOCALVAR vector<BBLSTATS*> statsList;
 
 #if defined(__GNUC__)
 #  if defined(TARGET_MAC) || defined(TARGET_WINDOWS) 
-     // MAC XCODE2.4.1 gcc and Cgywin gcc 3.4.x only allow for 16b
+     // OS X* XCODE2.4.1 gcc and Cgywin gcc 3.4.x only allow for 16b
      // alignment! So we need to pad!
 #    define ALIGN_LOCK __attribute__ ((aligned(16)))
 #  else
@@ -509,9 +513,9 @@ VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v)
 {
     // This function is locked no need for a Pin Lock here
     numThreads++;
-    GetLock(&locks.lock, tid+2); // for output
+    PIN_GetLock(&locks.lock, tid+2); // for output
     *out << "# Starting tid " << tid << endl;
-    ReleaseLock(&locks.lock);
+    PIN_ReleaseLock(&locks.lock);
 
     thread_data_t* tdata = new thread_data_t;
     // remember my pointer for later
@@ -538,37 +542,26 @@ VOID emit_pc_stats(THREADID tid); //forward prototype
 VOID zero_stats(THREADID tid); //forward prototype
 VOID Fini(int, VOID * v);
 VOID emit_bbl_stats_sorted(THREADID tid);
-LOCALVAR CONTROL control;
-LOCALVAR CONTROL_STATS control_stats;
+LOCALVAR CONTROL_MANAGER control;
 
 
 
-LOCALFUN VOID Handler(CONTROL_EVENT ev, VOID *val, CONTEXT *ctxt, VOID *ip, THREADID tid)
+
+LOCALFUN VOID Handler(EVENT_TYPE ev, VOID *val, CONTEXT *ctxt, VOID *ip, THREADID tid, bool bcast)
 {
     switch(ev)
     {
-      case CONTROL_START:
-        GetLock(&locks.lock, tid+2); // for output
+      case EVENT_START:
+        PIN_GetLock(&locks.lock, tid+2); // for output
         *out << "# Start counting for tid " << tid << endl;
-        ReleaseLock(&locks.lock);
+        PIN_ReleaseLock(&locks.lock);
         activate_counting(tid);
         break;
-      case CONTROL_STOP:
-        GetLock(&locks.lock, tid+2); // for output
+      case EVENT_STOP:
+        PIN_GetLock(&locks.lock, tid+2); // for output
         *out << "# Stop counting for tid "  << tid << endl;
-        if (control.PinPointsActive()) {
-            UINT32 pp = control.CurrentPp(tid);
-            UINT32 phase  = control.CurrentPhase(tid);
-            *out << "# PinPointNumber " << pp << endl;
-            *out << "# PinPointPhase " << phase << endl;
-        }
-        ReleaseLock(&locks.lock);
+        PIN_ReleaseLock(&locks.lock);
         deactivate_counting(tid);
-        if (control.PinPointsActive()) {
-            // when doing pinpoints "mixes" we want to emit and then zero the stats when we stop a region.
-            emit_stats(tid);
-            zero_stats(tid);
-        }
         if (KnobEarlyOut) {
             *out << "Exiting due to -early-out" << endl;
             Fini(0, 0);
@@ -576,35 +569,23 @@ LOCALFUN VOID Handler(CONTROL_EVENT ev, VOID *val, CONTEXT *ctxt, VOID *ip, THRE
         }
 
         break;
-      default:
-        ASSERTX(false);
-    }
-}
-
-
-
-
-LOCALFUN VOID HandlerStats(CONTROL_STATS_EVENT ev, VOID *val, CONTEXT* dummy_context, VOID *ip, THREADID tid)
-{
-    switch(ev)
-    {
-      case CONTROL_STATS_EMIT:
-        GetLock(&locks.lock, tid+2); // for output
+      case EVENT_STATS_EMIT:
+        PIN_GetLock(&locks.lock, tid+2); // for output
         *out << "# Emit stats for tid " << static_cast<int>(tid) << endl;
-        ReleaseLock(&locks.lock);
+        PIN_ReleaseLock(&locks.lock);
         emit_stats(tid);
         break;
-      case CONTROL_STATS_RESET:
-        GetLock(&locks.lock, tid+2); // for output
+      case EVENT_STATS_RESET:
+        PIN_GetLock(&locks.lock, tid+2); // for output
         *out << "# Reset stats for tid " << static_cast<int>(tid) << endl;
-        ReleaseLock(&locks.lock);
+        PIN_ReleaseLock(&locks.lock);
         zero_stats(tid);
         break;
+        
       default:
         ASSERTX(false);
     }
 }
-
 
 
 /* ===================================================================== */
@@ -749,7 +730,7 @@ UINT32 routine_identifier(RTN rtn, THREADID tid)
     
     /* RTN_Id returns a unique global identifier. However, the numeration is not necessarily consecutive
        so we keep our own numeration for convenience (and legacy) - see comment below. */
-    UINT32 rtn_num = static_cast<UINT32>(RTN_Id(rtn));
+    UINT32 rtn_num = RTN_Id(rtn);
     UINT32 img_num =  IMG_Id(SEC_Img(RTN_Sec(rtn)));
 
     /* The pair <img_id, rtn_id> is used to index a map of global routine
@@ -761,7 +742,7 @@ UINT32 routine_identifier(RTN rtn, THREADID tid)
     typedef pair<UINT32,UINT32> rtn_identifier_t;
     static map<rtn_identifier_t, UINT32> rtn_mapper;
     rtn_identifier_t ri(img_num,rtn_num);
-    GetLock(&locks.rtn_table_lock,tid+2);
+    PIN_GetLock(&locks.rtn_table_lock,tid+2);
     map<rtn_identifier_t, UINT32>::iterator it = rtn_mapper.find(ri);
     if (it == rtn_mapper.end()) {
         rtn_mapper[ri] = next_rtn_num;
@@ -780,7 +761,7 @@ UINT32 routine_identifier(RTN rtn, THREADID tid)
     else {
         global_rtn_num = it->second;
     }
-    ReleaseLock(&locks.rtn_table_lock);
+    PIN_ReleaseLock(&locks.rtn_table_lock);
 
     return global_rtn_num;
 }
@@ -838,8 +819,7 @@ VOID Trace(TRACE trace, VOID *v)
         for (INS ins = head; INS_Valid(ins); ins = INS_Next(ins))
         {
             unsigned int instruction_size = INS_Size(ins);
-            // This checks for x86-specific opcodes and fails on some IA-64 architecture
-            // machines where the itext is not readable.
+            // This checks for x86-specific opcodes 
             CheckForSpecialMarkers(ins, pc, instruction_size);
 
             // Count the number of times a predicated instruction is actually executed
@@ -887,9 +867,9 @@ VOID Trace(TRACE trace, VOID *v)
 
         // Remember the counter and stats so we can compute a summary at the end
         basic_blocks++;
-        GetLock(&locks.bbl_list_lock,1);
+        PIN_GetLock(&locks.bbl_list_lock,1);
         statsList.push_back(bblstats);
-        ReleaseLock(&locks.bbl_list_lock);
+        PIN_ReleaseLock(&locks.bbl_list_lock);
     }
 
 }
@@ -988,18 +968,18 @@ VOID emit_bbl_stats_by_function(THREADID tid)
     // grab a copy of the routines list that we can sort and where we can
     // compute function totals. Need to lock because instrumentation might
     // reallocate the vector.
-    GetLock(&locks.rtn_table_lock,tid+2);
+    PIN_GetLock(&locks.rtn_table_lock,tid+2);
     UINT32 functions = rtn_table.size();
     RTN_TABLE_ENTRY* rtn_table_sorted = new RTN_TABLE_ENTRY[functions];
     for(UINT32 i=0; i<functions;i++) {
         rtn_table_sorted[i]=rtn_table[i]; 
     }
-    ReleaseLock(&locks.rtn_table_lock);
+    PIN_ReleaseLock(&locks.rtn_table_lock);
 
 
     // Need to lock here because we might be resize (and thus reallocing)
     // the statsList when we do a push_back in the instrumentation.
-    GetLock(&locks.bbl_list_lock,tid+2);
+    PIN_GetLock(&locks.bbl_list_lock,tid+2);
 
     if (tdata->stats_per_function.size() < functions)
         tdata->stats_per_function.resize(functions+1);
@@ -1024,7 +1004,7 @@ VOID emit_bbl_stats_by_function(THREADID tid)
     }
 
     
-    ReleaseLock(&locks.bbl_list_lock);
+    PIN_ReleaseLock(&locks.bbl_list_lock);
 
     // emit the "normal" dynamic stats 
 
@@ -1112,7 +1092,7 @@ VOID emit_bbl_stats_sorted(THREADID tid)
 
     // Need to lock here because we might be resize (and thus reallocing)
     // the statsList when we do a push_back in the instrumentation.
-    GetLock(&locks.bbl_list_lock,tid+2);
+    PIN_GetLock(&locks.bbl_list_lock,tid+2);
     UINT32 limit = tdata->size();
     if ( limit  > statsList.size() )
         limit = statsList.size();
@@ -1134,11 +1114,11 @@ VOID emit_bbl_stats_sorted(THREADID tid)
             thread_total += icounts[i]._icount;
         }
     }
-    ReleaseLock(&locks.bbl_list_lock);
+    PIN_ReleaseLock(&locks.bbl_list_lock);
 
     qsort(icounts, limit, sizeof(BBL_SORT_STATS), qsort_compare_fn);
 
-    GetLock(&locks.rtn_table_lock,tid+2);
+    PIN_GetLock(&locks.rtn_table_lock,tid+2);
 
     *out << "# EMIT_TOP_BLOCK_STATS FOR TID " << tid
          << " EMIT # " << stat_dump_count 
@@ -1178,7 +1158,7 @@ VOID emit_bbl_stats_sorted(THREADID tid)
     }
     
     *out << "# END_TOP_BLOCK_STATS" <<  endl;
-    ReleaseLock(&locks.rtn_table_lock);
+    PIN_ReleaseLock(&locks.rtn_table_lock);
     delete [] icounts;
 }
 
@@ -1198,7 +1178,7 @@ VOID emit_pc_stats(THREADID tid)
     // the statsList when we do a push_back in the instrumentation.
 
     *out << "# EMIT_PC_STATS FOR TID "  << tid << endl;
-    GetLock(&locks.bbl_list_lock,tid+2);
+    PIN_GetLock(&locks.bbl_list_lock,tid+2);
     UINT32 limit = tdata->size();
     if ( limit  > statsList.size() )
         limit = statsList.size();
@@ -1209,7 +1189,7 @@ VOID emit_pc_stats(THREADID tid)
         if (bcount && b && b->_stats) 
             *out << "BLOCKCOUNT 0x" << hex << b->_pc  << " " << dec << (bcount * b->_ninst ) << endl;
     }
-    ReleaseLock(&locks.bbl_list_lock);
+    PIN_ReleaseLock(&locks.bbl_list_lock);
     *out << "# END_EMIT_PC_STATS FOR TID "  << tid << endl;
 }
 
@@ -1223,7 +1203,7 @@ VOID emit_stats(THREADID tid)
     unsigned char* p = MIX_FP_ALIGN(&save_buf); /* make sure it is 16B aligned */
     MIX_FP_SAVE(p);
 
-    GetLock(&locks.lock, tid+2); // for output
+    PIN_GetLock(&locks.lock, tid+2); // for output
     stat_dump_count++;
     *out << "# =============================================="  << endl;
     *out << "# STATS FOR TID " << tid << " EMIT# " << stat_dump_count << endl;
@@ -1232,7 +1212,7 @@ VOID emit_stats(THREADID tid)
     emit_bbl_stats_by_function(tid); // function level stats
     if (KnobMapToFile)
         emit_pc_stats(tid);
-    ReleaseLock(&locks.lock);
+    PIN_ReleaseLock(&locks.lock);
     MIX_FP_RELOAD(p);
 }
 
@@ -1409,7 +1389,7 @@ disassemble(UINT64 start, UINT64 stop) {
                 os << "  ";
             os << " ";
             memset(buffer,0,200);
-            int dis_okay = xed_format(syntax, &xedd, buffer, 200, pc);
+            int dis_okay = xed_format_context(syntax, &xedd, buffer, 200, pc, 0, 0);
             if (dis_okay) 
                 os << buffer << endl;
             else
@@ -1439,9 +1419,9 @@ int main(int argc, CHAR **argv)
     if( PIN_Init(argc,argv) )
         return Usage();
 
-    InitLock(&locks.lock);
-    InitLock(&locks.bbl_list_lock);
-    InitLock(&locks.rtn_table_lock);
+    PIN_InitLock(&locks.lock);
+    PIN_InitLock(&locks.bbl_list_lock);
+    PIN_InitLock(&locks.rtn_table_lock);
 
     // obtain  a key for TLS storage
     tls_key = PIN_CreateThreadDataKey(0);
@@ -1451,8 +1431,9 @@ int main(int argc, CHAR **argv)
         filename += "." + decstr( getpid_portable() );
     out = new std::ofstream(filename.c_str());
     *out << "# Mix output version 2" << endl;
-    control.CheckKnobs(Handler, 0);
-    control_stats.CheckKnobs(HandlerStats, 0);
+    control.RegisterHandler(Handler, 0, FALSE);
+    control.Activate();
+
 
     // make sure that exactly one thing-to-count knob is specified.
     if (KnobInstructionLengthMix.Value() && KnobCategoryMix.Value()) {
