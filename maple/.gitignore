@@ -48,3 +48,5 @@ tmp/
 build-debug/
 build-release/
 script/maple/proto/
+
+example/

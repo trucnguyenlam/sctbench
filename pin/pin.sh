@@ -21,7 +21,7 @@ glibc_libs="$lib_base/ia32/runtime/glibc:$lib_base/intel64/runtime/glibc"
 # vm/tool need elf, cpp and glibc libs
 export PIN_VM_LD_LIBRARY_PATH=$elf_libs:$cpp_libs:$glibc_libs:$LD_LIBRARY_PATH
 
-# If variables we are going to modify are set, save the value. They will be restored 
+# If variables we are going to modify are set, save the value. They will be restored
 # after the injector starts
 export PIN_LD_RESTORE_REQUIRED=t
 if [ -n "${LD_LIBRARY_PATH+x}" ]

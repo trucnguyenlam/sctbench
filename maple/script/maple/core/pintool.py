@@ -30,7 +30,7 @@ class Pin(object):
     def pin(self):
         return self.home_path + '/pin'
     def options(self):
-        c = []
+        c = ['-injection', 'child']
         if self.logging_mode:
             c.append('-xyzzy')
             c.append('-mesgon')

@@ -1,5 +1,8 @@
 # Top level makefile for the project.
 
+CXX=g++-4.9
+CC=gcc-4.9
+
 ########## CHANGE ACCORDINGLY ###########
 
 compiletype ?= debug
@@ -63,7 +66,7 @@ CFLAGS += -fPIC -D_GNU_SOURCE $(user_flags)
 #-finstrument-functions
 CXXFLAGS += -fPIC -std=c++11 -D_GNU_SOURCE $(user_flags)
 # CXXFLAGS += -D_GLIBCXX_USE_CXX11_ABI=0
-CXXFLAGS += -fabi-version=2
+# CXXFLAGS += -fabi-version=2
 #-finstrument-functions
 INCS := -I$(srcdir) -I$(PROTOBUF_HOME)/include
 LDFLAGS +=

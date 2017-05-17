@@ -14,6 +14,7 @@ Currently, Maple is only supported on Linux platforms. We recommend to use 64-bi
 * Ubuntu Desktop 10.10 (x86\_64)
 * Ubuntu Desktop 11.04 (x86\_64)
 * Ubuntu Desktop 12.04 (x86\_64)
+* Ubuntu Desktop 16.04 (x86\_64)
 
 ### Software Dependencies
 
@@ -22,9 +23,10 @@ Maple depends on the following software.
 * GNU make, version 3.81 or higher
 * Python, version 2.4.3 or higher
 * [PIN](http://www.pintool.org/), revision 45467 or higher
-* [Google protobuf](http://code.google.com/p/protobuf/), version 2.4.1
+* [Google protobuf](http://code.google.com/p/protobuf/), version 2.4.1+ (<3.0)
 
 ### Make
+Please build protobuf with `gcc` version < 5.0 (ABI compatibility).
 
 First, you need to set two environment variables.
 
