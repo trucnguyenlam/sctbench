@@ -30,7 +30,14 @@ class Pin(object):
     def pin(self):
         return self.home_path + '/pin'
     def options(self):
-        c = ['-injection', 'child']
+        c = []
+        try:
+            # Truc: Hack for new 4.0+ linux kernel
+            kernelversion = os.uname()[2]
+            if kernelversion.startswith("4."):
+                c += ['-injection', 'child']
+        except OSError:
+            pass
         if self.logging_mode:
             c.append('-xyzzy')
             c.append('-mesgon')
