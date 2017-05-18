@@ -21,7 +21,7 @@
 
 #include <vector>
 #include <map>
-#include <tr1/unordered_map>
+#include <unordered_map>
 
 #include "core/basictypes.h"
 #include "core/sync.h"

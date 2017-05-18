@@ -22,7 +22,7 @@
 
 #include <cstring>
 #include <set>
-#include <tr1/unordered_set>
+#include <unordered_set>
 #include "core/basictypes.h"
 #include "core/execution_control.hpp"
 #include "idiom/iroot.h"

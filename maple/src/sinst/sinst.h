@@ -19,7 +19,7 @@
 #ifndef SINST_SINST_H_
 #define SINST_SINST_H_
 
-#include <tr1/unordered_set>
+#include <unordered_set>
 
 #include "core/basictypes.h"
 #include "core/sync.h"

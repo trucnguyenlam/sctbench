@@ -19,8 +19,8 @@
 #ifndef IDIOM_MEMO_H_
 #define IDIOM_MEMO_H_
 
-#include <tr1/unordered_map>
-#include <tr1/unordered_set>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "core/basictypes.h"
 #include "core/sync.h"
