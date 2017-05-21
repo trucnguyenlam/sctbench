@@ -59,8 +59,9 @@ ifeq ($(compiletype), debug)
   CXXFLAGS += -Wall -D_DEBUG -O0 -g -fno-omit-frame-pointer
   # -Werror
 else
-  CFLAGS += -O3 -fomit-frame-pointer
-  CXXFLAGS += -O3 -fomit-frame-pointer
+  # change to O2 for safer build
+  CFLAGS += -O2 -fomit-frame-pointer
+  CXXFLAGS += -O2 -fomit-frame-pointer
 endif
 CFLAGS += -fPIC -D_GNU_SOURCE $(user_flags)
 #-finstrument-functions

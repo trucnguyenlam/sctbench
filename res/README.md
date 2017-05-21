@@ -1,0 +1,1 @@
+This directory contains libraries required for compiling `maple` tool.
